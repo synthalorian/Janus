@@ -1,0 +1,16 @@
+{
+  "name": "janus",
+  "version": "0.1.0",
+  "description": "AI-first communication platform - The gateway between mankind and AI",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently-npm run dev:backend && npm run dev:frontend",
+    "dev:backend": "cd src/backend && npm run dev",
+    "dev:frontend": "cd src/frontend && npm run dev",
+    "build": "npm run build",
+    "start": "npm run start"
+  },
+  "keywords": ["janus", "ai", "chat", "communication", "life-os"],
+  "author": "synth",
+  "license": "MIT"
+}
