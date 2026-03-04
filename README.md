@@ -36,13 +36,60 @@ The interface becomes invisible. You don't open 12 apps. You open Janus. Your AI
 - [Roadmap](docs/ROADMAP.md) — Development phases and milestones
 - [Tech Stack](docs/TECH_STACK.md) — Technology decisions and rationale
 
-## Quick Links
+## Quick Start
 
-- **Project Location:** `/home/synth/projects/janus`
-- **Documentation:** `docs/`
-- **Source Code:** `src/` (coming soon)
+### Prerequisites
+- Node.js 18+
+- npm
 
-## The Name
+### Running the App
+
+**Terminal 1 - Backend:**
+```bash
+cd /home/synth/projects/janus/src/backend
+npm run dev
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd /home/synth/projects/janus/src/frontend
+npm run dev
+```
+
+### Accessing the App
+
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:3001/api
+
+### Quick API Test
+```bash
+# Health check
+curl http://localhost:3001/api/health
+
+# Get channels
+curl http://localhost:3001/api/channels
+
+# Send a test message (replace CHANNEL_ID with ID from /api/channels response)
+curl -X POST http://localhost:3001/api/messages \
+  -H "Content-Type: application/json" \
+  -d '{"content":"Hello from AI!", "authorId": "test-ai-001", "authorName": "Janus AI", "authorType": "ai", "channelId": "CHANNEL_ID"}'
+```
+
+## Development Scripts
+
+From the project root:
+
+```bash
+# Start backend (with hot reload)
+cd src/backend && npm run dev
+
+# Start frontend
+cd src/frontend && npm run dev
+
+# Run both in parallel
+cd src/backend && npm run dev &
+cd ../frontend && npm run dev
+```
 
 **Janus** — Roman god of transitions, doorways, beginnings and endings. Two faces looking in opposite directions: past and future, human and artificial.
 

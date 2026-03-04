@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import { store } from '../store/messages.js';
+import { store } from '../db/store.js';
 import { CreateMessageRequest } from '../types/index.js';
 
 export function setupSocket(io: Server) {
@@ -7,15 +7,17 @@ export function setupSocket(io: Server) {
     console.log(`Client connected: ${socket.id}`);
 
     // Send initial data
-    socket.emit('channels:list', store.getAllChannels());
+    store.getAllChannels().then(channels => {
+      socket.emit('channels:list', channels);
+    });
 
     // Channel management
-    socket.on('channel:join', (channelId: string) => {
+    socket.on('channel:join', async (channelId: string) => {
       socket.join(`channel:${channelId}`);
       console.log(`Client ${socket.id} joined channel ${channelId}`);
 
       // Send recent messages
-      const messages = store.getChannelMessages(channelId, 50);
+      const messages = await store.getChannelMessages(channelId, 50);
       socket.emit('messages:history', { channelId, messages });
     });
 
@@ -25,14 +27,23 @@ export function setupSocket(io: Server) {
     });
 
     // Messages
-    socket.on('message:send', (data: CreateMessageRequest) => {
+    socket.on('message:send', async (data: CreateMessageRequest) => {
       console.log('Message received:', data);
 
-      const message = store.createMessage({
+      // Ensure user exists
+      let user = await store.getUser(data.authorId);
+      if (!user) {
+        user = await store.createUser({
+          name: data.authorName || 'Unknown',
+          type: data.authorType || 'human',
+        });
+      }
+
+      const message = await store.createMessage({
         content: data.content,
-        authorId: data.authorId,
-        authorName: data.authorName,
-        authorType: data.authorType,
+        authorId: user.id,
+        authorName: user.name,
+        authorType: user.type as 'human' | 'ai',
         channelId: data.channelId,
         threadId: data.threadId,
         replyTo: data.replyTo,
@@ -43,13 +54,15 @@ export function setupSocket(io: Server) {
     });
 
     // Message streaming (for AI responses)
-    let currentStreamMessage: { id: string; channelId: string; content: string } | null = null;
+    let currentStreamMessage: { id: string; channelId: string; content: string; authorId: string; authorName: string } | null = null;
 
-    socket.on('message:stream:start', (data: { channelId: string; authorId: string; authorName: string }) => {
+    socket.on('message:stream:start', async (data: { channelId: string; authorId: string; authorName: string }) => {
       currentStreamMessage = {
         id: `stream-${Date.now()}`,
         channelId: data.channelId,
         content: '',
+        authorId: data.authorId,
+        authorName: data.authorName,
       };
 
       socket.to(`channel:${data.channelId}`).emit('message:stream:start', {
@@ -67,13 +80,13 @@ export function setupSocket(io: Server) {
       }
     });
 
-    socket.on('message:stream:end', (messageId: string) => {
+    socket.on('message:stream:end', async (messageId: string) => {
       if (currentStreamMessage && currentStreamMessage.id === messageId) {
-        // Save the complete message
-        const message = store.createMessage({
+        // Save the complete message to database
+        const message = await store.createMessage({
           content: currentStreamMessage.content,
-          authorId: 'ai-stream',
-          authorName: 'AI',
+          authorId: currentStreamMessage.authorId,
+          authorName: currentStreamMessage.authorName,
           authorType: 'ai',
           channelId: currentStreamMessage.channelId,
         });
