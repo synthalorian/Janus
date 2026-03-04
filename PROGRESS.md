@@ -70,3 +70,36 @@
 - Messages: 2
 - Graph Nodes: 5
 - Graph Edges: 4
+
+## Upcoming: Step 2 - Knowledge Graph Foundation
+
+### Goals
+- Implement semantic search across messages
+- Add pathfinding algorithms (BSP, Dijkstra)
+- Extract entities and concepts from messages
+- Build graph visualization API
+- Create AI-friendly query interface
+
+### Planned Features
+- **Entity Recognition**: Auto-detect mentions of:
+  - User mentions
+  - Project references
+  - Technical concepts
+  - URLs and links
+- **Relationship Inference**: Automatically create edges for:
+  - "discusses" relationships
+  - "references" connections
+  - "implements" patterns
+  - "follows up" chains
+- **Graph Queries**:
+  - "What did we discuss about X?"
+  - "Show me the conversation path from A to B"
+  - "What decisions were made about X?"
+  - "Find all messages related to [concept]"
+
+### Implementation Plan
+1. Add NLP processing for entity extraction
+2. Implement graph algorithms in store.ts
+3. Create graph-specific API endpoints
+4. Add WebSocket events for graph updates
+5. Build query builder UI component
