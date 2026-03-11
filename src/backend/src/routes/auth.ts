@@ -25,7 +25,7 @@ authRouter.post('/register', async (req: Request, res: Response) => {
     );
     
     // Generate JWT
-    const token = authService.generateJWT(user);
+    const token = await authService.generateJWT(user);
     
     res.status(201).json({
       success: true,
@@ -73,7 +73,7 @@ authRouter.post('/refresh', async (req: Request, res: Response) => {
     }
     
     // Generate new JWT
-    const token = authService.generateJWT(user);
+    const token = await authService.generateJWT(user);
     
     // Rotate refresh token
     const newRefreshToken = await authService.createRefreshToken(user.id);

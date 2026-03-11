@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { authService } from '../auth/service.js';
-import { store } from '../db/store.js';
 
 // Extend Express Request type
 declare global {
@@ -36,11 +35,11 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   // Try JWT first
   const jwtToken = authService.extractTokenFromHeader(authHeader);
   if (jwtToken) {
-    const payload = authService.verifyJWT(jwtToken);
+    const payload = await authService.verifyJWT(jwtToken);
     
     if (payload) {
       // Get user from database
-      const user = await store.getUser(payload.userId);
+      const user = await authService.getUserById(payload.userId);
       
       if (user) {
         req.user = {
@@ -98,10 +97,10 @@ export async function optionalAuth(req: Request, res: Response, next: NextFuncti
   // Try JWT
   const jwtToken = authService.extractTokenFromHeader(authHeader);
   if (jwtToken) {
-    const payload = authService.verifyJWT(jwtToken);
+    const payload = await authService.verifyJWT(jwtToken);
     
     if (payload) {
-      const user = await store.getUser(payload.userId);
+      const user = await authService.getUserById(payload.userId);
       
       if (user) {
         req.user = {

@@ -1,5 +1,5 @@
-import { randomBytes, createHash } from 'crypto';
-import { store } from '../db/store.js';
+import { createHash, randomBytes } from 'crypto';
+import { pool } from '../db/index.js';
 
 export interface AuthUser {
   id: string;
@@ -20,7 +20,6 @@ export interface APIKeyRecord {
   userId: string;
   name: string;
   keyPrefix: string;
-  keyHash: string;
   permissions: string[];
   isActive: boolean;
   createdAt: string;
@@ -43,116 +42,180 @@ function id(prefix: string): string {
   return `${prefix}_${Date.now()}_${randomBytes(4).toString('hex')}`;
 }
 
-function hash(value: string): string {
+function sha256(value: string): string {
   return createHash('sha256').update(value).digest('hex');
 }
 
 class AuthService {
-  private jwtTokens = new Map<string, JWTPayload>();
-  private refreshTokens = new Map<string, { userId: string; expiresAt: number; revoked: boolean }>();
-  private apiKeys = new Map<string, APIKeyRecord>();
+  async getUserById(userId: string): Promise<AuthUser | null> {
+    const result = await pool.query(`SELECT id, name, type FROM users WHERE id = $1 LIMIT 1`, [userId]);
+    const row = result.rows[0];
+    if (!row) return null;
+    return { id: row.id, name: row.name, type: row.type === 'ai' ? 'ai' : 'human' };
+  }
 
-  generateJWT(user: AuthUser): string {
-    const now = Math.floor(Date.now() / 1000);
-    const payload: JWTPayload = {
-      userId: user.id,
-      type: user.type === 'ai' ? 'ai' : 'user',
-      permissions: ['read', 'write'],
-      iat: now,
-      exp: now + JWT_EXPIRES_SECONDS,
-    };
-
+  async generateJWT(user: AuthUser): Promise<string> {
     const token = `janus_jwt_${randomBytes(18).toString('hex')}`;
-    this.jwtTokens.set(token, payload);
+    const expiresAt = new Date(Date.now() + JWT_EXPIRES_SECONDS * 1000);
+
+    await pool.query(
+      `INSERT INTO sessions (id, user_id, token, permissions, token_type, expires_at, is_active)
+       VALUES ($1, $2, $3, $4::jsonb, $5, $6, TRUE)`,
+      [id('ses'), user.id, token, JSON.stringify(['read', 'write']), user.type === 'ai' ? 'ai' : 'user', expiresAt],
+    );
+
     return token;
   }
 
-  verifyJWT(token: string): JWTPayload | null {
-    const payload = this.jwtTokens.get(token);
-    if (!payload) return null;
-    if (payload.exp < Math.floor(Date.now() / 1000)) {
-      this.jwtTokens.delete(token);
+  async verifyJWT(token: string): Promise<JWTPayload | null> {
+    const result = await pool.query(
+      `SELECT s.user_id, s.permissions, s.token_type, s.expires_at
+       FROM sessions s
+       WHERE s.token = $1 AND s.is_active = TRUE
+       LIMIT 1`,
+      [token],
+    );
+
+    const row = result.rows[0];
+    if (!row) return null;
+
+    const expMs = new Date(row.expires_at).getTime();
+    if (expMs < Date.now()) {
+      await pool.query(`UPDATE sessions SET is_active = FALSE WHERE token = $1`, [token]);
       return null;
     }
-    return payload;
+
+    await pool.query(`UPDATE sessions SET last_used_at = NOW() WHERE token = $1`, [token]);
+
+    const exp = Math.floor(expMs / 1000);
+    const iat = Math.floor((expMs - JWT_EXPIRES_SECONDS * 1000) / 1000);
+
+    return {
+      userId: row.user_id,
+      type: row.token_type === 'ai' ? 'ai' : 'user',
+      permissions: Array.isArray(row.permissions) ? row.permissions : ['read', 'write'],
+      iat,
+      exp,
+    };
   }
 
   async createRefreshToken(userId: string): Promise<string> {
     const token = `janus_refresh_${randomBytes(18).toString('hex')}`;
-    this.refreshTokens.set(token, {
-      userId,
-      expiresAt: Date.now() + REFRESH_EXPIRES_MS,
-      revoked: false,
-    });
+    const expiresAt = new Date(Date.now() + REFRESH_EXPIRES_MS);
+
+    await pool.query(
+      `INSERT INTO refresh_tokens (id, token_hash, user_id, expires_at)
+       VALUES ($1, $2, $3, $4)`,
+      [id('rft'), sha256(token), userId, expiresAt],
+    );
+
     return token;
   }
 
   async verifyRefreshToken(token: string): Promise<AuthUser | null> {
-    const record = this.refreshTokens.get(token);
-    if (!record || record.revoked || record.expiresAt < Date.now()) return null;
-    const user = await store.getUser(record.userId);
-    if (!user) return null;
-    return { id: user.id, name: user.name, type: user.type };
+    const tokenHash = sha256(token);
+    const result = await pool.query(
+      `SELECT user_id, expires_at, revoked_at FROM refresh_tokens
+       WHERE token_hash = $1
+       LIMIT 1`,
+      [tokenHash],
+    );
+
+    const row = result.rows[0];
+    if (!row) return null;
+    if (row.revoked_at) return null;
+    if (new Date(row.expires_at).getTime() < Date.now()) return null;
+
+    await pool.query(`UPDATE refresh_tokens SET last_used_at = NOW() WHERE token_hash = $1`, [tokenHash]);
+    return this.getUserById(row.user_id);
   }
 
   async revokeRefreshToken(token: string): Promise<void> {
-    const record = this.refreshTokens.get(token);
-    if (!record) return;
-    record.revoked = true;
+    await pool.query(`UPDATE refresh_tokens SET revoked_at = NOW() WHERE token_hash = $1`, [sha256(token)]);
   }
 
   async createAPIKey(userId: string, name: string, permissions: string[] = ['read'], expiresInDays?: number): Promise<APIKeyResult> {
     const key = `janus_${randomBytes(20).toString('hex')}`;
-    const record: APIKeyRecord = {
-      id: id('key'),
-      userId,
-      name,
-      keyPrefix: key.slice(0, 12),
-      keyHash: hash(key),
-      permissions,
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      expiresAt: expiresInDays ? new Date(Date.now() + expiresInDays * 86400000).toISOString() : undefined,
-    };
-    this.apiKeys.set(record.id, record);
-    return { success: true, key, keyId: record.id, name: record.name };
+    const expiresAt = expiresInDays ? new Date(Date.now() + expiresInDays * 86400000) : null;
+
+    const keyId = id('key');
+    await pool.query(
+      `INSERT INTO api_keys (id, key_hash, key_prefix, name, user_id, permissions, is_active, expires_at)
+       VALUES ($1, $2, $3, $4, $5, $6::jsonb, TRUE, $7)`,
+      [keyId, sha256(key), key.slice(0, 12), name, userId, JSON.stringify(permissions), expiresAt],
+    );
+
+    return { success: true, key, keyId, name };
   }
 
   async verifyAPIKey(key: string): Promise<{ user: AuthUser; permissions: string[] } | null> {
-    const keyHash = hash(key);
-    for (const record of this.apiKeys.values()) {
-      if (!record.isActive) continue;
-      if (record.expiresAt && new Date(record.expiresAt).getTime() < Date.now()) continue;
-      if (record.keyHash !== keyHash) continue;
+    const result = await pool.query(
+      `SELECT id, user_id, permissions, expires_at
+       FROM api_keys
+       WHERE key_hash = $1 AND is_active = TRUE
+       LIMIT 1`,
+      [sha256(key)],
+    );
 
-      const user = await store.getUser(record.userId);
-      if (!user) return null;
+    const row = result.rows[0];
+    if (!row) return null;
+    if (row.expires_at && new Date(row.expires_at).getTime() < Date.now()) return null;
 
-      record.lastUsedAt = new Date().toISOString();
-      return {
-        user: { id: user.id, name: user.name, type: user.type },
-        permissions: record.permissions,
-      };
-    }
-    return null;
+    await pool.query(`UPDATE api_keys SET last_used_at = NOW() WHERE id = $1`, [row.id]);
+
+    const user = await this.getUserById(row.user_id);
+    if (!user) return null;
+
+    return {
+      user,
+      permissions: Array.isArray(row.permissions) ? row.permissions : ['read'],
+    };
   }
 
   async revokeAPIKey(keyId: string, userId: string): Promise<boolean> {
-    const record = this.apiKeys.get(keyId);
-    if (!record || record.userId !== userId) return false;
-    record.isActive = false;
-    return true;
+    const result = await pool.query(
+      `UPDATE api_keys SET is_active = FALSE, updated_at = NOW()
+       WHERE id = $1 AND user_id = $2`,
+      [keyId, userId],
+    );
+    return result.rowCount > 0;
   }
 
   async listAPIKeys(userId: string): Promise<APIKeyRecord[]> {
-    return Array.from(this.apiKeys.values()).filter((k) => k.userId === userId);
+    const result = await pool.query(
+      `SELECT id, user_id, name, key_prefix, permissions, is_active, created_at, last_used_at, expires_at
+       FROM api_keys
+       WHERE user_id = $1
+       ORDER BY created_at DESC`,
+      [userId],
+    );
+
+    return result.rows.map((row) => ({
+      id: row.id,
+      userId: row.user_id,
+      name: row.name,
+      keyPrefix: row.key_prefix,
+      permissions: Array.isArray(row.permissions) ? row.permissions : ['read'],
+      isActive: !!row.is_active,
+      createdAt: new Date(row.created_at).toISOString(),
+      lastUsedAt: row.last_used_at ? new Date(row.last_used_at).toISOString() : undefined,
+      expiresAt: row.expires_at ? new Date(row.expires_at).toISOString() : undefined,
+    }));
   }
 
   async registerUser(name: string, type: 'human' | 'ai' = 'human', metadata?: Record<string, unknown>) {
-    const user = await store.createUser({ name, type, metadata });
-    const apiKeyResult = await this.createAPIKey(user.id, 'Default API Key', ['read', 'write']);
+    const userId = id('usr');
+    await pool.query(
+      `INSERT INTO users (id, name, type, trust_level, metadata)
+       VALUES ($1, $2, $3, $4, $5::jsonb)`,
+      [userId, name, type, type === 'ai' ? 1 : 2, JSON.stringify(metadata || {})],
+    );
+
+    const user: AuthUser = { id: userId, name, type };
+    const apiKeyResult = await this.createAPIKey(userId, 'Default API Key', ['read', 'write']);
+
     return {
-      user: { id: user.id, name: user.name, type: user.type as 'human' | 'ai' },
+      user,
       apiKey: apiKeyResult.key!,
     };
   }
