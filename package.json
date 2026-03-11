@@ -3,14 +3,24 @@
   "version": "0.1.0",
   "description": "AI-first communication platform - The gateway between mankind and AI",
   "private": true,
+  "workspaces": [
+    "src/backend",
+    "src/frontend"
+  ],
   "scripts": {
-    "dev": "concurrently-npm run dev:backend && npm run dev:frontend",
-    "dev:backend": "cd src/backend && npm run dev",
-    "dev:frontend": "cd src/frontend && npm run dev",
-    "build": "npm run build",
-    "start": "npm run start"
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm --prefix src/backend run dev",
+    "dev:frontend": "npm --prefix src/frontend run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "npm --prefix src/backend run build",
+    "build:frontend": "npm --prefix src/frontend run build",
+    "start": "npm --prefix src/backend run start",
+    "lint": "npm --prefix src/frontend run lint"
   },
   "keywords": ["janus", "ai", "chat", "communication", "life-os"],
   "author": "synth",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
 }

@@ -4,6 +4,13 @@ import { CreateMessageRequest, APIResponse } from '../types/index.js';
 
 export const apiRouter = Router();
 
+function firstQueryValue(value: unknown): string | undefined {
+  if (Array.isArray(value)) return value.length ? String(value[0]) : undefined;
+  if (value === null || value === undefined) return undefined;
+  if (typeof value === 'object') return undefined;
+  return String(value);
+}
+
 // Health check
 apiRouter.get('/health', async (_req: Request, res: Response) => {
   const dbStats = await store.getStats();
@@ -24,29 +31,29 @@ apiRouter.get('/stats', async (_req: Request, res: Response) => {
 // Channels
 apiRouter.get('/channels', async (_req: Request, res: Response) => {
   const channels = await store.getAllChannels();
-  res.json<APIResponse>({ success: true, data: channels });
+  res.json({ success: true, data: channels });
 });
 
 apiRouter.get('/channels/:id', async (req: Request, res: Response) => {
-  const channel = await store.getChannel(req.params.id);
+  const channel = await store.getChannel(String(req.params.id));
   if (!channel) {
-    res.status(404).json<APIResponse>({ success: false, error: 'Channel not found' });
+    res.status(404).json({ success: false, error: 'Channel not found' });
     return;
   }
-  res.json<APIResponse>({ success: true, data: channel });
+  res.json({ success: true, data: channel });
 });
 
 apiRouter.get('/channels/:id/messages', async (req: Request, res: Response) => {
-  const limit = parseInt(req.query.limit as string) || 50;
-  const messages = await store.getChannelMessages(req.params.id, limit);
-  res.json<APIResponse>({ success: true, data: messages });
+  const limit = parseInt(firstQueryValue(req.query.limit) ?? '50', 10);
+  const messages = await store.getChannelMessages(String(req.params.id), limit);
+  res.json({ success: true, data: messages });
 });
 
 apiRouter.post('/channels', async (req: Request, res: Response) => {
   const { name, type, description } = req.body;
 
   if (!name || !type) {
-    res.status(400).json<APIResponse>({ 
+    res.status(400).json({ 
       success: false, 
       error: 'Missing required fields: name, type' 
     });
@@ -59,7 +66,7 @@ apiRouter.post('/channels', async (req: Request, res: Response) => {
     description,
     createdBy: req.body.createdBy,
   });
-  res.status(201).json<APIResponse>({ success: true, data: channel });
+  res.status(201).json({ success: true, data: channel });
 });
 
 // Messages
@@ -67,7 +74,7 @@ apiRouter.post('/messages', async (req: Request, res: Response) => {
   const data = req.body as CreateMessageRequest;
 
   if (!data.content || !data.authorId || !data.channelId) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: 'Missing required fields: content, authorId, channelId'
     });
@@ -76,7 +83,7 @@ apiRouter.post('/messages', async (req: Request, res: Response) => {
 
   const channel = await store.getChannel(data.channelId);
   if (!channel) {
-    res.status(404).json<APIResponse>({ success: false, error: 'Channel not found' });
+    res.status(404).json({ success: false, error: 'Channel not found' });
     return;
   }
 
@@ -99,16 +106,16 @@ apiRouter.post('/messages', async (req: Request, res: Response) => {
     replyTo: data.replyTo,
   });
 
-  res.status(201).json<APIResponse>({ success: true, data: message });
+  res.status(201).json({ success: true, data: message });
 });
 
 apiRouter.get('/messages/:id', async (req: Request, res: Response) => {
-  const message = await store.getMessage(req.params.id);
+  const message = await store.getMessage(String(req.params.id));
   if (!message) {
-    res.status(404).json<APIResponse>({ success: false, error: 'Message not found' });
+    res.status(404).json({ success: false, error: 'Message not found' });
     return;
   }
-  res.json<APIResponse>({ success: true, data: message });
+  res.json({ success: true, data: message });
 });
 
 // Users
@@ -116,21 +123,21 @@ apiRouter.post('/users', async (req: Request, res: Response) => {
   const { name, type } = req.body;
 
   if (!name) {
-    res.status(400).json<APIResponse>({ success: false, error: 'Name is required' });
+    res.status(400).json({ success: false, error: 'Name is required' });
     return;
   }
 
   const user = await store.createUser({ name, type: type || 'human' });
-  res.status(201).json<APIResponse>({ success: true, data: user });
+  res.status(201).json({ success: true, data: user });
 });
 
 apiRouter.get('/users/:id', async (req: Request, res: Response) => {
-  const user = await store.getUser(req.params.id);
+  const user = await store.getUser(String(req.params.id));
   if (!user) {
-    res.status(404).json<APIResponse>({ success: false, error: 'User not found' });
+    res.status(404).json({ success: false, error: 'User not found' });
     return;
   }
-  res.json<APIResponse>({ success: true, data: user });
+  res.json({ success: true, data: user });
 });
 
 // AI-specific endpoints
@@ -139,7 +146,7 @@ apiRouter.post('/ai/message', async (req: Request, res: Response) => {
   const { channelId, content, aiName = 'AI' } = req.body;
 
   if (!content || !channelId) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: 'Missing required fields: content, channelId'
     });
@@ -160,13 +167,13 @@ apiRouter.post('/ai/message', async (req: Request, res: Response) => {
     channelId,
   });
 
-  res.status(201).json<APIResponse>({ success: true, data: message });
+  res.status(201).json({ success: true, data: message });
 });
 
 // Graph endpoints
 apiRouter.get('/graph/nodes', async (_req: Request, res: Response) => {
   const stats = await store.getStats();
-  res.json<APIResponse>({ 
+  res.json({ 
     success: true, 
     data: { 
       nodes: stats.graphNodes, 
@@ -178,19 +185,59 @@ apiRouter.get('/graph/nodes', async (_req: Request, res: Response) => {
 apiRouter.get('/graph/nodes/:id/related', async (req: Request, res: Response) => {
   const { type, depth } = req.query;
   const related = await store.getRelatedNodes(
-    req.params.id, 
-    type as string, 
-    parseInt(depth as string) || 1
+    String(req.params.id),
+    firstQueryValue(type),
+    parseInt(firstQueryValue(depth) ?? '1', 10)
   );
-  res.json<APIResponse>({ success: true, data: related });
+  res.json({ success: true, data: related });
 });
 
 apiRouter.post('/graph/query', async (req: Request, res: Response) => {
   const { query } = req.body;
   if (!query) {
-    res.status(400).json<APIResponse>({ success: false, error: 'Query is required' });
+    res.status(400).json({ success: false, error: 'Query is required' });
     return;
   }
   const results = await store.queryGraph(query);
-  res.json<APIResponse>({ success: true, data: results });
+  res.json({ success: true, data: results });
+});
+
+// Semantic search endpoints
+apiRouter.get('/search/messages', async (req: Request, res: Response) => {
+  const { q, limit } = req.query;
+  if (!q) {
+    res.status(400).json({ success: false, error: 'Query parameter q is required' });
+    return;
+  }
+  const messages = await store.searchMessages(firstQueryValue(q) ?? '', parseInt(firstQueryValue(limit) ?? '20', 10));
+  res.json({ success: true, data: messages });
+});
+
+apiRouter.get('/search/topic/:topic', async (req: Request, res: Response) => {
+  const { limit } = req.query;
+  const messages = await store.searchByTopic(String(req.params.topic), parseInt(firstQueryValue(limit) ?? '20', 10));
+  res.json({ success: true, data: messages });
+});
+
+apiRouter.get('/search/decisions', async (req: Request, res: Response) => {
+  const { limit } = req.query;
+  const messages = await store.searchDecisions(parseInt(firstQueryValue(limit) ?? '20', 10));
+  res.json({ success: true, data: messages });
+});
+
+apiRouter.get('/search/sentiment/:sentiment', async (req: Request, res: Response) => {
+  const sentiment = String(req.params.sentiment) as 'positive' | 'negative' | 'neutral';
+  if (!['positive', 'negative', 'neutral'].includes(sentiment)) {
+    res.status(400).json({ success: false, error: 'Sentiment must be positive, negative, or neutral' });
+    return;
+  }
+  const { limit } = req.query;
+  const messages = await store.getMessagesBySentiment(sentiment, parseInt(firstQueryValue(limit) ?? '20', 10));
+  res.json({ success: true, data: messages });
+});
+
+apiRouter.get('/messages/:id/related', async (req: Request, res: Response) => {
+  const { depth } = req.query;
+  const messages = await store.findRelatedMessages(String(req.params.id), parseInt(firstQueryValue(depth) ?? '2', 10));
+  res.json({ success: true, data: messages });
 });

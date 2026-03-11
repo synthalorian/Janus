@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { Message, Channel } from '../types';
+import type { Message, Channel } from '../types';
 
 const SERVER_URL = 'http://localhost:3001';
 

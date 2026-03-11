@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSocket } from './hooks/useSocket';
-import { Message } from './types';
+import type { Message } from './types';
 import './App.css';
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
   const [inputValue, setInputValue] = useState('');
   const [userId] = useState(`user-${Date.now()}`);
   const [userName] = useState('synth');
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [typingTimeout, setTypingTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-join general channel on connect
