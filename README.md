@@ -68,6 +68,10 @@ createdb janus
 # Set environment variables
 export DATABASE_URL="postgresql:///janus?host=/run/postgresql"
 export JWT_SECRET="your-secret-key"
+export JANUS_BOTS_ENABLED="false"
+
+# Apply auth persistence migration
+cd src/backend && npm run db:migrate:sql
 ```
 
 ### 3. Start Server
@@ -180,6 +184,7 @@ npm run build
 # Database migrations
 npm run db:generate
 npm run db:migrate
+npm run db:migrate:sql  # apply SQL auth migration
 npm run db:studio  # GUI
 ```
 

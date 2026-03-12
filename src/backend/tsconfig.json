@@ -17,6 +17,7 @@
   },
   "include": [
     "src/index.ts",
+    "src/config.ts",
     "src/routes/api.ts",
     "src/routes/auth.ts",
     "src/auth/**/*.ts",

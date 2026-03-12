@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { store } from '../db/store.js';
 import { CreateMessageRequest, APIResponse } from '../types/index.js';
+import { runtimeConfig } from '../config.js';
 
 export const apiRouter = Router();
 
@@ -19,6 +20,19 @@ apiRouter.get('/health', async (_req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     database: 'connected',
     stats: dbStats,
+    features: runtimeConfig.features,
+  });
+});
+
+apiRouter.get('/config', (_req: Request, res: Response) => {
+  res.json({
+    success: true,
+    data: {
+      nodeEnv: runtimeConfig.nodeEnv,
+      port: runtimeConfig.port,
+      features: runtimeConfig.features,
+      corsOrigins: runtimeConfig.corsOrigins,
+    },
   });
 });
 
