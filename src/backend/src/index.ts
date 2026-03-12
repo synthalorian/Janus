@@ -114,6 +114,8 @@ async function startServer() {
   });
 }
 
-startServer().catch(console.error);
+if (process.env.JANUS_DISABLE_AUTOSTART !== 'true') {
+  startServer().catch(console.error);
+}
 
-export { app, io };
+export { app, io, startServer };

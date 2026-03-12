@@ -11,8 +11,9 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "db:migrate:sql": "./scripts/apply-migrations.sh"
+    "test": "npm run test:auth",
+    "db:migrate:sql": "./scripts/apply-migrations.sh",
+    "test:auth": "npm run db:migrate:sql && JANUS_DISABLE_AUTOSTART=true tsx --test src/tests/auth.integration.test.ts"
   },
   "keywords": [
     "janus",
@@ -44,6 +45,8 @@
     "@types/pg": "^8.11.11",
     "drizzle-kit": "^0.30.4",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "supertest": "^7.1.1",
+    "@types/supertest": "^6.0.3"
   }
 }
