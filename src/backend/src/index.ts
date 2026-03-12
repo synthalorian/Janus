@@ -7,12 +7,13 @@ import { authRouter } from './routes/auth.js';
 import { setupSocket } from './socket/handler.js';
 import { testConnection, closeConnection } from './db/index.js';
 import { store } from './db/store.js';
+import { runtimeConfig } from './config.js';
 
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: runtimeConfig.corsOrigins,
     methods: ['GET', 'POST'],
   },
 });
@@ -65,7 +66,23 @@ process.on('SIGTERM', async () => {
 });
 
 // Start server
-const PORT = process.env.PORT || 3001;
+const PORT = runtimeConfig.port;
+
+async function maybeMountBots() {
+  if (!runtimeConfig.features.botsEnabled) {
+    console.log('🤖 Bots feature disabled (JANUS_BOTS_ENABLED=false)');
+    return;
+  }
+
+  try {
+    const modulePath = './routes/' + 'bots.js';
+    const mod = await import(modulePath);
+    app.use('/api/bots', mod.botRouter);
+    console.log('🤖 Bots feature enabled at /api/bots');
+  } catch (error) {
+    console.warn('⚠️ Bots feature requested but failed to load route module:', error);
+  }
+}
 
 async function startServer() {
   // Test database connection
@@ -77,6 +94,7 @@ async function startServer() {
 
   // Initialize default data
   await store.initializeDefaultData();
+  await maybeMountBots();
 
   httpServer.listen(PORT, () => {
     console.log(`
@@ -89,8 +107,8 @@ async function startServer() {
 ║  Bot Socket: ws://localhost:${PORT}/bots        ║
 ║  Database:  PostgreSQL                         ║
 ║  Auth:      JWT + API Keys                     ║
-║  Bots:      Bot Forge Active                   ║
-║  Oversight: AI-to-AI Governance                ║
+║  Bots:      ${runtimeConfig.features.botsEnabled ? 'Enabled (flag)' : 'Disabled'}                 ║
+║  Oversight: ${runtimeConfig.features.oversightEnabled ? 'Enabled (flag)' : 'Disabled'}             ║
 ╚═══════════════════════════════════════════════╝
     `);
   });
