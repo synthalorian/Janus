@@ -21,6 +21,7 @@
     "src/routes/api.ts",
     "src/routes/auth.ts",
     "src/auth/**/*.ts",
+    "src/contracts/**/*.ts",
     "src/socket/**/*.ts",
     "src/db/**/*.ts",
     "src/store/**/*.ts",

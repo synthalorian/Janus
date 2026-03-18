@@ -1,28 +1,17 @@
 import { Router, Request, Response } from 'express';
 import { authService } from '../auth/service.js';
 import { requireAuth } from '../auth/middleware.js';
+import { createApiKeySchema, logoutSchema, parseOrThrow, refreshSchema, registerSchema } from '../contracts/auth.js';
 
 export const authRouter = Router();
 
 // ==================== Registration ====================
 
 authRouter.post('/register', async (req: Request, res: Response) => {
-  const { name, type = 'human', metadata } = req.body;
-  
-  if (!name) {
-    res.status(400).json({
-      success: false,
-      error: 'Name is required'
-    });
-    return;
-  }
-  
   try {
-    const { user, apiKey } = await authService.registerUser(
-      name,
-      type,
-      metadata
-    );
+    const { name, type, metadata } = parseOrThrow(registerSchema, req.body);
+
+    const { user, apiKey } = await authService.registerUser(name, type, metadata);
     
     // Generate JWT
     const token = await authService.generateJWT(user);
@@ -41,9 +30,11 @@ authRouter.post('/register', async (req: Request, res: Response) => {
       }
     });
   } catch (error) {
-    res.status(500).json({
+    const message = error instanceof Error ? error.message : 'Registration failed';
+    const status = message.startsWith('Invalid ') ? 400 : 500;
+    res.status(status).json({
       success: false,
-      error: 'Registration failed'
+      error: message
     });
   }
 });
@@ -51,17 +42,8 @@ authRouter.post('/register', async (req: Request, res: Response) => {
 // ==================== Token Refresh ====================
 
 authRouter.post('/refresh', async (req: Request, res: Response) => {
-  const { refreshToken } = req.body;
-  
-  if (!refreshToken) {
-    res.status(400).json({
-      success: false,
-      error: 'Refresh token required'
-    });
-    return;
-  }
-  
   try {
+    const { refreshToken } = parseOrThrow(refreshSchema, req.body);
     const user = await authService.verifyRefreshToken(refreshToken);
     
     if (!user) {
@@ -86,9 +68,11 @@ authRouter.post('/refresh', async (req: Request, res: Response) => {
       }
     });
   } catch (error) {
-    res.status(500).json({
+    const message = error instanceof Error ? error.message : 'Token refresh failed';
+    const status = message.startsWith('Invalid ') ? 400 : 500;
+    res.status(status).json({
       success: false,
-      error: 'Token refresh failed'
+      error: message
     });
   }
 });
@@ -96,17 +80,8 @@ authRouter.post('/refresh', async (req: Request, res: Response) => {
 // ==================== API Key Management ====================
 
 authRouter.post('/keys', requireAuth, async (req: Request, res: Response) => {
-  const { name, permissions, expiresInDays } = req.body;
-  
-  if (!name) {
-    res.status(400).json({
-      success: false,
-      error: 'Key name is required'
-    });
-    return;
-  }
-  
   try {
+    const { name, permissions, expiresInDays } = parseOrThrow(createApiKeySchema, req.body);
     const result = await authService.createAPIKey(
       req.user!.id,
       name,
@@ -131,9 +106,11 @@ authRouter.post('/keys', requireAuth, async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    res.status(500).json({
+    const message = error instanceof Error ? error.message : 'Failed to create API key';
+    const status = message.startsWith('Invalid ') ? 400 : 500;
+    res.status(status).json({
       success: false,
-      error: 'Failed to create API key'
+      error: message
     });
   }
 });
@@ -205,18 +182,24 @@ authRouter.get('/me', requireAuth, async (req: Request, res: Response) => {
 // ==================== Logout ====================
 
 authRouter.post('/logout', async (req: Request, res: Response) => {
-  const { refreshToken } = req.body;
-  
-  if (refreshToken) {
-    try {
-      await authService.revokeRefreshToken(refreshToken);
-    } catch (error) {
-      // Ignore errors on logout
+  try {
+    const { refreshToken } = parseOrThrow(logoutSchema, req.body ?? {});
+
+    if (refreshToken) {
+      try {
+        await authService.revokeRefreshToken(refreshToken);
+      } catch (error) {
+        // Ignore errors on logout
+      }
     }
+
+    res.json({
+      success: true,
+      data: { message: 'Logged out successfully' }
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Logout failed';
+    const status = message.startsWith('Invalid ') ? 400 : 500;
+    res.status(status).json({ success: false, error: message });
   }
-  
-  res.json({
-    success: true,
-    data: { message: 'Logged out successfully' }
-  });
 });

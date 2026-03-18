@@ -65,6 +65,18 @@ test('auth lifecycle: register -> me -> key create/list/revoke', async () => {
   assert.equal(revokeKeyRes.body.success, true);
 });
 
+
+
+test('auth validates register payload', async () => {
+  const res = await request(app)
+    .post('/api/auth/register')
+    .send({ name: '' });
+
+  assert.equal(res.status, 400);
+  assert.equal(res.body.success, false);
+  assert.match(String(res.body.error), /Invalid/i);
+});
+
 test('auth rejects invalid bearer token', async () => {
   const res = await request(app)
     .get('/api/auth/me')
@@ -87,7 +99,7 @@ test('auth refresh returns new token pair', async () => {
     .post('/api/auth/refresh')
     .send({ refreshToken: 'invalid' });
 
-  assert.equal(refreshCreateRes.status, 401);
+  assert.equal(refreshCreateRes.status, 400);
 
   // create a real refresh token by hitting service path through login flow simulation
   // current API only creates refresh tokens via /refresh rotation; generate one by direct DB-backed service use
