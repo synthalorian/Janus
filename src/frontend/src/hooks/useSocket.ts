@@ -1,11 +1,11 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import type { Message, Channel } from '../types';
 
 const SERVER_URL = 'http://localhost:3001';
 
 export function useSocket() {
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
   const [connected, setConnected] = useState(false);
   const [channels, setChannels] = useState<Channel[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -63,7 +63,7 @@ export function useSocket() {
       ));
     });
 
-    setSocket(newSocket);
+    socketRef.current = newSocket;
 
     return () => {
       newSocket.disconnect();
@@ -71,19 +71,19 @@ export function useSocket() {
   }, [currentChannel]);
 
   const joinChannel = useCallback((channelId: string) => {
-    if (socket) {
-      socket.emit('channel:join', channelId);
+    if (socketRef.current) {
+      socketRef.current.emit('channel:join', channelId);
       setCurrentChannel(channelId);
     }
-  }, [socket]);
+  }, []);
 
   const leaveChannel = useCallback((channelId: string) => {
-    if (socket) {
-      socket.emit('channel:leave', channelId);
+    if (socketRef.current) {
+      socketRef.current.emit('channel:leave', channelId);
       setCurrentChannel(null);
       setMessages([]);
     }
-  }, [socket]);
+  }, []);
 
   const sendMessage = useCallback((data: {
     content: string;
@@ -92,25 +92,24 @@ export function useSocket() {
     authorType: 'human' | 'ai';
     channelId: string;
   }) => {
-    if (socket) {
-      socket.emit('message:send', data);
+    if (socketRef.current) {
+      socketRef.current.emit('message:send', data);
     }
-  }, [socket]);
+  }, []);
 
   const startTyping = useCallback((channelId: string, userId: string, userName: string) => {
-    if (socket) {
-      socket.emit('typing:start', { channelId, userId, userName });
+    if (socketRef.current) {
+      socketRef.current.emit('typing:start', { channelId, userId, userName });
     }
-  }, [socket]);
+  }, []);
 
   const stopTyping = useCallback((channelId: string, userId: string) => {
-    if (socket) {
-      socket.emit('typing:stop', { channelId, userId });
+    if (socketRef.current) {
+      socketRef.current.emit('typing:stop', { channelId, userId });
     }
-  }, [socket]);
+  }, []);
 
   return {
-    socket,
     connected,
     channels,
     messages,
