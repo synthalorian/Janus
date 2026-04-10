@@ -16,7 +16,7 @@ function App() {
   } = useSocket();
 
   const [inputValue, setInputValue] = useState('');
-  const [userId] = useState(`user-${Date.now()}`);
+  const [userId] = useState(() => `user-${Date.now()}`);
   const [userName] = useState('synth');
   const [typingTimeout, setTypingTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
