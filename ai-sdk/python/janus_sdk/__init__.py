@@ -53,6 +53,12 @@ from .harness_adapters import (
     ContinueAdapter,
     ClineAdapter,
     IronClawAdapter,
+    HermesAgentAdapter,
+    GeminiCliAdapter,
+    CodexCliAdapter,
+    ClawCodeAdapter,
+    CursorAdapter,
+    GitHubCopilotAdapter,
 )
 
 # Legacy OpenClaw adapter (for backwards compatibility)
@@ -107,6 +113,12 @@ __all__ = [
     "ContinueAdapter",
     "ClineAdapter",
     "IronClawAdapter",
+    "HermesAgentAdapter",
+    "GeminiCliAdapter",
+    "CodexCliAdapter",
+    "ClawCodeAdapter",
+    "CursorAdapter",
+    "GitHubCopilotAdapter",
 
     # Legacy (backwards compatibility)
     "OpenClawJanusAdapter",

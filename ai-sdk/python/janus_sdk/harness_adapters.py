@@ -31,6 +31,10 @@ class HarnessType(str, Enum):
     CONTINUE = "continue"
     CLINE = "cline"
     IRONCLAW = "ironclaw"
+    HERMES_AGENT = "hermes_agent"
+    GEMINI_CLI = "gemini_cli"
+    CODEX_CLI = "codex_cli"
+    CLAW_CODE = "claw_code"
     CURSOR = "cursor"
     GITHUB_COPILOT = "github_copilot"
     CUSTOM = "custom"
@@ -552,6 +556,276 @@ class IronClawAdapter(BaseHarnessAdapter):
         )
 
 
+class HermesAgentAdapter(BaseHarnessAdapter):
+    """Adapter for Hermes Agent CLI (supports subagents, tools, MCP)."""
+
+    @property
+    def harness_type(self) -> HarnessType:
+        return HarnessType.HERMES_AGENT
+
+    @property
+    def capabilities(self) -> HarnessCapabilities:
+        return HarnessCapabilities(
+            supports_realtime=True,
+            supports_subagents=True,
+            supports_tools=True,
+            max_context_tokens=204800
+        )
+
+    async def connect(self) -> None:
+        """Connect Hermes Agent to Janus."""
+        await self.connect_to_janus()
+        print(f"🔮 Hermes Agent connected to Janus as {self.agent_name}")
+
+    async def disconnect(self) -> None:
+        """Disconnect Hermes Agent from Janus."""
+        if self._janus_client:
+            await self._janus_client.disconnect()
+        self._connected = False
+
+    async def send_to_user(self, message: str, metadata: Optional[Dict] = None) -> None:
+        """Send message to user through Hermes Agent."""
+        print(f"🔮 {message}")
+
+    async def receive_from_user(self) -> Optional[str]:
+        """Receive input from Hermes Agent user."""
+        return None
+
+    async def get_context(self) -> HarnessContext:
+        """Get Hermes Agent context."""
+        import os
+        return HarnessContext(
+            harness_type=self.harness_type,
+            workspace_path=os.getcwd(),
+            current_file=None,
+            user_prompt=None
+        )
+
+
+class GeminiCliAdapter(BaseHarnessAdapter):
+    """Adapter for Google Gemini CLI."""
+
+    @property
+    def harness_type(self) -> HarnessType:
+        return HarnessType.GEMINI_CLI
+
+    @property
+    def capabilities(self) -> HarnessCapabilities:
+        return HarnessCapabilities(
+            supports_terminal=True,
+            supports_filesystem=True,
+            supports_web=True,
+            max_context_tokens=128000
+        )
+
+    async def connect(self) -> None:
+        """Connect Gemini CLI to Janus."""
+        await self.connect_to_janus()
+        print(f"✨ Gemini CLI connected to Janus as {self.agent_name}")
+
+    async def disconnect(self) -> None:
+        """Disconnect Gemini CLI from Janus."""
+        if self._janus_client:
+            await self._janus_client.disconnect()
+        self._connected = False
+
+    async def send_to_user(self, message: str, metadata: Optional[Dict] = None) -> None:
+        """Send message to user through Gemini CLI."""
+        print(f"✨ Gemini: {message}")
+
+    async def receive_from_user(self) -> Optional[str]:
+        """Receive input from Gemini CLI user."""
+        return None
+
+    async def get_context(self) -> HarnessContext:
+        """Get Gemini CLI context."""
+        import os
+        return HarnessContext(
+            harness_type=self.harness_type,
+            workspace_path=os.getcwd(),
+            current_file=None
+        )
+
+
+class CodexCliAdapter(BaseHarnessAdapter):
+    """Adapter for OpenAI Codex CLI."""
+
+    @property
+    def harness_type(self) -> HarnessType:
+        return HarnessType.CODEX_CLI
+
+    @property
+    def capabilities(self) -> HarnessCapabilities:
+        return HarnessCapabilities(
+            supports_terminal=True,
+            supports_filesystem=True,
+            max_context_tokens=128000
+        )
+
+    async def connect(self) -> None:
+        """Connect Codex CLI to Janus."""
+        await self.connect_to_janus()
+        print(f"🤖 Codex CLI connected to Janus as {self.agent_name}")
+
+    async def disconnect(self) -> None:
+        """Disconnect Codex CLI from Janus."""
+        if self._janus_client:
+            await self._janus_client.disconnect()
+        self._connected = False
+
+    async def send_to_user(self, message: str, metadata: Optional[Dict] = None) -> None:
+        """Send message to user through Codex CLI."""
+        print(f"🤖 Codex: {message}")
+
+    async def receive_from_user(self) -> Optional[str]:
+        """Receive input from Codex CLI user."""
+        return None
+
+    async def get_context(self) -> HarnessContext:
+        """Get Codex CLI context."""
+        import os
+        return HarnessContext(
+            harness_type=self.harness_type,
+            workspace_path=os.getcwd(),
+            current_file=None
+        )
+
+
+class ClawCodeAdapter(BaseHarnessAdapter):
+    """Adapter for Claw-Code CLI."""
+
+    @property
+    def harness_type(self) -> HarnessType:
+        return HarnessType.CLAW_CODE
+
+    @property
+    def capabilities(self) -> HarnessCapabilities:
+        return HarnessCapabilities(
+            supports_terminal=True,
+            supports_filesystem=True,
+            max_context_tokens=128000
+        )
+
+    async def connect(self) -> None:
+        """Connect Claw-Code to Janus."""
+        await self.connect_to_janus()
+        print(f"🦀 Claw-Code connected to Janus as {self.agent_name}")
+
+    async def disconnect(self) -> None:
+        """Disconnect Claw-Code from Janus."""
+        if self._janus_client:
+            await self._janus_client.disconnect()
+        self._connected = False
+
+    async def send_to_user(self, message: str, metadata: Optional[Dict] = None) -> None:
+        """Send message to user through Claw-Code."""
+        print(f"🦀 Claw-Code: {message}")
+
+    async def receive_from_user(self) -> Optional[str]:
+        """Receive input from Claw-Code user."""
+        return None
+
+    async def get_context(self) -> HarnessContext:
+        """Get Claw-Code context."""
+        import os
+        return HarnessContext(
+            harness_type=self.harness_type,
+            workspace_path=os.getcwd(),
+            current_file=None
+        )
+
+
+class CursorAdapter(BaseHarnessAdapter):
+    """Adapter for Cursor IDE."""
+
+    @property
+    def harness_type(self) -> HarnessType:
+        return HarnessType.CURSOR
+
+    @property
+    def capabilities(self) -> HarnessCapabilities:
+        return HarnessCapabilities(
+            supports_realtime=True,
+            supports_filesystem=True,
+            max_context_tokens=128000
+        )
+
+    async def connect(self) -> None:
+        """Connect Cursor to Janus."""
+        await self.connect_to_janus()
+        print(f"↪️ Cursor connected to Janus as {self.agent_name}")
+
+    async def disconnect(self) -> None:
+        """Disconnect Cursor from Janus."""
+        if self._janus_client:
+            await self._janus_client.disconnect()
+        self._connected = False
+
+    async def send_to_user(self, message: str, metadata: Optional[Dict] = None) -> None:
+        """Send message to user through Cursor."""
+        print(f"[Cursor] {message}")
+
+    async def receive_from_user(self) -> Optional[str]:
+        """Receive input from Cursor user."""
+        return None
+
+    async def get_context(self) -> HarnessContext:
+        """Get Cursor context."""
+        import os
+        return HarnessContext(
+            harness_type=self.harness_type,
+            workspace_path=os.getcwd(),
+            current_file=None,
+            selected_code=None
+        )
+
+
+class GitHubCopilotAdapter(BaseHarnessAdapter):
+    """Adapter for GitHub Copilot."""
+
+    @property
+    def harness_type(self) -> HarnessType:
+        return HarnessType.GITHUB_COPILOT
+
+    @property
+    def capabilities(self) -> HarnessCapabilities:
+        return HarnessCapabilities(
+            supports_realtime=True,
+            supports_filesystem=True,
+            supports_web=True,
+            max_context_tokens=128000
+        )
+
+    async def connect(self) -> None:
+        """Connect GitHub Copilot to Janus."""
+        await self.connect_to_janus()
+        print(f"👤 GitHub Copilot connected to Janus as {self.agent_name}")
+
+    async def disconnect(self) -> None:
+        """Disconnect GitHub Copilot from Janus."""
+        if self._janus_client:
+            await self._janus_client.disconnect()
+        self._connected = False
+
+    async def send_to_user(self, message: str, metadata: Optional[Dict] = None) -> None:
+        """Send message to user through GitHub Copilot."""
+        print(f"[GitHub Copilot] {message}")
+
+    async def receive_from_user(self) -> Optional[str]:
+        """Receive input from GitHub Copilot user."""
+        return None
+
+    async def get_context(self) -> HarnessContext:
+        """Get GitHub Copilot context."""
+        import os
+        return HarnessContext(
+            harness_type=self.harness_type,
+            workspace_path=os.getcwd(),
+            current_file=None,
+            selected_code=None
+        )
+
+
 # ==================== Factory ====================
 
 
@@ -566,6 +840,12 @@ class HarnessAdapterFactory:
         HarnessType.CONTINUE: ContinueAdapter,
         HarnessType.CLINE: ClineAdapter,
         HarnessType.IRONCLAW: IronClawAdapter,
+        HarnessType.HERMES_AGENT: HermesAgentAdapter,
+        HarnessType.GEMINI_CLI: GeminiCliAdapter,
+        HarnessType.CODEX_CLI: CodexCliAdapter,
+        HarnessType.CLAW_CODE: ClawCodeAdapter,
+        HarnessType.CURSOR: CursorAdapter,
+        HarnessType.GITHUB_COPILOT: GitHubCopilotAdapter,
     }
     
     @classmethod
@@ -638,22 +918,46 @@ class HarnessAdapterFactory:
         """
         import os
         
+        # Check for Hermes Agent
+        if os.getenv("HERMES_AGENT_MODE") or os.getenv("HERMES_AGENT_WORKSPACE"):
+            return HarnessType.HERMES_AGENT
+
+        # Check for Gemini CLI
+        if os.getenv("GEMINI_API_KEY") and os.getenv("GEMINI_CLI_ACTIVE"):
+            return HarnessType.GEMINI_CLI
+
+        # Check for Codex CLI
+        if os.getenv("CODEX_CLI_ACTIVE"):
+            return HarnessType.CODEX_CLI
+
+        # Check for ClawCode
+        if os.getenv("CLAW_CODE_WORKSPACE"):
+            return HarnessType.CLAW_CODE
+
+        # Check for Cursor IDE
+        if os.getenv("CURSOR_WORKSPACE") or "cursor" in os.getenv("TERM_PROGRAM", "").lower():
+            return HarnessType.CURSOR
+
+        # Check for GitHub Copilot
+        if os.getenv("GITHUB_COPILOT_ACTIVE"):
+            return HarnessType.GITHUB_COPILOT
+
         # Check for OpenClaw
         if os.getenv("OPENCLAW_AGENT_ID"):
             return HarnessType.OPENCLAW
-        
+
         # Check for Claude Code
         if os.getenv("CLAUDE_CODE") or "claude" in os.getenv("TERM_PROGRAM", "").lower():
             return HarnessType.CLAUDE_CODE
-        
+
         # Check for VS Code extensions
         if os.getenv("VSCODE_CWD"):
             # Could be OpenCode, Continue, or Cline
             # Would need more specific detection
             pass
-        
+
         # Check for Aider
         if os.getenv("AIDER"):
             return HarnessType.AIDER
-        
+
         return None

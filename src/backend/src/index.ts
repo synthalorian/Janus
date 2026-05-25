@@ -6,6 +6,7 @@ import { apiRouter } from './routes/api.js';
 import { authRouter } from './routes/auth.js';
 import { orchestrationRouter } from './routes/orchestration.js';
 import { soulRouter } from './routes/souls.js';
+import { harnessRouter } from './routes/harnesses.js';
 import { setupSocket } from './socket/handler.js';
 import { cleanupWorker } from './orchestration/cleanup-worker.js';
 import { orchestratorEngine } from './orchestration/engine.js';
@@ -53,6 +54,7 @@ app.use('/api', apiRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/orchestrate', orchestrationRouter);
 app.use('/api/souls', soulRouter);
+app.use('/api/harnesses', harnessRouter);
 
 // Socket.io
 setupSocket(io);
