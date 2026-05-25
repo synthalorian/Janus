@@ -1,0 +1,94 @@
+/* ═══════════════════════════════════════════════════════════╗
+   ║  Fallout Terminal — Green Phosphor CRT                   ║
+   ║  Monochrome green on black. Scanlines, amber/green      ║
+   ║  phosphor glow. Every character feels like a terminal.  ║
+   ╚══════════════════════════════════════════════════════════╝ */
+
+.theme-fallout-terminal {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0e0e0e;
+  --bg-tertiary: #121208;
+  --bg-hover: #1a2a0a;
+  --bg-surface: #0c0c0c;
+  --bg-raised: #1a2a10;
+  --bg-overlay: rgba(10, 10, 10, 0.95);
+
+  --text-primary: #00ff41;
+  --text-secondary: #00cc33;
+  --text-muted: #006622;
+  --text-inverse: #0a0a0a;
+
+  --accent-primary: #00ff41;
+  --accent-secondary: #ffb000;
+  --accent-tertiary: #00ff41;
+  --accent-cyan: #00ffaa;
+  --accent-blue: #00aaff;
+  --accent-pink: #ff4080;
+  --accent-red: #ff3300;
+  --accent-orange: #ffb000;
+  --accent-green: #00ff41;
+
+  --success: #00ff41;
+  --warning: #ffb000;
+  --error: #ff3300;
+  --info: #00ffaa;
+
+  --border-color: #003311;
+  --border-glow: rgba(0, 255, 65, 0.3);
+  --border-light: #005522;
+
+  --glow-primary: 0 0 10px rgba(0, 255, 65, 0.4), 0 0 20px rgba(0, 255, 65, 0.15);
+  --glow-secondary: 0 0 10px rgba(255, 176, 0, 0.3), 0 0 20px rgba(255, 176, 0, 0.1);
+  --glow-cyan: 0 0 8px rgba(0, 255, 170, 0.25);
+  --glow-yellow: 0 0 8px rgba(255, 176, 0, 0.25);
+  --glow-green: 0 0 10px rgba(0, 255, 65, 0.35);
+
+  --gradient-primary: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  --gradient-text: linear-gradient(180deg, #00ff41 0%, #00cc33 30%, #00ff41 60%, #0a0a0a 100%);
+  --gradient-sidebar: linear-gradient(180deg, #0e0e0e 0%, #0a0a0a 100%);
+  --gradient-header: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
+  --gradient-input: linear-gradient(0deg, var(--bg-secondary), var(--bg-primary));
+
+  --crt-opacity: 0.4;
+  --grid-opacity-1: rgba(0, 255, 65, 0.03);
+  --grid-opacity-2: rgba(0, 255, 65, 0.08);
+
+  --font-body: 'Share Tech Mono', 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  --font-display: 'Share Tech Mono', 'Courier New', monospace;
+  --font-mono: 'Share Tech Mono', 'SF Mono', 'Fira Code', 'Courier New', monospace;
+
+  --radius: 2px;
+  --radius-sm: 1px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.7);
+
+  --transition-fast: 0.1s;
+  --transition-normal: 0.15s;
+  --transition-slow: 0.25s;
+
+  /* Backward-compat aliases */
+  --accent-purple: var(--accent-primary);
+  --accent-magenta: var(--accent-secondary);
+  --glow-purple: var(--glow-primary);
+  --glow-magenta: var(--glow-secondary);
+
+  --theme-name: 'Fallout Terminal';
+  --theme-icon: '🖥️';
+}
+
+.theme-fallout-terminal body::after {
+  opacity: var(--crt-opacity);
+}
+
+.theme-fallout-terminal .sidebar {
+  background: var(--gradient-sidebar);
+}
+
+/* Force monospace across entire UI */
+.theme-fallout-terminal * {
+  font-family: var(--font-body) !important;
+}

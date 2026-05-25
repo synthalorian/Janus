@@ -4,7 +4,11 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import { apiRouter } from './routes/api.js';
 import { authRouter } from './routes/auth.js';
+import { orchestrationRouter } from './routes/orchestration.js';
+import { soulRouter } from './routes/souls.js';
 import { setupSocket } from './socket/handler.js';
+import { cleanupWorker } from './orchestration/cleanup-worker.js';
+import { orchestratorEngine } from './orchestration/engine.js';
 import { testConnection, closeConnection } from './db/index.js';
 import { store } from './db/store.js';
 import { runtimeConfig } from './config.js';
@@ -47,9 +51,12 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api', apiRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/orchestrate', orchestrationRouter);
+app.use('/api/souls', soulRouter);
 
 // Socket.io
 setupSocket(io);
+orchestratorEngine.setSocketIO(io);
 
 
 // Graceful shutdown
@@ -97,6 +104,7 @@ async function startServer() {
   await maybeMountBots();
 
   httpServer.listen(PORT, () => {
+    cleanupWorker.start();
     console.log(`
 ╔═══════════════════════════════════════════════╗
 ║                  JANUS SERVER                  ║
@@ -109,6 +117,8 @@ async function startServer() {
 ║  Auth:      JWT + API Keys                     ║
 ║  Bots:      ${runtimeConfig.features.botsEnabled ? 'Enabled (flag)' : 'Disabled'}                 ║
 ║  Oversight: ${runtimeConfig.features.oversightEnabled ? 'Enabled (flag)' : 'Disabled'}             ║
+║  Orchestrate: Enabled                          ║
+║  Cleanup:   Every 5 min                        ║
 ╚═══════════════════════════════════════════════╝
     `);
   });

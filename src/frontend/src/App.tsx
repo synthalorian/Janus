@@ -1,9 +1,22 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { AuthProvider, useAuth } from './hooks/AuthContext';
+import { ThemeProvider } from './hooks/ThemeContext';
 import { useSocket } from './hooks/useSocket';
-import type { Message } from './types';
+import Sidebar from './components/Sidebar';
+import ChatView from './components/ChatView';
+import BotForgeView from './components/BotForgeView';
+import GraphView from './components/GraphView';
+import OversightView from './components/OversightView';
+import SwarmView from './components/SwarmView';
+import SystemHealthView from './components/SystemHealthView';
+import SoulsView from './components/SoulsView';
+import AuthView from './components/AuthView';
+import type { ViewType } from './types';
 import './App.css';
 
-function App() {
+// Only mounts when authenticated, so useSocket only connects when needed
+function AuthenticatedApp() {
+  const { user } = useAuth();
   const {
     connected,
     channels,
@@ -12,14 +25,10 @@ function App() {
     joinChannel,
     sendMessage,
     startTyping,
-    stopTyping
+    stopTyping,
   } = useSocket();
 
-  const [inputValue, setInputValue] = useState('');
-  const [userId] = useState(() => `user-${Date.now()}`);
-  const [userName] = useState('synth');
-  const [typingTimeout, setTypingTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [currentView, setCurrentView] = useState<ViewType>('chat');
 
   // Auto-join general channel on connect
   useEffect(() => {
@@ -28,151 +37,89 @@ function App() {
     }
   }, [connected, channels, currentChannel, joinChannel]);
 
-  // Scroll to bottom when new messages arrive
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  const handleSelectView = useCallback((view: ViewType) => {
+    setCurrentView(view);
+  }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+  const handleSelectChannel = useCallback((channelId: string) => {
+    joinChannel(channelId);
+    setCurrentView('chat');
+  }, [joinChannel]);
 
-    // Typing indicator
-    if (currentChannel) {
-      startTyping(currentChannel, userId, userName);
-
-      if (typingTimeout) clearTimeout(typingTimeout);
-      const timeout = setTimeout(() => {
-        stopTyping(currentChannel, userId);
-      }, 1000);
-      setTypingTimeout(timeout);
-    }
-  };
-
-  const handleSend = () => {
-    if (!inputValue.trim() || !currentChannel) return;
-
-    sendMessage({
-      content: inputValue,
-      authorId: userId,
-      authorName: userName,
-      authorType: 'human',
-      channelId: currentChannel,
-    });
-
-    setInputValue('');
-    stopTyping(currentChannel, userId);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  const formatTime = (timestamp: Date | string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  };
+  const userId = user?.id || 'unknown';
+  const userName = user?.name || 'Unknown';
 
   return (
     <div className="app">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="sidebar-header">
-          <h1>🚪 Janus</h1>
-          <div className={`connection-status ${connected ? 'connected' : 'disconnected'}`}>
-            {connected ? 'Connected' : 'Disconnected'}
-          </div>
-        </div>
+      <Sidebar
+        connected={connected}
+        channels={channels}
+        currentChannel={currentChannel}
+        currentView={currentView}
+        onSelectChannel={handleSelectChannel}
+        onSelectView={handleSelectView}
+      />
 
-        <div className="channels">
-          <h2>Channels</h2>
-          {channels.map(channel => (
-            <div
-              key={channel.id}
-              className={`channel ${currentChannel === channel.id ? 'active' : ''}`}
-              onClick={() => joinChannel(channel.id)}
-            >
-              <span className="channel-icon">#</span>
-              <span className="channel-name">{channel.name}</span>
-            </div>
-          ))}
-        </div>
+      {currentView === 'chat' && (
+        <ChatView
+          channels={channels}
+          messages={messages}
+          currentChannel={currentChannel}
+          connected={connected}
+          userId={userId}
+          userName={userName}
+          onSendMessage={sendMessage}
+          onStartTyping={startTyping}
+          onStopTyping={stopTyping}
+        />
+      )}
 
-        <div className="user-info">
-          <div className="user-avatar">{userName[0].toUpperCase()}</div>
-          <div className="user-details">
-            <div className="user-name">{userName}</div>
-            <div className="user-type">Human</div>
-          </div>
-        </div>
-      </aside>
+      {currentView === 'bots' && <BotForgeView />}
 
-      {/* Main Chat Area */}
-      <main className="main">
-        {currentChannel ? (
-          <>
-            <header className="chat-header">
-              <h2>#{channels.find(c => c.id === currentChannel)?.name || 'channel'}</h2>
-              <p>{channels.find(c => c.id === currentChannel)?.description}</p>
-            </header>
+      {currentView === 'graph' && <GraphView />}
 
-            <div className="messages">
-              {messages.length === 0 ? (
-                <div className="empty-state">
-                  <p>No messages yet. Start the conversation!</p>
-                </div>
-              ) : (
-                messages.map((msg) => (
-                  <MessageComponent key={msg.id} message={msg} formatTime={formatTime} />
-                ))
-              )}
-              <div ref={messagesEndRef} />
-            </div>
+      {currentView === 'oversight' && <OversightView />}
 
-            <div className="input-area">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                onKeyPress={handleKeyPress}
-                placeholder="Type a message..."
-                disabled={!connected}
-              />
-              <button onClick={handleSend} disabled={!connected || !inputValue.trim()}>
-                Send
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="no-channel">
-            <h2>Welcome to Janus</h2>
-            <p>Select a channel to start chatting</p>
-          </div>
-        )}
-      </main>
+      {currentView === 'swarm' && <SwarmView />}
+
+      {currentView === 'health' && <SystemHealthView />}
+
+      {currentView === 'souls' && <SoulsView />}
     </div>
   );
 }
 
-function MessageComponent({ message, formatTime }: { message: Message; formatTime: (t: Date | string) => string }) {
-  const isAI = message.authorType === 'ai';
+function AppShell() {
+  const { isAuthenticated, isLoading } = useAuth();
 
-  return (
-    <div className={`message ${isAI ? 'ai-message' : 'human-message'}`}>
-      <div className="message-avatar" style={{ backgroundColor: isAI ? '#9333ea' : '#3b82f6' }}>
-        {message.authorName[0].toUpperCase()}
-      </div>
-      <div className="message-content">
-        <div className="message-header">
-          <span className="message-author">{message.authorName}</span>
-          {isAI && <span className="ai-badge">AI</span>}
-          <span className="message-time">{formatTime(message.timestamp)}</span>
+  // Loading splash while validating stored token
+  if (isLoading) {
+    return (
+      <div className="loading-splash">
+        <div className="loading-splash-content">
+          <span className="loading-splash-icon">🚪</span>
+          <h1>Janus</h1>
+          <div className="spinner" />
         </div>
-        <div className="message-body">{message.content}</div>
       </div>
-    </div>
+    );
+  }
+
+  // Auth gate
+  if (!isAuthenticated) {
+    return <AuthView />;
+  }
+
+  return <AuthenticatedApp />;
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <AppShell />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
