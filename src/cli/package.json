@@ -1,0 +1,17 @@
+{
+  "name": "@janus/cli",
+  "version": "0.2.0",
+  "description": "Janus Interactive CLI — AI Mega-Hub terminal interface",
+  "private": true,
+  "main": "index.js",
+  "bin": {
+    "janus": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "janus": "node index.js"
+  },
+  "keywords": ["janus", "ai", "cli", "harness", "terminal"],
+  "author": "synth",
+  "license": "MIT"
+}
