@@ -1,0 +1,89 @@
+/* ═══════════════════════════════════════════════════════════╗
+   ║  Synthwave Midnight — Dark Navy / Blue Variant           ║
+   ║  The 3AM drive through a rain-slicked neon city.        ║
+   ║  Deep navy base, cyan/blue accents, cooler tones.       ║
+   ╚══════════════════════════════════════════════════════════╝ */
+
+.theme-synthwave-midnight {
+  --bg-primary: #050818;
+  --bg-secondary: #0a0f2a;
+  --bg-tertiary: #0f1640;
+  --bg-hover: #141d52;
+  --bg-surface: #0c1130;
+  --bg-raised: #1a2560;
+  --bg-overlay: rgba(5, 8, 24, 0.92);
+
+  --text-primary: #e8eaff;
+  --text-secondary: #a0b0e8;
+  --text-muted: #5a6a9e;
+  --text-inverse: #050818;
+
+  --accent-primary: #0066ff;
+  --accent-secondary: #00ccff;
+  --accent-tertiary: #66ffff;
+  --accent-cyan: #03edf9;
+  --accent-blue: #4080ff;
+  --accent-pink: #ff66b2;
+  --accent-red: #ff3366;
+  --accent-orange: #ff8800;
+  --accent-green: #00ff88;
+
+  --success: #00ff88;
+  --warning: #ffcc00;
+  --error: #ff3366;
+  --info: #03edf9;
+
+  --border-color: #1a2560;
+  --border-glow: rgba(0, 102, 255, 0.3);
+  --border-light: #2a3a80;
+
+  --glow-primary: 0 0 12px rgba(0, 102, 255, 0.4), 0 0 24px rgba(0, 102, 255, 0.15);
+  --glow-secondary: 0 0 12px rgba(0, 204, 255, 0.4), 0 0 24px rgba(0, 204, 255, 0.15);
+  --glow-cyan: 0 0 10px rgba(3, 237, 249, 0.3);
+  --glow-yellow: 0 0 8px rgba(255, 204, 0, 0.25);
+  --glow-green: 0 0 8px rgba(0, 255, 136, 0.25);
+
+  --gradient-primary: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  --gradient-text: linear-gradient(180deg, #e8eaff 0%, #a0b0e8 30%, #0066ff 60%, #0a0f2a 100%);
+  --gradient-sidebar: linear-gradient(180deg, #0a0f2a 0%, #050818 100%);
+  --gradient-header: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
+  --gradient-input: linear-gradient(0deg, var(--bg-secondary), var(--bg-primary));
+
+  --crt-opacity: 0.2;
+  --grid-opacity-1: rgba(0, 102, 255, 0.02);
+  --grid-opacity-2: rgba(0, 102, 255, 0.07);
+
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-display: 'Orbitron', 'Inter', sans-serif;
+  --font-mono: 'Share Tech Mono', 'SF Mono', 'Fira Code', monospace;
+
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+
+  --transition-fast: 0.15s;
+  --transition-normal: 0.2s;
+  --transition-slow: 0.3s;
+
+  /* Backward-compat aliases */
+  --accent-purple: var(--accent-primary);
+  --accent-magenta: var(--accent-secondary);
+  --glow-purple: var(--glow-primary);
+  --glow-magenta: var(--glow-secondary);
+
+  --theme-name: 'Synthwave Midnight';
+  --theme-icon: '🌃';
+}
+
+.theme-synthwave-midnight body::after {
+  opacity: var(--crt-opacity);
+}
+
+.theme-synthwave-midnight .sidebar {
+  background: var(--gradient-sidebar);
+}

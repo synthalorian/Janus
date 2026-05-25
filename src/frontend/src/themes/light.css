@@ -1,0 +1,95 @@
+/* ═══════════════════════════════════════════════════════════╗
+   ║  Light — Clean Modern Light Theme                        ║
+   ║  Professional light mode. Clean, airy, readable.        ║
+   ║  No scanlines, no glow, no retro effects.               ║
+   ╚══════════════════════════════════════════════════════════╝ */
+
+.theme-light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f9;
+  --bg-tertiary: #eeeef4;
+  --bg-hover: #e4e4ec;
+  --bg-surface: #fafafe;
+  --bg-raised: #ffffff;
+  --bg-overlay: rgba(255, 255, 255, 0.95);
+
+  --text-primary: #1e1e2e;
+  --text-secondary: #4a4a5e;
+  --text-muted: #8a8a9e;
+  --text-inverse: #ffffff;
+
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --accent-tertiary: #f59e0b;
+  --accent-cyan: #06b6d4;
+  --accent-blue: #3b82f6;
+  --accent-pink: #ec4899;
+  --accent-red: #ef4444;
+  --accent-orange: #f97316;
+  --accent-green: #22c55e;
+
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #06b6d4;
+
+  --border-color: #e2e2ea;
+  --border-glow: rgba(99, 102, 241, 0.15);
+  --border-light: #d0d0e0;
+
+  --glow-primary: 0 0 6px rgba(99, 102, 241, 0.12), 0 0 12px rgba(99, 102, 241, 0.06);
+  --glow-secondary: 0 0 6px rgba(139, 92, 246, 0.12), 0 0 12px rgba(139, 92, 246, 0.06);
+  --glow-cyan: 0 0 4px rgba(6, 182, 212, 0.1);
+  --glow-yellow: 0 0 4px rgba(245, 158, 11, 0.1);
+  --glow-green: 0 0 4px rgba(34, 197, 94, 0.1);
+
+  --gradient-primary: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  --gradient-text: linear-gradient(180deg, #1e1e2e 0%, #4a4a5e 30%, #6366f1 60%, #ffffff 100%);
+  --gradient-sidebar: linear-gradient(180deg, #f5f5f9 0%, #ffffff 100%);
+  --gradient-header: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
+  --gradient-input: linear-gradient(0deg, var(--bg-secondary), var(--bg-primary));
+
+  --crt-opacity: 0;
+  --grid-opacity-1: transparent;
+  --grid-opacity-2: transparent;
+
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-display: 'Inter', sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+  --transition-fast: 0.15s;
+  --transition-normal: 0.2s;
+  --transition-slow: 0.3s;
+
+  /* Backward-compat aliases */
+  --accent-purple: var(--accent-primary);
+  --accent-magenta: var(--accent-secondary);
+  --glow-purple: var(--glow-primary);
+  --glow-magenta: var(--glow-secondary);
+
+  --theme-name: 'Light';
+  --theme-icon: '☀️';
+}
+
+.theme-light body::after {
+  opacity: var(--crt-opacity);
+  display: none;
+}
+
+.theme-light body::before {
+  display: none;
+}
+
+.theme-light .sidebar {
+  background: var(--gradient-sidebar);
+  border-right: 1px solid var(--border-color);
+}

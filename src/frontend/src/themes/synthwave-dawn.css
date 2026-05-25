@@ -1,0 +1,89 @@
+/* ═══════════════════════════════════════════════════════════╗
+   ║  Synthwave Dawn — Warm Sunrise Variant                  ║
+   ║  The golden hour synthwave sun cresting the horizon.    ║
+   ║  Warm amber/pink base with peach and gold accents.      ║
+   ╚══════════════════════════════════════════════════════════╝ */
+
+.theme-synthwave-dawn {
+  --bg-primary: #1a0a1a;
+  --bg-secondary: #28102a;
+  --bg-tertiary: #381838;
+  --bg-hover: #482048;
+  --bg-surface: #221022;
+  --bg-raised: #442840;
+  --bg-overlay: rgba(26, 10, 26, 0.92);
+
+  --text-primary: #ffe8e0;
+  --text-secondary: #e8b8a8;
+  --text-muted: #9a6a6a;
+  --text-inverse: #1a0a1a;
+
+  --accent-primary: #ff6600;
+  --accent-secondary: #ff3399;
+  --accent-tertiary: #ffcc00;
+  --accent-cyan: #00d4ff;
+  --accent-blue: #0080ff;
+  --accent-pink: #ff66b2;
+  --accent-red: #ff2244;
+  --accent-orange: #ff8800;
+  --accent-green: #00ff66;
+
+  --success: #00ff66;
+  --warning: #ffcc00;
+  --error: #ff2244;
+  --info: #00d4ff;
+
+  --border-color: #4a2840;
+  --border-glow: rgba(255, 102, 0, 0.3);
+  --border-light: #6a3860;
+
+  --glow-primary: 0 0 12px rgba(255, 102, 0, 0.4), 0 0 24px rgba(255, 102, 0, 0.15);
+  --glow-secondary: 0 0 12px rgba(255, 51, 153, 0.4), 0 0 24px rgba(255, 51, 153, 0.15);
+  --glow-cyan: 0 0 10px rgba(0, 212, 255, 0.3);
+  --glow-yellow: 0 0 8px rgba(255, 204, 0, 0.25);
+  --glow-green: 0 0 8px rgba(0, 255, 102, 0.25);
+
+  --gradient-primary: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  --gradient-text: linear-gradient(180deg, #ffe8e0 0%, #e8b8a8 30%, #ff6600 60%, #381838 100%);
+  --gradient-sidebar: linear-gradient(180deg, #28102a 0%, #1a0a1a 100%);
+  --gradient-header: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
+  --gradient-input: linear-gradient(0deg, var(--bg-secondary), var(--bg-primary));
+
+  --crt-opacity: 0.15;
+  --grid-opacity-1: rgba(255, 102, 0, 0.02);
+  --grid-opacity-2: rgba(255, 102, 0, 0.07);
+
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-display: 'Orbitron', 'Inter', sans-serif;
+  --font-mono: 'Share Tech Mono', 'SF Mono', 'Fira Code', monospace;
+
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  --transition-fast: 0.15s;
+  --transition-normal: 0.2s;
+  --transition-slow: 0.3s;
+
+  /* Backward-compat aliases */
+  --accent-purple: var(--accent-primary);
+  --accent-magenta: var(--accent-secondary);
+  --glow-purple: var(--glow-primary);
+  --glow-magenta: var(--glow-secondary);
+
+  --theme-name: 'Synthwave Dawn';
+  --theme-icon: '🌅';
+}
+
+.theme-synthwave-dawn body::after {
+  opacity: var(--crt-opacity);
+}
+
+.theme-synthwave-dawn .sidebar {
+  background: var(--gradient-sidebar);
+}

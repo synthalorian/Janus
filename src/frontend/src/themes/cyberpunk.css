@@ -1,0 +1,89 @@
+/* ═══════════════════════════════════════════════════════════╗
+   ║  Cyberpunk — Aggressive Neon Dystopia                    ║
+   ║  High contrast neon yellow/green/red on near-black.     ║
+   ║  Heavy glow, scanlines, jagged energy.                  ║
+   ╚══════════════════════════════════════════════════════════╝ */
+
+.theme-cyberpunk {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1c1c1c;
+  --bg-hover: #2a2a00;
+  --bg-surface: #111111;
+  --bg-raised: #222200;
+  --bg-overlay: rgba(10, 10, 10, 0.94);
+
+  --text-primary: #fffcb3;
+  --text-secondary: #ccca80;
+  --text-muted: #666633;
+  --text-inverse: #0a0a0a;
+
+  --accent-primary: #ffdd00;
+  --accent-secondary: #00ff88;
+  --accent-tertiary: #ff0040;
+  --accent-cyan: #00ddff;
+  --accent-blue: #0055ff;
+  --accent-pink: #ff00aa;
+  --accent-red: #ff0033;
+  --accent-orange: #ff6600;
+  --accent-green: #00ff55;
+
+  --success: #00ff55;
+  --warning: #ffdd00;
+  --error: #ff0033;
+  --info: #00ddff;
+
+  --border-color: #333300;
+  --border-glow: rgba(255, 221, 0, 0.4);
+  --border-light: #555500;
+
+  --glow-primary: 0 0 15px rgba(255, 221, 0, 0.5), 0 0 30px rgba(255, 221, 0, 0.2);
+  --glow-secondary: 0 0 15px rgba(0, 255, 136, 0.5), 0 0 30px rgba(0, 255, 136, 0.2);
+  --glow-cyan: 0 0 12px rgba(0, 221, 255, 0.4);
+  --glow-yellow: 0 0 12px rgba(255, 221, 0, 0.35);
+  --glow-green: 0 0 10px rgba(0, 255, 85, 0.35);
+
+  --gradient-primary: linear-gradient(135deg, var(--accent-primary), var(--accent-green));
+  --gradient-text: linear-gradient(180deg, #fffcb3 0%, #ccca80 30%, #ffdd00 60%, #0a0a0a 100%);
+  --gradient-sidebar: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
+  --gradient-header: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
+  --gradient-input: linear-gradient(0deg, var(--bg-secondary), var(--bg-primary));
+
+  --crt-opacity: 0.35;
+  --grid-opacity-1: rgba(255, 221, 0, 0.03);
+  --grid-opacity-2: rgba(255, 221, 0, 0.1);
+
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-display: 'Orbitron', 'Inter', sans-serif;
+  --font-mono: 'Share Tech Mono', 'SF Mono', 'Fira Code', monospace;
+
+  --radius: 4px;
+  --radius-sm: 2px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.7);
+
+  --transition-fast: 0.1s;
+  --transition-normal: 0.15s;
+  --transition-slow: 0.25s;
+
+  /* Backward-compat aliases */
+  --accent-purple: var(--accent-primary);
+  --accent-magenta: var(--accent-secondary);
+  --glow-purple: var(--glow-primary);
+  --glow-magenta: var(--glow-secondary);
+
+  --theme-name: 'Cyberpunk';
+  --theme-icon: '⚡';
+}
+
+.theme-cyberpunk body::after {
+  opacity: var(--crt-opacity);
+}
+
+.theme-cyberpunk .sidebar {
+  background: var(--gradient-sidebar);
+}
