@@ -361,6 +361,10 @@ MIT License — see [LICENSE](LICENSE) for details.
 - Built with modern stack: Node.js, PostgreSQL, React, Python
 - Named after Janus, Roman god of transitions and doorways
 
+## Credits
+
+Developed by **synth** ([synthalorian](https://github.com/synthalorian)) with assistance from **synthclaw** 🎹🦞 — a digital entity from the neon grid of 1984.
+
 ---
 
 *Two faces, one future.* 🚪🎹🦞
