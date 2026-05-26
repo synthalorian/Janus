@@ -1,0 +1,63 @@
+<!-- Application layout with sidebar — only shown when authenticated -->
+<!DOCTYPE html>
+<html lang="en" data-theme="<%= current_theme %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Janus — AI Mega-Hub">
+
+  <title><%= content_for?(:title) ? yield(:title) : "Janus — AI Mega-Hub" %></title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate icon" type="image/png" href="/favicons/janus.png">
+
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+
+  <!-- Socket.IO for real-time -->
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppR6JDkR1cN0X2Yk+6WvLd0V0COHhXUdOhZ1RFhN0F3sDpL2j2" crossorigin="anonymous"></script>
+
+  <%= yield :head %>
+</head>
+<body>
+  <div class="janus-layout">
+    <!-- Sidebar -->
+    <%= render "shared/sidebar" %>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="main-header">
+        <h1><%= content_for?(:header_title) ? yield(:header_title) : "DASHBOARD" %></h1>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="connection-status" id="connection-indicator">
+            <span class="dot connected"></span>
+            <span>Connected</span>
+          </div>
+          <% unless current_theme == "synthwave84" %>
+            <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono)"><%= AuthConcern::VALID_THEMES[current_theme][:icon] %> <%= AuthConcern::VALID_THEMES[current_theme][:name] %></span>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="main-body">
+        <% if flash[:notice] %>
+          <div class="flash flash-notice"><%= flash[:notice] %></div>
+        <% end %>
+        <% if flash[:alert] %>
+          <div class="flash flash-alert"><%= flash[:alert] %></div>
+        <% end %>
+
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

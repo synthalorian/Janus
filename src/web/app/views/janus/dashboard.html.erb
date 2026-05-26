@@ -1,0 +1,84 @@
+<% content_for :header_title, "DASHBOARD" %>
+<% content_for :title, "Dashboard — Janus" %>
+
+<% if @health["status"] == "error" %>
+  <div class="flash flash-alert">
+    ⚠ Cannot connect to Janus API. Make sure the backend is running at <code style="font-size:11px;background:var(--bg-tertiary);padding:2px 6px;border-radius:4px;">http://localhost:3001</code>
+  </div>
+<% end %>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-value"><%= @stats["users"] || "—" %></div>
+    <div class="stat-label">Users</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= @stats["channels"] || "—" %></div>
+    <div class="stat-label">Channels</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= @stats["messages"] || "—" %></div>
+    <div class="stat-label">Messages</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= @stats["graphNodes"] || "—" %></div>
+    <div class="stat-label">Graph Nodes</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= @stats["graphEdges"] || "—" %></div>
+    <div class="stat-label">Graph Edges</div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="janus-card">
+    <div class="janus-card-header">
+      <span class="janus-card-title">🎹 Welcome to Janus</span>
+    </div>
+    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin:0;">
+      Janus is your AI communication hub with built-in knowledge graphs, 
+      bot orchestration, and multi-agent swarm capabilities. 
+      Two faces, one future.
+    </p>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="<%= chat_path %>" class="btn btn-primary">💬 Start Chatting</a>
+      <a href="<%= bots_path %>" class="btn btn-secondary">🤖 Manage Bots</a>
+      <a href="<%= swarm_path %>" class="btn btn-secondary">🐝 Launch Swarm</a>
+    </div>
+  </div>
+
+  <div class="janus-card">
+    <div class="janus-card-header">
+      <span class="janus-card-title">🔌 System</span>
+    </div>
+    <div style="font-size:12px;color:var(--text-secondary);line-height:2;">
+      <div><span style="color:var(--text-muted);">Status:</span> 
+        <span class="badge badge-<%= @health["status"] == "healthy" ? "success" : "warning" %>">
+          <%= @health["status"] || "unknown" %>
+        </span>
+      </div>
+      <div><span style="color:var(--text-muted);">Database:</span> 
+        <span class="badge badge-<%= @health["database"] == "connected" ? "success" : "error" %>">
+          <%= @health["database"] || "unknown" %>
+        </span>
+      </div>
+      <div><span style="color:var(--text-muted);">Theme:</span> 
+        <span style="font-family:var(--font-mono)"><%= AuthConcern::VALID_THEMES[current_theme][:icon] %> <%= AuthConcern::VALID_THEMES[current_theme][:name] %></span>
+      </div>
+      <div><span style="color:var(--text-muted);">Agent:</span> 
+        <span style="font-family:var(--font-mono)"><%= current_user["name"] %></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @health["features"] %>
+  <div class="section-title">Feature Flags</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <% @health["features"].each do |key, enabled| %>
+      <span class="badge badge-<%= enabled ? "success" : "error" %>">
+        <%= enabled ? "✓" : "✗" %> <%= key.titleize %>
+      </span>
+    <% end %>
+  </div>
+<% end %>

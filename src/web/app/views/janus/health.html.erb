@@ -1,0 +1,77 @@
+<% content_for :header_title, "SYSTEM HEALTH" %>
+<% content_for :title, "Health — Janus" %>
+
+<div style="display:flex;flex-direction:column;gap:20px;">
+  <% if @health.is_a?(Hash) %>
+    <div class="stats-grid" style="grid-template-columns:repeat(3, 1fr);">
+      <div class="stat-card">
+        <div class="stat-value" style="font-size:20px;font-family:var(--font-mono);">
+          <span class="badge badge-<%= @health["status"] == "healthy" ? "success" : "error" %>" style="font-size:14px;padding:4px 12px;">
+            <%= @health["status"] || "unknown" %>
+          </span>
+        </div>
+        <div class="stat-label">Server Status</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="font-size:20px;font-family:var(--font-mono);">
+          <span class="badge badge-<%= @health["database"] == "connected" ? "success" : "error" %>" style="font-size:14px;padding:4px 12px;">
+            <%= @health["database"] || "unknown" %>
+          </span>
+        </div>
+        <div class="stat-label">Database</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="font-size:14px;font-family:var(--font-mono);"><%= @health["timestamp"] ? Time.parse(@health["timestamp"]).strftime("%H:%M:%S") : "—" %></div>
+        <div class="stat-label">Last Check</div>
+      </div>
+    </div>
+
+    <% if @health["stats"].is_a?(Hash) %>
+      <div>
+        <div class="section-title">Detailed Stats</div>
+        <div class="janus-card" style="padding:0;overflow:hidden;">
+          <table class="janus-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @health["stats"].each do |key, value| %>
+                <tr>
+                  <td style="font-family:var(--font-mono);"><%= key %></td>
+                  <td><%= value.is_a?(Hash) ? value.to_json : value %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @health["features"].is_a?(Hash) %>
+      <div>
+        <div class="section-title">Feature Flags</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <% @health["features"].each do |key, enabled| %>
+            <span class="badge badge-<%= enabled ? "success" : "error" %>" style="font-size:11px;padding:4px 10px;">
+              <%= enabled ? "✓" : "✗" %> <%= key.titleize %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="janus-card" style="text-align:center;padding:60px 20px;">
+      <div style="font-size:48px;margin-bottom:16px;opacity:0.5;">🩺</div>
+      <h2 style="font-family:var(--font-display);font-size:18px;color:var(--error);margin:0 0 8px;">Connection Error</h2>
+      <p style="color:var(--text-muted);font-size:13px;margin:0;">
+        Cannot reach the Janus API. Make sure the backend is running.
+      </p>
+      <div style="margin-top:16px;">
+        <a href="<%= system_health_path %>" class="btn btn-secondary">🔄 Retry</a>
+      </div>
+    </div>
+  <% end %>
+</div>

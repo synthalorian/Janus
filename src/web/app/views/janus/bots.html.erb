@@ -1,0 +1,96 @@
+<% content_for :header_title, "BOT FORGE" %>
+<% content_for :title, "Bot Forge — Janus" %>
+
+<div style="display:flex;flex-direction:column;gap:24px;">
+  <!-- Spawn Form -->
+  <div class="janus-card">
+    <div class="janus-card-header">
+      <span class="janus-card-title">⚙️ Spawn New Bot</span>
+    </div>
+    <%= form_tag create_bot_path, method: :post, style: "margin:0;", data: { turbo: false } do %>
+      <div class="two-col" style="margin-bottom:12px;">
+        <div>
+          <label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em;">Bot Name</label>
+          <input type="text" name="name" class="janus-input" placeholder="MyBot" required>
+        </div>
+        <div>
+          <label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em;">Template</label>
+          <select name="template" class="janus-select">
+            <% if @templates.any? %>
+              <% @templates.each do |t| %>
+                <option value="<%= t["id"] %>"><%= t["name"] %></option>
+              <% end %>
+            <% else %>
+              <option value="coordinator">Coordinator</option>
+              <option value="researcher">Researcher</option>
+              <option value="coder">Coder</option>
+              <option value="analyst">Analyst</option>
+              <option value="watcher">Watcher</option>
+              <option value="responder">Responder</option>
+            <% end %>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">🤖 Spawn Bot</button>
+    <% end %>
+  </div>
+
+  <!-- Active Bots -->
+  <div>
+    <div class="section-title">Active Bots</div>
+    <% if @bots.any? %>
+      <div class="cards-grid">
+        <% @bots.each do |bot| %>
+          <div class="janus-card" style="padding:16px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <span style="font-size:24px;">🤖</span>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary);"><%= bot["displayName"] || bot["name"] %></div>
+                <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);"><%= bot["id"][0..7] %>…</div>
+              </div>
+              <span class="badge badge-<%= bot["status"] == "online" ? "success" : (bot["status"] == "error" ? "error" : "warning") %>">
+                <%= bot["status"] %>
+              </span>
+            </div>
+            <% if bot["description"].present? %>
+              <p style="font-size:11px;color:var(--text-secondary);margin:0 0 12px;"><%= bot["description"] %></p>
+            <% end %>
+            <% if bot["capabilities"].is_a?(Array) && bot["capabilities"].any? %>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                <% bot["capabilities"].each do |cap| %>
+                  <span class="badge badge-primary"><%= cap %></span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="janus-card" style="text-align:center;padding:40px 20px;">
+        <div style="font-size:40px;margin-bottom:12px;opacity:0.5;">🤖</div>
+        <p style="color:var(--text-muted);margin:0;font-size:13px;">No bots deployed yet</p>
+        <p style="color:var(--text-muted);margin:4px 0 0;font-size:11px;">Spawn your first bot from a template above</p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Templates -->
+  <% if @templates.any? %>
+    <div>
+      <div class="section-title">Available Templates</div>
+      <div class="cards-grid">
+        <% @templates.each do |t| %>
+          <div class="janus-card" style="padding:16px;">
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:4px;"><%= t["name"] %></div>
+            <p style="font-size:11px;color:var(--text-secondary);margin:0 0 8px;"><%= t["description"] %></p>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;">
+              <% (t["capabilities"] || []).each do |cap| %>
+                <span class="badge badge-primary"><%= cap %></span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
