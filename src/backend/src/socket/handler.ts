@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import { store } from '../db/store.js';
 import { CreateMessageRequest } from '../types/index.js';
+import { orchestratorEngine } from '../orchestration/engine.js';
 
 export function setupSocket(io: Server) {
   io.on('connection', (socket: Socket) => {
@@ -105,9 +106,44 @@ export function setupSocket(io: Server) {
       socket.to(`channel:${data.channelId}`).emit('user:stopped-typing', data);
     });
 
+    // Orchestration events
+    socket.on('orchestrate:subscribe', async (planId: string) => {
+      socket.join(`plan:${planId}`);
+      console.log(`Client ${socket.id} subscribed to plan ${planId}`);
+
+      // Send current snapshot
+      const snapshot = await orchestratorEngine.getSnapshot(planId);
+      if (snapshot) {
+        socket.emit('orchestrate:snapshot', snapshot);
+      }
+    });
+
+    socket.on('orchestrate:unsubscribe', (planId: string) => {
+      socket.leave(`plan:${planId}`);
+      console.log(`Client ${socket.id} unsubscribed from plan ${planId}`);
+    });
+
     // Disconnect
     socket.on('disconnect', () => {
       console.log(`Client disconnected: ${socket.id}`);
     });
+  });
+}
+
+/**
+ * Broadcast orchestration progress to all subscribed clients.
+ * Call this from the orchestrator engine during execution.
+ */
+export async function broadcastOrchestrationProgress(
+  io: Server,
+  planId: string,
+  event: 'planning' | 'spawning' | 'executing' | 'task_complete' | 'completed' | 'failed' | 'cancelled',
+  data?: Record<string, unknown>
+) {
+  io.to(`plan:${planId}`).emit('orchestrate:progress', {
+    planId,
+    event,
+    timestamp: new Date().toISOString(),
+    data,
   });
 }

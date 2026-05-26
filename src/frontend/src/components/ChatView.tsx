@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import Markdown from './Markdown';
 import type { Message, Channel } from '../types';
 
 interface ChatViewProps {
@@ -17,6 +18,16 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-resize textarea
+  useEffect(() => {
+    const ta = textareaRef.current;
+    if (ta) {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    }
+  }, [inputValue]);
 
   // Cleanup typing timeout on unmount
   useEffect(() => {
@@ -55,6 +66,7 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
     });
     setInputValue('');
     if (currentChannel) onStopTyping(currentChannel, userId);
+    textareaRef.current?.focus();
   }, [inputValue, currentChannel, userId, userName, onSendMessage, onStopTyping]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -66,7 +78,12 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
 
   const formatTime = (timestamp: string) => {
     try {
-      return new Date(timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      const d = new Date(timestamp);
+      const now = new Date();
+      const isToday = d.toDateString() === now.toDateString();
+      const time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      if (isToday) return time;
+      return `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${time}`;
     } catch {
       return '';
     }
@@ -79,7 +96,7 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
           <div className="welcome-hero">
             <span className="welcome-icon">🚪</span>
             <h2>Welcome to Janus</h2>
-            <p>The gateway between mankind and AI</p>
+            <p className="welcome-subtitle">The gateway between mankind and AI</p>
             <div className="welcome-stats">
               <div className="stat-chip">
                 <span className="stat-value">{channels.length}</span>
@@ -89,6 +106,10 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
                 <span className="stat-value">{messages.length}</span>
                 <span className="stat-label">Messages</span>
               </div>
+              <div className="stat-chip">
+                <span className="stat-value">{connected ? '●' : '○'}</span>
+                <span className="stat-label">{connected ? 'Connected' : 'Disconnected'}</span>
+              </div>
             </div>
             <p className="welcome-hint">Select a channel from the sidebar to start chatting</p>
           </div>
@@ -96,6 +117,9 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
       </main>
     );
   }
+
+  // Check if any message is currently streaming
+  const isStreaming = messages.some(m => m.authorId === 'streaming');
 
   return (
     <main className="main">
@@ -106,12 +130,13 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
             <span className="channel-hash">#</span>
             {channel?.name || 'channel'}
           </h2>
-          {channel?.description && <p>{channel.description}</p>}
+          {channel?.description && <p className="channel-desc-header">{channel.description}</p>}
         </div>
         <div className="chat-header-right">
           <span className={`channel-type-pill ${channel?.type || 'chat'}`}>
             {channel?.type || 'chat'}
           </span>
+          {!connected && <span className="header-badge disconnected-badge">Disconnected</span>}
         </div>
       </header>
 
@@ -121,11 +146,12 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
           <div className="empty-state">
             <span className="empty-icon">💬</span>
             <h3>No messages yet</h3>
-            <p>Be the first to start the conversation!</p>
+            <p>Be the first to start the conversation in <strong>#{channel?.name}</strong>!</p>
           </div>
         ) : (
           <>
             {messages.map((msg, i) => {
+              const isStreamingMsg = msg.authorId === 'streaming' && msg.content === '';
               const showAvatar = i === 0 || messages[i - 1].authorId !== msg.authorId;
               return (
                 <MessageBubble
@@ -133,6 +159,7 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
                   message={msg}
                   showAvatar={showAvatar}
                   formatTime={formatTime}
+                  isStreaming={isStreamingMsg}
                 />
               );
             })}
@@ -141,19 +168,30 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Streaming indicator */}
+      {isStreaming && (
+        <div className="streaming-indicator">
+          <div className="streaming-dot" />
+          <div className="streaming-dot" />
+          <div className="streaming-dot" />
+          <span>AI is generating a response...</span>
+        </div>
+      )}
+
       {/* Input Area */}
       <div className="input-area">
         <textarea
+          ref={textareaRef}
           value={inputValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          placeholder={`Message #${channel?.name || 'channel'}`}
-          disabled={!connected}
+          placeholder={`Message #${channel?.name || 'channel'} (Shift+Enter for new line)`}
+          disabled={!connected || isStreaming}
           rows={1}
         />
         <button
           onClick={handleSend}
-          disabled={!connected || !inputValue.trim()}
+          disabled={!connected || !inputValue.trim() || isStreaming}
           title="Send message"
         >
           <span className="send-icon">↑</span>
@@ -163,17 +201,25 @@ function ChatView({ channels, messages, currentChannel, connected, userId, userN
   );
 }
 
-function MessageBubble({ message, showAvatar, formatTime }: {
+function MessageBubble({ message, showAvatar, formatTime, isStreaming }: {
   message: Message;
   showAvatar: boolean;
   formatTime: (t: string) => string;
+  isStreaming: boolean;
 }) {
   const isAI = message.authorType === 'ai';
 
   return (
-    <div className={`message ${isAI ? 'ai' : 'human'} ${showAvatar ? 'with-avatar' : 'continuation'}`}>
+    <div className={`message ${isAI ? 'ai' : 'human'} ${showAvatar ? 'with-avatar' : 'continuation'} ${isStreaming ? 'streaming' : ''}`}>
       {showAvatar && (
-        <div className="message-avatar" style={{ background: isAI ? 'linear-gradient(135deg, #9333ea, #ec4899)' : 'linear-gradient(135deg, #3b82f6, #06b6d4)' }}>
+        <div
+          className="message-avatar"
+          style={{
+            background: isAI
+              ? 'linear-gradient(135deg, #9333ea, #ec4899)'
+              : 'linear-gradient(135deg, #3b82f6, #06b6d4)',
+          }}
+        >
           {isAI ? '🤖' : message.authorName[0]?.toUpperCase()}
         </div>
       )}
@@ -185,7 +231,15 @@ function MessageBubble({ message, showAvatar, formatTime }: {
             <span className="message-time">{formatTime(message.timestamp)}</span>
           </div>
         )}
-        <div className="message-body">{message.content}</div>
+        <div className="message-body">
+          {isStreaming ? (
+            <div className="streaming-cursor">▊</div>
+          ) : !message.content ? (
+            <span className="message-empty">...</span>
+          ) : (
+            <Markdown content={message.content} />
+          )}
+        </div>
       </div>
     </div>
   );

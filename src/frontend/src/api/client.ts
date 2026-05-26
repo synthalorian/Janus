@@ -1,8 +1,9 @@
 // Janus API Client - covers all backend endpoints
+// Uses Vite proxy — all requests go through the dev server
 
 import type { OrchestrationPlan, OrchestrationTask, ExecutionSnapshot, AgentCapability, AgentSoul, AgentSkill, AgentPlacement } from '../types';
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = '/api';
 
 // ==================== Auth Token Management ====================
 let _authToken: string | null = null;
@@ -270,7 +271,7 @@ export const soulsApi = {
   updatePlacement: (soulId: string, placementId: string, data: Record<string, unknown>) =>
     request<AgentPlacement>('PATCH', `/souls/${soulId}/placements/${placementId}`, data),
   deletePlacement: (soulId: string, placementId: string) =>
-    request<{ message: string }>('DELETE', `/souls/${soulId}/placements/${placementId}`),
+    request<AgentPlacement>('DELETE', `/souls/${soulId}/placements/${placementId}`),
 
   // Queries
   findAgent: (data: { requiredSkills: string[]; archetype?: string }) =>

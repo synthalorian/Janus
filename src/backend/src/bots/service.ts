@@ -3,9 +3,9 @@ import {
   bots, botInstallations, botCommands, botInteractions, botDirectMessages,
   type Bot, type NewBot, type BotInstallation, type BotCommand, type BotInteraction
 } from '../db/schema.bots.js';
-import { eq, and, desc, sql, inArray } from 'drizzle-orm';
+import { eq, and, desc, sql, inArray, type SQL } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
-import { store } from './store.js';
+import { store } from '../db/store.js';
 import { authService } from '../auth/service.js';
 
 // Bot events for WebSocket
@@ -115,7 +115,7 @@ export class BotForgeService {
     limit?: number;
     offset?: number;
   }): Promise<{ bots: Bot[]; total: number }> {
-    let conditions = [];
+    const conditions: SQL[] = [];
     
     if (options?.ownerId) {
       conditions.push(eq(bots.ownerId, options.ownerId));
@@ -239,7 +239,7 @@ export class BotForgeService {
     parameters?: Array<{
       name: string;
       description: string;
-      type: string;
+      type: 'string' | 'number' | 'boolean' | 'user' | 'channel';
       required: boolean;
       default?: unknown;
     }>;
@@ -419,7 +419,7 @@ export class BotForgeService {
       limit?: number;
     }
   ): Promise<any[]> {
-    const conditions = [];
+    const conditions: SQL[] = [];
     
     if (options?.direction === 'in') {
       conditions.push(eq(botDirectMessages.toBotId, botId));

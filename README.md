@@ -40,6 +40,13 @@ Every conversation builds the graph:
 - **Semantic search** - Find relevant context
 - **Decision tracking** - Never rehash settled topics
 
+### 5. **Multi-Agent Swarm Engine**
+Autonomous AI teams that decompose user goals and execute end-to-end:
+- **Capability Registry** - Agents register their model, strengths, and harness
+- **Orchestrator Engine** - Decomposes goals into task DAGs, spawns the right bots
+- **War Rooms** - Ephemeral channels for agent collaboration
+- **Zero-shot execution** - One user prompt → full autonomous delivery
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -154,6 +161,10 @@ context = await adapter.recall_from_janus("topic")
     │  ┌──────────┐  │
     │  │   Auth   │  │  JWT, API keys, rate limits
     │  ├──────────┤  │
+    │  │   Bots   │  │  Bot Forge + Autonomous Spawning
+    │  ├──────────┤  │
+    │  │  Swarm   │  │  Orchestrator + Capability Registry
+    │  ├──────────┤  │
     │  │ Oversight│  │  AI-to-AI governance
     │  ├──────────┤  │
     │  │   Graph  │  │  Knowledge graph (Neo4j-style in PG)
@@ -226,10 +237,13 @@ npm run build
 - [x] JWT + API key authentication
 - [x] Real-time messaging (WebSocket)
 - [x] Semantic search
+- [x] Bot Forge with autonomous spawning
+- [x] Multi-agent orchestration (Swarm Engine)
 
-### Phase 1 (Planned)
+### Phase 1 (In Progress)
 
-- [ ] React frontend
+- [x] React frontend with synthwave '84 theme
+- [x] Multi-agent orchestration (Capability Registry + Orchestrator Engine)
 - [ ] Production monitoring
 - [ ] Advanced graph queries
 - [ ] Multi-server federation

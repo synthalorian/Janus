@@ -3,8 +3,9 @@ body {
   padding: 0;
   box-sizing: border-box;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background-color: #0f0f0f;
+  background-color: #0d0221;
   color: #ffffff;
+  overflow: hidden;
 }
 
 #root {
@@ -14,4 +15,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Synthwave '84 — Retro monospace for code/terminal feel */
+code, pre, .api-key-value, .key-prefix {
+  font-family: var(--font-mono);
+}
+
+/* Orbitron for major display headers only */
+.auth-header h1, .sidebar-header h1, .loading-splash-content h1,
+.chat-header-left h2, .welcome-hero h2 {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
 }

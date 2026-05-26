@@ -2,10 +2,8 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import pkg from 'pg';
 const { Pool } = pkg;
 import * as schema from './schema.js';
-import { config } from 'dotenv';
-
-// Load environment variables
-config();
+// Load environment variables from .env before anything else
+// (Must happen before config.ts evaluates runtimeConfig)
 
 const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/janus';
 

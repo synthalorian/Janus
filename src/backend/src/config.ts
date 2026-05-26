@@ -1,3 +1,8 @@
+import { config } from 'dotenv';
+
+// Load .env before anything reads process.env
+config();
+
 export interface RuntimeConfig {
   nodeEnv: string;
   port: number;

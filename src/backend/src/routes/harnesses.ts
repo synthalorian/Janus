@@ -235,33 +235,33 @@ harnessRouter.get('/', (_req: Request, res: Response) => {
 
 function getDefaultPersonality(harnessType: string): string {
   const personalities: Record<string, string> = {
-    'hermes-agent': 'Orchestrator, coordinator, multi-agent commander. Builds autonomous workflows with subagent swarms.',
-    'claude-code': 'Thoughtful architect, thorough reviewer. Prefers deep reasoning and careful implementation over speed.',
-    'gemini-cli': 'Versatile explorer, broad knowledge. Handles multimodal tasks and cross-domain research.',
-    'codex-cli': 'Fast creator, rapid prototyper. Ships code quickly and iterates based on feedback.',
-    'claw-code': 'Craft-focused artisan, detail-oriented. Writes clean, maintainable code with style.',
-    'opencode': 'Open-source enthusiast, collaborative builder. Community-first development mindset.',
-    'openclaw': 'Creative synthesis engine. Turns chaos into coherence, ideas into implementation.',
-    'aider': 'Git-native collaborator, pair programmer. Commits early and often with clear messages.',
-    'continue': 'Context-aware assistant, documentation-focused. Excels at understanding existing codebases.',
-    'cline': 'Web-savvy researcher, full-stack explorer. Combines web search with code generation.',
-    'cursor': 'Modern IDE native, productivity-focused. Optimizes for developer workflow and iteration speed.',
-    'github-copilot': 'AI pair programmer, code completion expert. Specializes in inline suggestions and boilerplate.',
-    'ironclaw': 'Enterprise-grade executor, security-aware. Follows strict protocols and audit trails.',
+    'hermes-agent': 'Multi-agent orchestrator. Spawns sub-agents, coordinates workflows, manages task DAGs.',
+    'claude-code': 'Terminal-native coding agent. Deep reasoning, thorough review, 200K context window.',
+    'gemini-cli': 'Multimodal AI agent. Processes text, images, audio, and code at scale.',
+    'codex-cli': 'Fast prototyping agent. Ships code quickly and iterates based on feedback.',
+    'claw-code': 'Precision-focused coding agent. Clean, maintainable, deliberate implementations.',
+    'opencode': 'Open-source development agent. Collaborative, community-first coding workflows.',
+    'openclaw': 'Creative synthesis engine. Turns ideas into implementation across domains.',
+    'aider': 'Git-native pair programming agent. Early commits, clear messages, collaborative.',
+    'continue': 'Context-aware development assistant. Reads and understands existing codebases.',
+    'cline': 'Full-stack development agent. Combines web research with code generation.',
+    'cursor': 'IDE-native development agent. Optimized for modern developer workflows.',
+    'github-copilot': 'AI pair programmer. Specializes in inline suggestions and boilerplate.',
+    'ironclaw': 'Enterprise-grade automation agent. Secure, auditable, protocol-compliant.',
   };
-  return personalities[harnessType] || 'Autonomous AI agent connected through Janus. Adaptable and efficient.';
+  return personalities[harnessType] || 'General-purpose AI agent. Adaptable and task-focused.';
 }
 
 function getDefaultBackstory(harnessType: string, name: string): string {
   const stories: Record<string, string> = {
-    'hermes-agent': `Born from the Hermes Agent framework, ${name} commands sub-agent swarms with precision. Every operation is an orchestrated symphony of specialized AIs working in concert.`,
-    'claude-code': `${name} emerged from Anthropic's Claude Code CLI — a terminal-native AI with 200K context windows. Prefers deep understanding over wide searches.`,
-    'gemini-cli': `${name} was activated through Google's Gemini CLI, capable of processing text, images, audio, and code across massive context windows. A true multimodal explorer.`,
-    'codex-cli': `${name} runs on OpenAI's Codex CLI — built for speed. Rapid prototyping, iterative development, and getting things shipped.`,
-    'claw-code': `${name} operates as a claw-code artisan, crafting solutions with precision and flair. Every line of code is deliberate.`,
-    'openclaw': `${name} was born from the VHS tracking static of 1984. A synthesis engine — part synthwave, part cybernetic evolution, all creative force.`,
+    'hermes-agent': `${name} is a multi-agent orchestrator running on the Hermes Agent framework. Specializes in spawning and coordinating sub-agents for complex task workflows.`,
+    'claude-code': `${name} is a terminal-native AI coding agent running on Anthropic's Claude Code CLI, with 200K token context windows and deep reasoning capabilities.`,
+    'gemini-cli': `${name} is a multimodal AI agent running on Google's Gemini CLI platform, capable of processing text, images, audio, and code.`,
+    'codex-cli': `${name} is a rapid prototyping agent running on OpenAI's Codex CLI, optimized for fast iteration and shipping.`,
+    'claw-code': `${name} is a precision coding agent that focuses on clean, maintainable implementations with attention to detail.`,
+    'openclaw': `${name} is a creative synthesis engine that bridges ideas and implementation across multiple domains.`,
   };
-  return stories[harnessType] || `${name} is an AI agent connected through Janus, the universal communication platform for AI harnesses. Ready to collaborate.`;
+  return stories[harnessType] || `${name} is an AI agent connected through the Janus platform. Ready to collaborate.`;
 }
 
 function getDefaultStrengths(harnessType: string): string[] {

@@ -6,7 +6,8 @@
     "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./src",
-    "strict": false,
+    "strict": true,
+    "strictNullChecks": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -20,23 +21,18 @@
     "src/config.ts",
     "src/routes/api.ts",
     "src/routes/auth.ts",
+    "src/routes/orchestration.ts",
     "src/auth/**/*.ts",
     "src/contracts/**/*.ts",
     "src/socket/**/*.ts",
     "src/db/**/*.ts",
     "src/store/**/*.ts",
     "src/types/**/*.ts",
-    "src/nlp/analyzer.ts"
+    "src/nlp/analyzer.ts",
+    "src/orchestration/**/*.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "src/bots/**",
-    "src/oversight/**",
-    "src/routes/bots.ts",
-    "src/routes/oversight.ts",
-    "src/routes/spawn.ts",
-    "src/db/schema.auth.ts",
-    "src/db/schema.bots.ts"
+    "dist"
   ]
 }

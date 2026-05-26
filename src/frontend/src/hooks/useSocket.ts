@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import type { Message, Channel } from '../types';
 
-const SERVER_URL = 'http://localhost:3001';
+// Uses Vite proxy — no hardcoded port
+const SERVER_URL = '';
 
 export function useSocket() {
   const socketRef = useRef<Socket | null>(null);
@@ -45,7 +46,7 @@ export function useSocket() {
         authorName: data.authorName,
         authorType: 'ai',
         channelId: currentChannel || '',
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
       }]);
     });
 
