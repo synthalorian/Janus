@@ -24,3 +24,14 @@ pnpm-debug.log*
 .DS_Store
 .vscode/
 .idea/
+
+# Rust build artifacts
+src/desktop/target/
+
+# Flutter build artifacts
+src/mobile/.dart_tool/
+src/mobile/android/.gradle/
+src/mobile/ios/Pods/
+src/mobile/ios/.symlinks/
+src/mobile/macos/Pods/
+src/mobile/linux/.dart_tool/

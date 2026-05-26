@@ -1,0 +1,39 @@
+<% content_for :header_title, "KNOWLEDGE GRAPH" %>
+<% content_for :title, "Graph — Janus" %>
+
+<div style="display:flex;flex-direction:column;gap:20px;">
+  <div class="stats-grid" style="grid-template-columns:repeat(2, 1fr);">
+    <div class="stat-card">
+      <div class="stat-value"><%= @graph_stats["nodes"] || 0 %></div>
+      <div class="stat-label">Nodes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= @graph_stats["edges"] || 0 %></div>
+      <div class="stat-label">Edges</div>
+    </div>
+  </div>
+
+  <div class="janus-card">
+    <div class="janus-card-header">
+      <span class="janus-card-title">🔍 Graph Query</span>
+    </div>
+    <p style="font-size:12px;color:var(--text-secondary);margin:0 0 12px;">
+      Query the knowledge graph to find connections between messages, concepts, and entities.
+    </p>
+    <%= form_tag "#", method: :get, style: "margin:0;display:flex;gap:8px;", data: { turbo: false } do %>
+      <input type="text" class="janus-input" placeholder="Search the knowledge graph…" style="flex:1;">
+      <button type="submit" class="btn btn-primary">🔍 Query</button>
+    <% end %>
+  </div>
+
+  <div class="janus-card" style="text-align:center;padding:60px 20px;">
+    <div style="font-size:48px;margin-bottom:16px;opacity:0.5;">🕸️</div>
+    <p style="color:var(--text-muted);font-size:13px;margin:0;">
+      The knowledge graph visualizer is under construction. 
+      Graph queries can be made via the Janus API.
+    </p>
+    <div style="margin-top:12px;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">
+      <code>GET /api/graph/nodes</code>
+    </div>
+  </div>
+</div>

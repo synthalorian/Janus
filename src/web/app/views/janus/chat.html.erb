@@ -1,0 +1,84 @@
+<% content_for :header_title, "CHAT" %>
+<% content_for :title, "Chat — Janus" %>
+
+<div data-controller="chat"
+     data-chat-user-id="<%= current_user["id"] %>"
+     data-chat-user-name="<%= current_user["name"] %>"
+     style="display:flex;gap:20px;height:calc(100vh - 130px);">
+
+  <!-- Channel list -->
+  <div style="width:200px;flex-shrink:0;display:flex;flex-direction:column;gap:4px;">
+    <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;padding:0 4px 8px;border-bottom:1px solid var(--border-color);margin-bottom:8px;">
+      Channels
+    </div>
+    <% if @channels.any? %>
+      <div data-chat-target="channelList">
+        <% @channels.each do |channel| %>
+          <a href="<%= chat_path(channel_id: channel["id"]) %>"
+             class="channel-item <%= 'active' if @current_channel_id == channel["id"] %>"
+             style="text-decoration:none;">
+            <span class="channel-indicator <%= channel["type"] %>"></span>
+            <span># <%= channel["name"] %></span>
+          </a>
+        <% end %>
+      </div>
+    <% else %>
+      <div style="font-size:11px;color:var(--text-muted);padding:8px 4px;">
+        No channels yet.
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Chat area -->
+  <div class="chat-container" style="flex:1;">
+    <% if @current_channel_id %>
+      <div class="chat-messages" data-chat-target="messages">
+        <% if @messages.any? %>
+          <% @messages.each do |msg| %>
+            <%= render "janus/message", message: msg %>
+          <% end %>
+        <% else %>
+          <div class="chat-empty" data-chat-target="empty">
+            <div class="chat-empty-icon">💬</div>
+            <div style="font-size:13px;">No messages in this channel yet</div>
+            <div style="font-size:11px;">Send a message to start the conversation</div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="chat-input-bar">
+        <%= form_tag send_message_path, method: :post, style: "margin:0;", data: { action: "submit->chat#send" } do %>
+          <%= hidden_field_tag :channel_id, @current_channel_id %>
+          <div class="chat-input-wrapper">
+            <textarea name="content" data-chat-target="input"
+              class="chat-input" placeholder="Message #<%= @current_channel&.dig("name") || "channel" %>…"
+              rows="1"
+              data-action="keydown->chat#handleKeydown input->chat#autoResize"
+              oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+            <button type="submit" data-chat-target="sendBtn" class="chat-send-btn">SEND</button>
+          </div>
+          <div class="chat-input-hint">Enter to send · Shift+Enter for newline</div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="chat-empty">
+        <div class="chat-empty-icon">💬</div>
+        <div style="font-size:16px;font-family:var(--font-display);">Select a Channel</div>
+        <div style="font-size:12px;color:var(--text-muted);">Choose a channel from the list to start chatting</div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+// Initialize Socket.IO connection when a channel is selected
+document.addEventListener('turbo:load', () => {
+  const controller = document.querySelector('[data-controller="chat"]')
+  if (controller) {
+    const chatController = document.querySelector('[data-controller="chat"]').__stimulus_controller
+    if (chatController && chatController.connectSocket) {
+      chatController.connectSocket()
+    }
+  }
+})
+</script>

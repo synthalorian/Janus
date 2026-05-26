@@ -1,0 +1,71 @@
+<% content_for :header_title, "SWARM" %>
+<% content_for :title, "Swarm — Janus" %>
+
+<div style="display:flex;flex-direction:column;gap:20px;">
+  <!-- Submit Goal -->
+  <div class="janus-card">
+    <div class="janus-card-header">
+      <span class="janus-card-title">🎯 Submit Orchestration Goal</span>
+    </div>
+    <%= form_tag submit_goal_path, method: :post, style: "margin:0;", data: { turbo: false } do %>
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em;">Goal Description</label>
+        <textarea name="goal" class="janus-textarea" rows="3" placeholder="e.g., Research the latest Rust async runtimes and produce a summary..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">🐝 Launch Swarm</button>
+    <% end %>
+  </div>
+
+  <!-- Active Plans -->
+  <div>
+    <div class="section-title">Active Plans</div>
+    <% if @plans.any? %>
+      <div class="cards-grid">
+        <% @plans.each do |plan| %>
+          <div class="janus-card" style="padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-size:12px;font-weight:600;color:var(--text-primary);"><%= truncate(plan["goal"] || "Untitled", length: 50) %></span>
+              <span class="badge badge-<%= plan["status"] == "completed" ? "success" : (plan["status"] == "failed" ? "error" : "warning") %>">
+                <%= plan["status"] %>
+              </span>
+            </div>
+            <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);">
+              ID: <%= plan["id"][0..7] %>… · Created <%= plan["createdAt"] ? time_ago_in_words(Time.parse(plan["createdAt"])) + " ago" : "recently" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="janus-card" style="text-align:center;padding:40px 20px;">
+        <div style="font-size:36px;margin-bottom:8px;opacity:0.5;">🐝</div>
+        <p style="color:var(--text-muted);margin:0;font-size:13px;">No swarm plans yet</p>
+        <p style="color:var(--text-muted);margin:4px 0 0;font-size:11px;">Submit a goal above to launch a multi-agent swarm</p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Capabilities -->
+  <% if @capabilities.any? %>
+    <div>
+      <div class="section-title">Registered Capabilities</div>
+      <div class="cards-grid">
+        <% @capabilities.each do |cap| %>
+          <div class="janus-card" style="padding:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:12px;font-weight:600;color:var(--text-primary);"><%= cap["agentName"] %></span>
+              <span class="badge badge-<%= cap["status"] == "online" ? "success" : "warning" %>"><%= cap["status"] %></span>
+            </div>
+            <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;">
+              <%= cap["modelName"] %> · <%= cap["harnessType"] %>
+            </div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;">
+              <% (cap["strengths"] || []).each do |s| %>
+                <span class="badge badge-primary"><%= s %></span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

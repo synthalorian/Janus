@@ -1,0 +1,90 @@
+<% content_for :header_title, "API KEYS" %>
+<% content_for :title, "API Keys — Janus" %>
+
+<div style="display:flex;flex-direction:column;gap:20px;">
+  <!-- API Key Created Flash -->
+  <% if flash[:api_key] %>
+    <div class="auth-api-key-display" style="margin-bottom:0;">
+      <div style="color:var(--accent-tertiary);font-weight:600;margin-bottom:8px;font-size:11px;font-family:var(--font-mono);">
+        ⚠ API KEY CREATED — COPY IT NOW
+      </div>
+      <div style="word-break:break-all;font-size:13px;"><%= flash[:api_key] %></div>
+      <div style="color:var(--text-muted);font-size:10px;margin-top:8px;">
+        This key will not be shown again. Store it securely.
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Create Key -->
+  <div class="janus-card">
+    <div class="janus-card-header">
+      <span class="janus-card-title">🔑 Create New API Key</span>
+    </div>
+    <%= form_tag create_api_key_path, method: :post, style: "margin:0;", data: { turbo: false } do %>
+      <div class="two-col" style="margin-bottom:12px;">
+        <div>
+          <label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em;">Key Name</label>
+          <input type="text" name="name" class="janus-input" placeholder="My API Key" required>
+        </div>
+        <div>
+          <label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em;">Expires (days)</label>
+          <input type="number" name="expires_in_days" class="janus-input" placeholder="30" value="30" min="1">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">🔑 Generate Key</button>
+    <% end %>
+  </div>
+
+  <!-- Existing Keys -->
+  <div>
+    <div class="section-title">Active Keys</div>
+    <% if @keys.any? %>
+      <div class="janus-card" style="padding:0;overflow:hidden;">
+        <table class="janus-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Prefix</th>
+              <th>Permissions</th>
+              <th>Expires</th>
+              <th>Last Used</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @keys.each do |key| %>
+              <tr>
+                <td style="font-weight:600;color:var(--text-primary);"><%= key["name"] %></td>
+                <td><code style="font-family:var(--font-mono);font-size:10px;background:var(--bg-tertiary);padding:2px 6px;border-radius:4px;"><%= key["prefix"] %>…</code></td>
+                <td>
+                  <div style="display:flex;gap:2px;flex-wrap:wrap;">
+                    <% (key["permissions"] || ["read"]).each do |p| %>
+                      <span class="badge badge-primary"><%= p %></span>
+                    <% end %>
+                  </div>
+                </td>
+                <td style="font-size:10px;font-family:var(--font-mono);">
+                  <%= key["expiresAt"] ? time_ago_in_words(Time.parse(key["expiresAt"]), include_seconds: true) + " left" : "never" %>
+                </td>
+                <td style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);">
+                  <%= key["lastUsedAt"] ? time_ago_in_words(Time.parse(key["lastUsedAt"])) + " ago" : "never" %>
+                </td>
+                <td>
+                  <%= form_tag revoke_api_key_path(key["id"]), method: :post, style: "margin:0;", data: { turbo: false } do %>
+                    <button type="submit" class="btn btn-sm btn-danger">Revoke</button>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="janus-card" style="text-align:center;padding:40px 20px;">
+        <div style="font-size:36px;margin-bottom:8px;opacity:0.5;">🔑</div>
+        <p style="color:var(--text-muted);margin:0;font-size:13px;">No API keys created yet</p>
+        <p style="color:var(--text-muted);margin:4px 0 0;font-size:11px;">Generate your first key above to integrate AI harnesses</p>
+      </div>
+    <% end %>
+  </div>
+</div>

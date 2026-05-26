@@ -1,0 +1,118 @@
+<!-- Sidebar component -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <img src="/favicons/janus.png" alt="Janus" class="sidebar-logo" onerror="this.style.display='none'">
+    <span class="sidebar-title">JANUS</span>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="sidebar-section-label">Main</div>
+
+    <a href="<%= root_path %>" class="sidebar-link <%= current_page?(root_path) ? 'active' : '' %>">
+      <span class="sidebar-link-icon">⊞</span>
+      Dashboard
+    </a>
+
+    <a href="<%= chat_path %>" class="sidebar-link <%= current_page?(chat_path) ? 'active' : '' %>">
+      <span class="sidebar-link-icon">💬</span>
+      Chat
+    </a>
+
+    <a href="<%= bots_path %>" class="sidebar-link <%= current_page?(bots_path) ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🤖</span>
+      Bot Forge
+    </a>
+
+    <a href="<%= souls_path %>" class="sidebar-link <%= current_page?(souls_path) ? 'active' : '' %>">
+      <span class="sidebar-link-icon">👻</span>
+      Souls
+    </a>
+
+    <div class="sidebar-section-label">Systems</div>
+
+    <a href="<%= swarm_path %>" class="sidebar-link <%= current_page?(swarm_path) ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🐝</span>
+      Swarm
+    </a>
+
+    <a href="<%= oversight_path %>" class="sidebar-link <%= current_page?(oversight_path) ? 'active' : '' %>">
+      <span class="sidebar-link-icon">⚖️</span>
+      Oversight
+    </a>
+
+    <a href="<%= graph_path %>" class="sidebar-link <%= current_page?(graph_path) ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🕸️</span>
+      Knowledge Graph
+    </a>
+
+    <a href="<%= system_health_path %>" class="sidebar-link <%= current_page?(system_health_path) ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🩺</span>
+      Health
+    </a>
+
+    <div class="sidebar-section-label">Settings</div>
+
+    <a href="<%= api_keys_path %>" class="sidebar-link <%= current_page?(api_keys_path) ? 'active' : '' %>">
+      <span class="sidebar-link-icon">🔑</span>
+      API Keys
+    </a>
+
+    <!-- Theme selector (opens dialog via JS) -->
+    <button onclick="document.getElementById('theme-dialog').showModal()" class="sidebar-link" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;">
+      <span class="sidebar-link-icon">🎨</span>
+      Themes
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar"><%= current_user["name"][0..1].upcase %></div>
+      <div>
+        <div style="font-size:12px;color:var(--text-secondary);font-weight:500;"><%= current_user["name"] %></div>
+        <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);"><%= current_user["type"] %></div>
+      </div>
+      <%= form_tag logout_path, method: :post, style: "margin-left:auto;", data: { turbo: false } do %>
+        <button type="submit" class="btn btn-sm btn-secondary" style="padding:2px 6px;font-size:9px;">✕</button>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Theme Dialog -->
+<style>
+  dialog#theme-dialog {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 0;
+    color: var(--text-primary);
+    max-width: 500px;
+    width: 90vw;
+    box-shadow: var(--shadow-lg);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+  }
+  dialog#theme-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+  }
+</style>
+<dialog id="theme-dialog" onclick="if(event.target===this)this.close()">
+  <div style="padding:20px 20px 12px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+    <h3 style="font-family:var(--font-display);font-size:14px;font-weight:600;margin:0;letter-spacing:0.04em;">Choose Theme</h3>
+    <button onclick="document.getElementById('theme-dialog').close()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;">✕</button>
+  </div>
+  <div class="theme-grid">
+    <% AuthConcern::VALID_THEMES.each do |key, theme| %>
+      <%= form_tag switch_theme_path(key), method: :post, style: "margin:0;", data: { turbo: false } do %>
+        <button type="submit" class="theme-btn <%= 'active' if current_theme == key %>">
+          <span class="theme-btn-icon"><%= theme[:icon] %></span>
+          <span><%= theme[:name] %></span>
+        </button>
+      <% end %>
+    <% end %>
+  </div>
+</dialog>

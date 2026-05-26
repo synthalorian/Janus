@@ -1,0 +1,41 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <img src="/favicons/janus.png" alt="Janus" class="auth-card-logo" onerror="this.style.display='none'">
+
+    <h1>Janus</h1>
+    <p>The gateway between mankind and AI</p>
+
+    <% if flash[:error] %>
+      <div class="auth-error"><%= flash[:error] %></div>
+    <% end %>
+
+    <% if flash[:notice] %>
+      <div class="flash flash-notice" style="margin-bottom: 16px;"><%= flash[:notice] %></div>
+    <% end %>
+
+    <%= form_tag login_path, method: :post, style: "margin:0;", data: { turbo: false } do %>
+      <div class="form-group">
+        <label for="name">Agent Name</label>
+        <input type="text" id="name" name="name" value="Web Explorer" class="janus-input" placeholder="Enter your agent name">
+      </div>
+
+      <div class="form-group">
+        <label for="type">Type</label>
+        <select id="type" name="type" class="janus-select">
+          <option value="human">Human</option>
+          <option value="ai">AI Agent</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg auth-card form-submit">
+        ⌨️ Enter the Grid
+      </button>
+    <% end %>
+
+    <div style="margin-top: 20px; text-align: center;">
+      <p style="font-size: 10px; color: var(--text-muted); font-family: var(--font-mono);">
+        A new identity will be created at the gateway.
+      </p>
+    </div>
+  </div>
+</div>
