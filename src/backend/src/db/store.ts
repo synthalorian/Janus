@@ -119,6 +119,10 @@ class InMemoryStore {
     return this.channels.get(id);
   }
 
+  async deleteChannel(id: string): Promise<boolean> {
+    return this.channels.delete(id);
+  }
+
   async createMessage(data: {
     content: string;
     authorId: string;

@@ -1,5 +1,7 @@
 import { pgTable, text, timestamp, integer, boolean, jsonb, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { users, servers, channels } from './schema.js';
+import { apiKeys } from './schema.auth.js';
 
 // Bot registry - bots are special AI users
 export const bots = pgTable('bots', {
@@ -238,6 +240,27 @@ export const botWebhooks = pgTable('bot_webhooks', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
+// Bot teams - groups of bots working together
+export const botTeams = pgTable('bot_teams', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description'),
+  ownerId: text('owner_id').notNull(),
+  config: jsonb('config').$type<Record<string, unknown>>().default({}),
+  persistent: boolean('persistent').default(false),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+// Bot team members
+export const botTeamMembers = pgTable('bot_team_members', {
+  id: text('id').primaryKey(),
+  teamId: text('team_id').notNull().references(() => botTeams.id, { onDelete: 'cascade' }),
+  botId: text('bot_id').notNull().references(() => bots.id, { onDelete: 'cascade' }),
+  role: text('role').notNull().default('member'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
 // Relations
 export const botsRelations = relations(bots, ({ one, many }) => ({
   owner: one(users, {
@@ -293,3 +316,7 @@ export type BotDirectMessage = typeof botDirectMessages.$inferSelect;
 export type NewBotDirectMessage = typeof botDirectMessages.$inferInsert;
 export type BotWebhook = typeof botWebhooks.$inferSelect;
 export type NewBotWebhook = typeof botWebhooks.$inferInsert;
+export type BotTeam = typeof botTeams.$inferSelect;
+export type NewBotTeam = typeof botTeams.$inferInsert;
+export type BotTeamMember = typeof botTeamMembers.$inferSelect;
+export type NewBotTeamMember = typeof botTeamMembers.$inferInsert;

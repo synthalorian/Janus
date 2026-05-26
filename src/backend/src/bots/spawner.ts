@@ -1,9 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
+import { EventEmitter } from 'events';
 import { BotForgeService } from './service.js';
 import { getTemplate, listTemplates, type BotTemplate } from './templates.js';
 import { db } from '../db/index.js';
 import { bots, botTeams, botTeamMembers } from '../db/schema.bots.js';
 import { eq, and, desc, inArray } from 'drizzle-orm';
+import { llmService } from '../llm/service.js';
 
 /**
  * Autonomous Bot Spawner
@@ -16,6 +18,7 @@ export class BotSpawner {
   private activeBots: Map<string, ActiveBotInstance> = new Map();
   private botQueue: BotSpawnRequest[] = [];
   private maxConcurrentBots = 10;
+  private taskEvents: EventEmitter = new EventEmitter();
 
   constructor(botForge: BotForgeService) {
     this.botForge = botForge;
@@ -34,7 +37,7 @@ export class BotSpawner {
     }
 
     // Validate requester permissions
-    await this.validateSpawnPermission(request.ownerId, request.ownerType);
+    await this.validateSpawnPermission(request.ownerId, request.ownerType || 'ai');
 
     // Check concurrent limit
     if (this.activeBots.size >= this.maxConcurrentBots) {
@@ -305,6 +308,50 @@ export class BotSpawner {
     return task;
   }
 
+  /**
+   * Wait for a task to complete (or fail) using an event-driven approach.
+   * Resolves when the task reaches 'completed', 'failed', or 'cancelled'.
+   * Rejects if the timeout is exceeded.
+   */
+  async waitForTaskCompletion(
+    botId: string,
+    taskId: string,
+    timeoutMs: number = 300_000 // 5 minutes default
+  ): Promise<TaskAssignment> {
+    return new Promise((resolve, reject) => {
+      const eventName = `task:${botId}:${taskId}`;
+
+      const onComplete = (task: TaskAssignment) => {
+        cleanup();
+        resolve(task);
+      };
+
+      const onTimeout = () => {
+        cleanup();
+        reject(new Error(`Task ${taskId} timed out after ${timeoutMs}ms`));
+      };
+
+      const timer = setTimeout(onTimeout, timeoutMs);
+
+      const cleanup = () => {
+        clearTimeout(timer);
+        this.taskEvents.off(eventName, onComplete);
+      };
+
+      // Check if already complete
+      const instance = this.activeBots.get(botId);
+      if (instance) {
+        const task = instance.tasks.find(t => t.taskId === taskId);
+        if (task && (task.status === 'completed' || task.status === 'failed' || task.status === 'cancelled')) {
+          onComplete(task);
+          return;
+        }
+      }
+
+      this.taskEvents.once(eventName, onComplete);
+    });
+  }
+
   // ==================== Status & Monitoring ====================
 
   /**
@@ -327,6 +374,13 @@ export class BotSpawner {
     }
 
     return bots;
+  }
+
+  /**
+   * Check whether a bot is currently active.
+   */
+  isBotActive(botId: string): boolean {
+    return this.activeBots.has(botId);
   }
 
   /**
@@ -402,15 +456,34 @@ export class BotSpawner {
     instance: ActiveBotInstance,
     message: BotMessage
   ): Promise<BotResponse> {
-    // This would integrate with AI/LLM to process the message
-    // For now, return a placeholder
-    return {
-      status: 'success',
-      response: `Bot ${instance.botId} received: ${message.content}`,
-      metadata: {
-        processedAt: new Date(),
-      },
-    };
+    // Use LLM to generate a real bot response when available
+    try {
+      const response = await llmService.provider.chat([
+        {
+          role: 'system',
+          content: `You are ${instance.template} bot ${instance.botId}. Respond concisely and helpfully.`,
+        },
+        { role: 'user', content: message.content },
+      ]);
+
+      return {
+        status: 'success',
+        response: response.content,
+        metadata: {
+          processedAt: new Date(),
+          model: response.model,
+        },
+      };
+    } catch {
+      // Fallback if LLM is unavailable
+      return {
+        status: 'success',
+        response: `Bot ${instance.botId} received: ${message.content}`,
+        metadata: {
+          processedAt: new Date(),
+        },
+      };
+    }
   }
 
   private async executeTask(
@@ -423,16 +496,26 @@ export class BotSpawner {
     assignment.startedAt = new Date();
 
     try {
-      // This would integrate with AI/LLM to execute the task
-      // For now, simulate completion
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Use LLM to execute the task when available
+      const prompt = task.payload?.prompt as string || task.description;
+      const response = await llmService.provider.chat([
+        {
+          role: 'system',
+          content: `You are ${template.name}. Complete the following task thoroughly and return only the result.`,
+        },
+        { role: 'user', content: prompt },
+      ]);
 
       assignment.status = 'completed';
       assignment.completedAt = new Date();
-      assignment.result = task.description;
+      assignment.result = response.content;
     } catch (error) {
       assignment.status = 'failed';
       assignment.error = error instanceof Error ? error.message : 'Unknown error';
+    } finally {
+      // Notify any listeners that the task is done
+      const eventName = `task:${instance.botId}:${assignment.taskId}`;
+      this.taskEvents.emit(eventName, assignment);
     }
   }
 

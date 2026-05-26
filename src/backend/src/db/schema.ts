@@ -111,6 +111,60 @@ export const graphEdgesRelations = relations(graphEdges, ({ one }) => ({
   toNode: one(graphNodes, { relationName: 'to_node', fields: [graphEdges.toNodeId], references: [graphNodes.id] }),
 }));
 
+// Agent Capabilities Registry
+export const agentCapabilities = pgTable('agent_capabilities', {
+  id: text('id').primaryKey(),
+  agentId: text('agent_id').notNull(),
+  agentName: text('agent_name').notNull(),
+  modelName: text('model_name').notNull(),
+  provider: text('provider').notNull(),
+  contextWindow: integer('context_window').notNull().default(128000),
+  strengths: jsonb('strengths').$type<string[]>().default([]),
+  harnessType: text('harness_type').notNull(),
+  costPer1kTokens: integer('cost_per_1k_tokens'),
+  status: varchar('status', { length: 20 }).notNull().default('offline'),
+  metadata: jsonb('metadata').$type<Record<string, unknown>>().default({}),
+  lastHeartbeatAt: timestamp('last_heartbeat_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+// Orchestration Plans
+export const orchestrationPlans = pgTable('orchestration_plans', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  goal: text('goal').notNull(),
+  status: varchar('status', { length: 20 }).notNull().default('planning'),
+  plan: jsonb('plan').$type<Record<string, unknown>>().default({}),
+  teamId: text('team_id'),
+  channelId: text('channel_id'),
+  result: text('result'),
+  metadata: jsonb('metadata').$type<Record<string, unknown>>().default({}),
+  startedAt: timestamp('started_at'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+// Orchestration Tasks
+export const orchestrationTasks = pgTable('orchestration_tasks', {
+  id: text('id').primaryKey(),
+  planId: text('plan_id').notNull().references(() => orchestrationPlans.id, { onDelete: 'cascade' }),
+  parentTaskIds: jsonb('parent_task_ids').$type<string[]>().default([]),
+  template: text('template').notNull(),
+  description: text('description').notNull(),
+  assignedBotId: text('assigned_bot_id'),
+  status: varchar('status', { length: 20 }).notNull().default('pending'),
+  result: text('result'),
+  error: text('error'),
+  retryCount: integer('retry_count').notNull().default(0),
+  maxRetries: integer('max_retries').notNull().default(2),
+  startedAt: timestamp('started_at'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
 // Type exports
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -124,3 +178,9 @@ export type GraphEdge = typeof graphEdges.$inferSelect;
 export type NewGraphEdge = typeof graphEdges.$inferInsert;
 export type Server = typeof servers.$inferSelect;
 export type NewServer = typeof servers.$inferInsert;
+export type AgentCapability = typeof agentCapabilities.$inferSelect;
+export type NewAgentCapability = typeof agentCapabilities.$inferInsert;
+export type OrchestrationPlan = typeof orchestrationPlans.$inferSelect;
+export type NewOrchestrationPlan = typeof orchestrationPlans.$inferInsert;
+export type OrchestrationTask = typeof orchestrationTasks.$inferSelect;
+export type NewOrchestrationTask = typeof orchestrationTasks.$inferInsert;

@@ -1,5 +1,6 @@
 import { pgTable, text, timestamp, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { users } from './schema.js';
 
 // API Keys for AI agents and services
 export const apiKeys = pgTable('api_keys', {

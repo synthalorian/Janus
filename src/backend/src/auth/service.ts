@@ -178,7 +178,7 @@ class AuthService {
        WHERE id = $1 AND user_id = $2`,
       [keyId, userId],
     );
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   async listAPIKeys(userId: string): Promise<APIKeyRecord[]> {
