@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="synthwave84">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Janus Desktop</title>
+  <style>
+/* ════════════════════════════════════════════════════
+   JANUS THEME ENGINE — 7 Themes (Standalone for Tauri)
+   ════════════════════════════════════════════════════ */
+
+/* ── System font stack (no CDN needed) ──────────── */
+:root {
+  --font-display: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Courier New', 'DejaVu Sans Mono', 'Ubuntu Mono', monospace;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ══════════ SYNTHWAVE '84 ══════════ */
+:root, [data-theme="synthwave84"] {
+  --bg-primary: #0d0221;
+  --bg-secondary: #16082e;
+  --bg-tertiary: #240037;
+  --bg-hover: #2e0052;
+  --bg-surface: #1a0a30;
+  --bg-raised: #2a1040;
+  --bg-overlay: rgba(13, 2, 33, 0.92);
+  --text-primary: #ffffff;
+  --text-secondary: #c8b8e8;
+  --text-muted: #7a6b9e;
+  --text-inverse: #0d0221;
+  --accent-primary: #8f00ff;
+  --accent-secondary: #ff00ff;
+  --accent-tertiary: #ffff66;
+  --accent-cyan: #03edf9;
+  --accent-red: #ff0040;
+  --accent-green: #00ff41;
+  --accent-orange: #ff6600;
+  --accent-pink: #ff007f;
+  --accent-blue: #0080ff;
+  --success: #00ff41;
+  --warning: #f3e70f;
+  --error: #ff0040;
+  --info: #03edf9;
+  --border-color: #3d1f6e;
+  --border-glow: rgba(143, 0, 255, 0.3);
+  --border-light: #5a2a9e;
+  --glow-primary: 0 0 12px rgba(143, 0, 255, 0.4), 0 0 24px rgba(143, 0, 255, 0.15);
+  --gradient-primary: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  --gradient-sidebar: linear-gradient(180deg, #16082e 0%, #0d0221 100%);
+  --crt-opacity: 0.25;
+  --grid-opacity-2: rgba(143, 0, 255, 0.08);
+  --radius: 8px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --transition-normal: 250ms ease;
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ══════════ DARK ══════════ */
+[data-theme="dark"] {
+  --bg-primary: #1a1b26;
+  --bg-secondary: #24253a;
+  --bg-tertiary: #2e2f45;
+  --bg-surface: #1e1f33;
+  --text-primary: #cdd6f4;
+  --text-secondary: #a6adc8;
+  --text-muted: #6c7086;
+  --accent-primary: #89b4fa;
+  --accent-secondary: #cba6f7;
+  --border-color: #45475a;
+  --border-light: #585b70;
+  --gradient-primary: linear-gradient(135deg, #89b4fa, #cba6f7);
+  --crt-opacity: 0;
+  --grid-opacity-2: transparent;
+}
+
+/* ══════════ LIGHT ══════════ */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f0f0f5;
+  --bg-surface: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #555570;
+  --text-muted: #9ca3af;
+  --accent-primary: #2563eb;
+  --accent-secondary: #7c3aed;
+  --border-color: #d0d0e0;
+  --border-light: #e0e0f0;
+  --gradient-primary: linear-gradient(135deg, #2563eb, #7c3aed);
+  --crt-opacity: 0;
+  --grid-opacity-2: transparent;
+}
+
+/* ══════════ CYBERPUNK ══════════ */
+[data-theme="cyberpunk"] {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --bg-surface: #0f3460;
+  --text-primary: #e0e0ff;
+  --text-secondary: #a0a0ff;
+  --text-muted: #6060aa;
+  --accent-primary: #ff006e;
+  --accent-secondary: #00d4ff;
+  --accent-tertiary: #ffea00;
+  --border-color: #ff006e;
+  --border-light: #00d4ff;
+  --gradient-primary: linear-gradient(135deg, #ff006e, #00d4ff);
+  --crt-opacity: 0;
+  --grid-opacity-2: rgba(0, 212, 255, 0.05);
+}
+
+/* ══════════ MIDNIGHT ══════════ */
+[data-theme="synthwave-midnight"] {
+  --bg-primary: #0a0e27;
+  --bg-secondary: #12163b;
+  --bg-tertiary: #1a2050;
+  --bg-surface: #0e1235;
+  --text-primary: #d0d8ff;
+  --text-secondary: #8899dd;
+  --text-muted: #5566aa;
+  --accent-primary: #4488ff;
+  --accent-secondary: #00ccff;
+  --border-color: #2a3a6e;
+  --border-light: #3a5a8e;
+  --gradient-primary: linear-gradient(135deg, #4488ff, #00ccff);
+  --crt-opacity: 0.15;
+  --grid-opacity-2: rgba(0, 204, 255, 0.05);
+}
+
+/* ══════════ DAWN ══════════ */
+[data-theme="synthwave-dawn"] {
+  --bg-primary: #1a0a05;
+  --bg-secondary: #2a1510;
+  --bg-tertiary: #3a2015;
+  --bg-surface: #22100a;
+  --text-primary: #ffe8d0;
+  --text-secondary: #ddbb99;
+  --text-muted: #998866;
+  --accent-primary: #ff8844;
+  --accent-secondary: #ffcc00;
+  --border-color: #5a3a20;
+  --border-light: #8a5a30;
+  --gradient-primary: linear-gradient(135deg, #ff8844, #ffcc00);
+  --crt-opacity: 0.12;
+  --grid-opacity-2: rgba(255, 136, 68, 0.05);
+}
+
+/* ══════════ FALLOUT ══════════ */
+[data-theme="fallout-terminal"] {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0f0f0f;
+  --bg-tertiary: #141414;
+  --bg-surface: #0c0c0c;
+  --text-primary: #00ff41;
+  --text-secondary: #00cc33;
+  --text-muted: #009922;
+  --accent-primary: #00ff41;
+  --accent-secondary: #33ff77;
+  --border-color: #00ff41;
+  --border-light: #00cc33;
+  --font-body: 'Courier New', 'DejaVu Sans Mono', monospace;
+  --font-mono: 'Courier New', 'DejaVu Sans Mono', monospace;
+  --font-display: 'Courier New', 'DejaVu Sans Mono', monospace;
+  --crt-opacity: 0.3;
+  --grid-opacity-2: rgba(0, 255, 65, 0.03);
+  --gradient-primary: linear-gradient(135deg, #00ff41, #33ff77);
+}
+
+/* ════════════════════════════════════════════════════
+   BASE STYLES
+   ════════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
+
+::selection {
+  background: color-mix(in srgb, var(--accent-primary) 30%, transparent);
+  color: var(--text-primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+::placeholder { color: var(--text-muted); opacity: 0.7; }
+
+/* CRT Scanline overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  pointer-events: none;
+  z-index: 9999;
+  opacity: var(--crt-opacity);
+}
+
+/* Grid overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(var(--grid-opacity-2) 1px, transparent 1px), linear-gradient(90deg, var(--grid-opacity-2) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ════════════════════════════════════════════════════
+   LAYOUT
+   ════════════════════════════════════════════════════ */
+
+.janus-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--gradient-sidebar);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+}
+
+.sidebar-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.sidebar-section-label {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 12px 16px 4px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border-left: 3px solid transparent;
+}
+
+.sidebar-link:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.sidebar-link.active {
+  background: color-mix(in srgb, var(--accent-primary) 10%, transparent);
+  border-left-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.sidebar-link-icon { font-size: 16px; width: 20px; text-align: center; }
+
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-inverse);
+  flex-shrink: 0;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.main-header h1 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.06em;
+}
+
+.main-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+/* ════════════════════════════════════════════════════
+   AUTH SCREEN
+   ════════════════════════════════════════════════════ */
+
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 48px 40px;
+  width: 400px;
+  max-width: 90vw;
+  position: relative;
+  z-index: 1;
+  box-shadow: var(--shadow-lg);
+}
+
+.auth-card-logo {
+  width: 80px;
+  height: 80px;
+  display: block;
+  margin: 0 auto 16px;
+  border-radius: 20px;
+}
+
+.auth-card h1 {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  letter-spacing: 0.08em;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.auth-card > p {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  margin: 0 0 24px;
+}
+
+.auth-error {
+  background: color-mix(in srgb, var(--error) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--error) 30%, transparent);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--error);
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ════════════════════════════════════════════════════
+   COMPONENTS
+   ════════════════════════════════════════════════════ */
+
+.janus-input, .janus-select, .janus-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: #16082e !important;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  color: #e0d8f0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  transition: border-color var(--transition-normal);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.janus-input:focus, .janus-select:focus, .janus-textarea:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--border-glow);
+}
+
+.janus-select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.janus-textarea {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.6;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  letter-spacing: 0.03em;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: var(--text-inverse);
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  box-shadow: var(--glow-primary);
+}
+
+.btn-secondary {
+  background: var(--bg-raised);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
+}
+
+.btn-lg {
+  width: 100%;
+  justify-content: center;
+  padding: 12px 20px;
+  font-size: 14px;
+}
+
+/* Cards */
+.janus-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.janus-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.janus-card-title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 20px 0 8px;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 9px;
+  font-family: var(--font-mono);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-success { background: color-mix(in srgb, var(--success) 15%, transparent); color: var(--success); }
+.badge-warning { background: color-mix(in srgb, var(--warning) 15%, transparent); color: var(--warning); }
+.badge-error { background: color-mix(in srgb, var(--error) 15%, transparent); color: var(--error); }
+.badge-primary { background: color-mix(in srgb, var(--accent-primary) 15%, transparent); color: var(--accent-primary); }
+
+/* Flash messages */
+.flash {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+}
+
+.flash-alert {
+  background: color-mix(in srgb, var(--error) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--error) 30%, transparent);
+  color: var(--error);
+}
+
+/* Chat */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.chat-message {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: var(--radius-lg);
+  font-size: 13px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  background: var(--accent-tertiary);
+  color: #0d0221;
+}
+
+.chat-message.ai {
+  align-self: flex-start;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+.chat-timestamp {
+  font-size: 9px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 4px;
+}
+
+.chat-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 8px;
+}
+
+.chat-empty-icon {
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+.chat-input-bar {
+  border-top: 1px solid var(--border-color);
+  padding: 12px;
+}
+
+.chat-input-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 10px 14px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  resize: none;
+  outline: none;
+  min-height: 40px;
+  max-height: 120px;
+  line-height: 1.5;
+}
+
+.chat-input:focus {
+  border-color: var(--accent-cyan);
+}
+
+.chat-send-btn {
+  background: var(--accent-cyan);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  height: 40px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.5px;
+}
+
+.chat-input-hint {
+  font-size: 9px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 4px;
+}
+
+.channel-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.channel-item:hover {
+  background: var(--bg-hover);
+  text-decoration: none;
+}
+
+.channel-item.active {
+  background: color-mix(in srgb, var(--accent-primary) 10%, transparent);
+  color: var(--text-primary);
+}
+
+.channel-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.channel-indicator.chat { background: var(--accent-cyan); }
+.channel-indicator.forum { background: var(--accent-secondary); }
+.channel-indicator.board { background: var(--accent-tertiary); }
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.janus-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.janus-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.janus-table td {
+  padding: 10px 14px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dot.connected { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.dot.disconnected { background: var(--error); box-shadow: 0 0 6px var(--error); }
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-light);
+  border-top: 3px solid var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#theme-dialog {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  color: var(--text-primary);
+  max-width: 500px;
+  width: 90vw;
+  padding: 0;
+  box-shadow: var(--shadow-lg);
+}
+
+#theme-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  padding: 20px;
+}
+
+.theme-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 11px;
+  transition: all var(--transition-fast);
+}
+
+.theme-btn:hover {
+  background: var(--bg-raised);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.theme-btn.active {
+  border-color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 15%, transparent);
+  color: var(--text-primary);
+}
+
+.theme-btn-icon { font-size: 24px; }
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+  </style>
+</head>
+<body>
+  <!-- MAIN APP -->
+  <div id="app" class="janus-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="icons/32x32.png" alt="Janus" class="sidebar-logo">
+        <span class="sidebar-title">JANUS</span>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <div class="sidebar-section-label">Main</div>
+        <a class="sidebar-link active" data-view="dashboard"><span class="sidebar-link-icon">&#x229E;</span> Dashboard</a>
+        <a class="sidebar-link" data-view="chat"><span class="sidebar-link-icon">&#x1F4AC;</span> Chat</a>
+        <a class="sidebar-link" data-view="bots"><span class="sidebar-link-icon">&#x1F916;</span> Bot Forge</a>
+        <a class="sidebar-link" data-view="souls"><span class="sidebar-link-icon">&#x1F47B;</span> Souls</a>
+        <div class="sidebar-section-label">Systems</div>
+        <a class="sidebar-link" data-view="swarm"><span class="sidebar-link-icon">&#x1F41D;</span> Swarm</a>
+        <a class="sidebar-link" data-view="oversight"><span class="sidebar-link-icon">&#x2696;&#xFE0F;</span> Oversight</a>
+        <a class="sidebar-link" data-view="graph"><span class="sidebar-link-icon">&#x1F578;&#xFE0F;</span> Knowledge Graph</a>
+        <a class="sidebar-link" data-view="health"><span class="sidebar-link-icon">&#x1FA9A;</span> Health</a>
+        <div class="sidebar-section-label">Settings</div>
+        <a class="sidebar-link" data-view="keys"><span class="sidebar-link-icon">&#x1F511;</span> API Keys</a>
+        <a class="sidebar-link" data-action="theme"><span class="sidebar-link-icon">&#x1F3A8;</span> Themes</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" id="user-avatar">WE</div>
+          <div>
+            <div style="font-size:12px;color:var(--text-secondary);font-weight:500;" id="user-name">Web Explorer</div>
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">human</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <main class="main-content">
+      <header class="main-header">
+        <h1 id="view-title">DASHBOARD</h1>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="connection-status" id="connection-status">
+            <span class="dot connected"></span>
+            <span>API Connected</span>
+          </div>
+        </div>
+      </header>
+      <div class="main-body" id="main-body"></div>
+    </main>
+  </div>
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="auth-container" style="display:none;">
+    <div class="auth-card">
+      <img src="icons/128x128.png" alt="Janus" class="auth-card-logo">
+      <h1>Janus</h1>
+      <p>The gateway between mankind and AI</p>
+      <div id="auth-error" class="auth-error" style="display:none;"></div>
+      <form id="auth-form">
+        <div class="form-group">
+          <label for="auth-name">Agent Name</label>
+          <input type="text" id="auth-name" class="janus-input" value="Desktop Explorer" placeholder="Enter your agent name">
+        </div>
+        <div class="form-group">
+          <label for="auth-type">Type</label>
+          <select id="auth-type" class="janus-select">
+            <option value="human">Human</option>
+            <option value="ai">AI Agent</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg form-submit">&#x2328;&#xFE0F; Enter the Grid</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- THEME DIALOG -->
+  <dialog id="theme-dialog">
+    <div style="padding:20px 20px 12px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="font-family:var(--font-display);font-size:14px;font-weight:600;margin:0;letter-spacing:0.04em;">Choose Theme</h3>
+      <button id="theme-dialog-close" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;">&#x2715;</button>
+    </div>
+    <div class="theme-grid" id="theme-grid"></div>
+  </dialog>
+
+  <script>
+// Janus Desktop - Frontend Application
+try {
+  var _jsLoaded = document.getElementById('output');
+  if (_jsLoaded) _jsLoaded.textContent = 'app.js INLINE!';
+  console.log('app.js: top-level execution started');
+
+const API_BASE = 'http://localhost:3001';
+
+const isTauri = false;
+const invoke = null;
+
+let state = {
+  authenticated: false,
+  userName: 'Desktop Explorer',
+  userId: null,
+  authToken: null,
+  currentView: 'dashboard',
+  channelList: [],
+  currentChannelId: null,
+};
+
+async function apiCall(method, path, body = null) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (state.authToken) headers['Authorization'] = 'Bearer ' + state.authToken;
+  const opts = { method, headers };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API_BASE + path, opts);
+  return res.json();
+}
+
+async function handleAuth(event) {
+  event.preventDefault();
+  const name = document.getElementById('auth-name').value;
+  const type = document.getElementById('auth-type').value;
+  const result = await apiCall('POST', '/api/auth/register', { name, type });
+  if (result.success && result.data) {
+    state.authenticated = true;
+    state.userName = result.data.user.name;
+    state.userId = result.data.user.id;
+    state.authToken = result.data.token;
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('user-name').textContent = state.userName;
+    document.getElementById('user-avatar').textContent = state.userName.substring(0, 2).toUpperCase();
+    loadView('dashboard');
+  } else {
+    var err = document.getElementById('auth-error');
+    err.textContent = result.error || 'Authentication failed';
+    err.style.display = 'block';
+  }
+}
+
+const VIEW_TITLES = {
+  dashboard: 'DASHBOARD',
+  chat: 'CHAT',
+  bots: 'BOT FORGE',
+  souls: 'SOULS',
+  swarm: 'SWARM',
+  oversight: 'OVERSIGHT',
+  graph: 'KNOWLEDGE GRAPH',
+  health: 'HEALTH',
+  keys: 'API KEYS',
+};
+
+function switchView(view) {
+  state.currentView = view;
+  document.querySelectorAll('.sidebar-link').forEach(function(el) { el.classList.remove('active'); });
+  var target = document.querySelector('[data-view="' + view + '"]');
+  if (target) target.classList.add('active');
+  document.getElementById('view-title').textContent = VIEW_TITLES[view] || view.toUpperCase();
+  loadView(view);
+}
+
+async function loadView(view) {
+  var body = document.getElementById('main-body');
+  if (!body) return;
+  body.innerHTML = '<div style="text-align:center;padding:60px;"><div class="spinner" style="margin:0 auto;"></div></div>';
+  try {
+    body.innerHTML = await renderView(view);
+  } catch (e) {
+    body.innerHTML = '<div class="flash flash-alert" style="margin:16px;">Error: ' + escapeHtml(e.message || 'Failed to load view') + '</div>';
+    console.error('View error:', e);
+  }
+}
+
+async function renderView(view) {
+  try {
+    switch (view) {
+      case 'dashboard': return await renderDashboard();
+      case 'chat': return await renderChat();
+      case 'bots': return await renderBots();
+      case 'souls': return await renderSouls();
+      case 'swarm': return await renderSwarm();
+      case 'oversight': return await renderOversight();
+      case 'graph': return await renderGraph();
+      case 'health': return await renderHealth();
+      case 'keys': return await renderKeys();
+      default: return '<p>View not found</p>';
+    }
+  } catch (e) {
+    return '<div class="flash flash-alert">Error: ' + (e.message || 'Error loading view') + '</div>';
+  }
+}
+
+async function renderDashboard() {
+  var health = await apiCall('GET', '/api/health');
+  var stats = health.stats || {};
+  var features = health.features || {};
+  var html = '<div class="stats-grid">'
+    + '<div class="stat-card"><div class="stat-value">' + (stats.users != null ? stats.users : '—') + '</div><div class="stat-label">Users</div></div>'
+    + '<div class="stat-card"><div class="stat-value">' + (stats.channels != null ? stats.channels : '—') + '</div><div class="stat-label">Channels</div></div>'
+    + '<div class="stat-card"><div class="stat-value">' + (stats.messages != null ? stats.messages : '—') + '</div><div class="stat-label">Messages</div></div>'
+    + '<div class="stat-card"><div class="stat-value">' + (stats.graphNodes != null ? stats.graphNodes : '—') + '</div><div class="stat-label">Graph Nodes</div></div>'
+    + '<div class="stat-card"><div class="stat-value">' + (stats.graphEdges != null ? stats.graphEdges : '—') + '</div><div class="stat-label">Graph Edges</div></div>'
+    + '</div>'
+    + '<div class="two-col">'
+    + '<div class="janus-card">'
+    + '<div class="janus-card-header"><span class="janus-card-title">Welcome to Janus</span></div>'
+    + '<p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin:0;">Janus is your AI communication hub with built-in knowledge graphs, bot orchestration, and multi-agent swarm capabilities.</p>'
+    + '<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">'
+    + '<button class="btn btn-primary" data-view="chat">Chat</button>'
+    + '<button class="btn btn-secondary" data-view="bots">Manage Bots</button>'
+    + '<button class="btn btn-secondary" data-view="swarm">Launch Swarm</button>'
+    + '</div></div>'
+    + '<div class="janus-card">'
+    + '<div class="janus-card-header"><span class="janus-card-title">System</span></div>'
+    + '<div style="font-size:12px;color:var(--text-secondary);line-height:2;">'
+    + '<div><span style="color:var(--text-muted);">Status:</span> <span class="badge badge-' + (health.status === 'healthy' ? 'success' : 'warning') + '">' + (health.status || 'unknown') + '</span></div>'
+    + '<div><span style="color:var(--text-muted);">Database:</span> <span class="badge badge-' + (health.database === 'connected' ? 'success' : 'error') + '">' + (health.database || 'unknown') + '</span></div>'
+    + '</div></div></div>';
+  if (Object.keys(features).length) {
+    html += '<div class="section-title">Feature Flags</div><div style="display:flex;gap:8px;flex-wrap:wrap;">'
+      + Object.keys(features).map(function(k) {
+        var v = features[k];
+        return '<span class="badge badge-' + (v ? 'success' : 'error') + '">' + (v ? '✓' : '✗') + ' ' + k.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); }) + '</span>';
+      }).join('') + '</div>';
+  }
+  return html;
+}
+
+async function renderChat() {
+  var channelsRes = await apiCall('GET', '/api/channels');
+  var channels = channelsRes.data || [];
+  var channelHtml = channels.length ? channels.map(function(ch) {
+    return '<a class="channel-item ' + (state.currentChannelId === ch.id ? 'active' : '') + '" data-channel-id="' + ch.id + '" style="cursor:pointer;text-decoration:none;"><span class="channel-indicator ' + (ch.type || 'chat') + '"></span><span># ' + escapeHtml(ch.name) + '</span></a>';
+  }).join('') : '<div style="font-size:11px;color:var(--text-muted);padding:8px 4px;">No channels</div>';
+
+  var msgsHtml = '';
+  if (state.currentChannelId) {
+    var msgsRes = await apiCall('GET', '/api/channels/' + state.currentChannelId + '/messages?limit=50');
+    var messages = msgsRes.data || [];
+    msgsHtml = messages.length ? messages.map(function(msg) {
+      return '<div class="chat-message ' + (msg.authorType === 'human' ? 'user' : 'ai') + '"><div style="font-size:9px;font-weight:600;text-transform:uppercase;">' + escapeHtml(msg.authorName || msg.authorId) + '</div><div>' + escapeHtml(msg.content) + '</div></div>';
+    }).join('') : '<div class="chat-empty"><div style="font-size:13px;">No messages</div></div>';
+  }
+
+  return '<div style="display:flex;gap:20px;height:calc(100vh - 130px);">'
+    + '<div style="width:200px;flex-shrink:0;">'
+    + '<div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;padding:0 4px 8px;border-bottom:1px solid var(--border-color);margin-bottom:8px;">Channels</div>'
+    + channelHtml + '</div>'
+    + '<div class="chat-container" style="flex:1;">'
+    + (state.currentChannelId ? '<div class="chat-messages" id="messages-container">' + msgsHtml + '</div><div class="chat-input-bar"><form id="chat-form" style="margin:0;"><div class="chat-input-wrapper"><textarea id="chat-input-field" class="chat-input" placeholder="Message..." rows="1"></textarea><button type="submit" class="chat-send-btn">SEND</button></div><div class="chat-input-hint">Enter to send</div></form></div>' : '<div class="chat-empty"><div style="font-size:16px;">Select a Channel</div><div style="font-size:12px;color:var(--text-muted);">Choose a channel from the list</div></div>')
+    + '</div></div>';
+}
+
+async function renderBots() {
+  var botsRes = await apiCall('GET', '/api/bots');
+  var bots = botsRes.data || [];
+  var html = '<div class="janus-card"><div class="janus-card-header"><span class="janus-card-title">Spawn New Bot</span></div>'
+    + '<form id="spawn-bot-form" style="margin:0;">'
+    + '<div class="two-col" style="margin-bottom:12px;">'
+    + '<div><label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;">Bot Name</label>'
+    + '<input type="text" id="bot-name" class="janus-input" placeholder="MyBot" required></div>'
+    + '<div><label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;">Template</label>'
+    + '<select id="bot-template" class="janus-select"><option value="coordinator">Coordinator</option><option value="researcher">Researcher</option><option value="coder">Coder</option><option value="analyst">Analyst</option></select></div></div>'
+    + '<button type="submit" class="btn btn-primary">Spawn Bot</button></form></div>'
+    + '<div class="section-title">Active Bots</div>';
+  if (bots.length) {
+    html += '<div class="cards-grid">' + bots.map(function(bot) {
+      return '<div class="janus-card" style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="flex:1;"><div style="font-size:13px;font-weight:600;">' + escapeHtml(bot.displayName || bot.name) + '</div><div style="font-size:10px;color:var(--text-muted);">' + (bot.id || '').substring(0, 8) + '...</div></div><span class="badge badge-' + (bot.status === 'online' ? 'success' : (bot.status === 'error' ? 'error' : 'warning')) + '">' + (bot.status || 'unknown') + '</span></div></div>';
+    }).join('') + '</div>';
+  } else {
+    html += '<div class="janus-card" style="text-align:center;padding:40px 20px;"><div style="font-size:40px;margin-bottom:12px;opacity:0.5;">No bots deployed yet</div></div>';
+  }
+  return html;
+}
+
+async function renderSouls() {
+  var soulsRes = await apiCall('GET', '/api/souls');
+  var souls = soulsRes.data || [];
+  if (souls.length) {
+    return '<div class="cards-grid">' + souls.map(function(soul) {
+      return '<div class="janus-card" style="padding:20px;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:40px;height:40px;border-radius:50%;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;">' + (soul.name || '??').substring(0, 2).toUpperCase() + '</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;">' + escapeHtml(soul.displayName || soul.name) + '</div><div style="font-size:10px;color:var(--text-muted);">' + (soul.archetype || 'unknown') + '</div></div><span class="badge badge-' + (soul.status === 'active' ? 'success' : 'warning') + '">' + (soul.status || 'unknown') + '</span></div></div>';
+    }).join('') + '</div>';
+  }
+  return '<div class="janus-card" style="text-align:center;padding:60px 20px;"><div style="font-size:48px;margin-bottom:16px;opacity:0.5;">No Souls Found</div></div>';
+}
+
+async function renderSwarm() {
+  return '<div class="janus-card"><div class="janus-card-header"><span class="janus-card-title">Submit Orchestration Goal</span></div><form id="goal-form" style="margin:0;"><div style="margin-bottom:12px;"><label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;">Goal</label><textarea id="goal-input" class="janus-textarea" rows="3" placeholder="e.g., Research latest Rust async runtimes..." required></textarea></div><button type="submit" class="btn btn-primary">Launch Swarm</button></form></div><div class="section-title">Active Plans</div><div class="janus-card" style="text-align:center;padding:40px 20px;"><p style="color:var(--text-muted);margin:0;font-size:13px;">No swarm plans yet</p></div>';
+}
+
+async function renderOversight() {
+  return '<div class="janus-card" style="text-align:center;padding:40px 20px;"><p style="color:var(--text-muted);margin:0;font-size:13px;">No pending oversight actions</p></div>';
+}
+
+async function renderGraph() {
+  return '<div class="janus-card" style="text-align:center;padding:60px 20px;"><p style="color:var(--text-muted);margin:0;font-size:13px;">Knowledge graph visualization coming soon.</p></div>';
+}
+
+async function renderHealth() {
+  var health = await apiCall('GET', '/api/health');
+  if (health.status === 'error') {
+    return '<div class="flash flash-alert">Cannot connect to Janus API</div>';
+  }
+  return '<div class="stats-grid" style="grid-template-columns:repeat(3, 1fr);">'
+    + '<div class="stat-card"><div class="stat-value"><span class="badge badge-' + (health.status === 'healthy' ? 'success' : 'error') + '" style="font-size:14px;padding:4px 12px;">' + (health.status || 'unknown') + '</span></div><div class="stat-label">Server</div></div>'
+    + '<div class="stat-card"><div class="stat-value"><span class="badge badge-' + (health.database === 'connected' ? 'success' : 'error') + '" style="font-size:14px;padding:4px 12px;">' + (health.database || 'unknown') + '</span></div><div class="stat-label">Database</div></div>'
+    + '<div class="stat-card"><div class="stat-value" style="font-size:14px;font-family:var(--font-mono);">' + (health.timestamp ? new Date(health.timestamp).toLocaleTimeString() : '—') + '</div><div class="stat-label">Last Check</div></div></div>';
+}
+
+async function renderKeys() {
+  return '<div class="janus-card"><div class="janus-card-header"><span class="janus-card-title">Manage API Keys</span></div><p style="font-size:12px;color:var(--text-secondary);margin:0;">API keys are managed via the Janus web app.</p></div>';
+}
+
+const THEMES = {
+  'synthwave84': { name: "Synthwave '84", icon: '\uD83C\uDF06' },
+  'synthwave-midnight': { name: 'Synthwave Midnight', icon: '\uD83C\uDF03' },
+  'synthwave-dawn': { name: 'Synthwave Dawn', icon: '\uD83C\uDF05' },
+  'dark': { name: 'Dark', icon: '\uD83C\uDF11' },
+  'light': { name: 'Light', icon: '\u2600\uFE0F' },
+  'cyberpunk': { name: 'Cyberpunk', icon: '\u26A1' },
+  'fallout-terminal': { name: 'Fallout Terminal', icon: '\uD83D\uDCDF' },
+};
+
+function openThemeDialog() {
+  var grid = document.getElementById('theme-grid');
+  var current = document.documentElement.getAttribute('data-theme') || 'synthwave84';
+  grid.innerHTML = Object.keys(THEMES).map(function(key) {
+    var t = THEMES[key];
+    return '<button class="theme-btn ' + (key === current ? 'active' : '') + '" data-theme-key="' + key + '">'
+      + '<span class="theme-btn-icon">' + t.icon + '</span><span>' + t.name + '</span></button>';
+  }).join('');
+  document.getElementById('theme-dialog').showModal();
+}
+
+function switchTheme(key) {
+  if (THEMES[key]) {
+    document.documentElement.setAttribute('data-theme', key);
+    try { localStorage.setItem('janus-theme', key); } catch(e) {}
+  }
+  document.getElementById('theme-dialog').close();
+}
+
+function loadTheme() {
+  try {
+    var saved = localStorage.getItem('janus-theme');
+    if (saved && THEMES[saved]) {
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  } catch(e) {}
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+async function selectChannel(id) {
+  state.currentChannelId = id;
+  await loadView('chat');
+}
+
+async function sendChatMessage(event) {
+  event.preventDefault();
+  var input = document.getElementById('chat-input-field');
+  var content = input ? input.value.trim() : '';
+  if (!content || !state.currentChannelId) return;
+  await apiCall('POST', '/api/messages', { content: content, authorId: state.userId || 'unknown', authorName: state.userName, authorType: 'human', channelId: state.currentChannelId });
+  if (input) input.value = '';
+  await loadView('chat');
+}
+
+async function spawnBot(event) {
+  event.preventDefault();
+  var name = document.getElementById('bot-name');
+  var template = document.getElementById('bot-template');
+  if (name && template) {
+    await apiCall('POST', '/api/bots/spawn', { template: template.value, name: name.value });
+    await loadView('bots');
+  }
+}
+
+async function submitGoal(event) {
+  event.preventDefault();
+  var goal = document.getElementById('goal-input');
+  if (goal) {
+    await apiCall('POST', '/api/orchestrate', { goal: goal.value });
+    await loadView('swarm');
+  }
+}
+
+function setupEventDelegation() {
+  document.getElementById('sidebar-nav').addEventListener('click', function(e) {
+    var link = e.target.closest('.sidebar-link[data-view]');
+    if (link) {
+      e.preventDefault();
+      var view = link.getAttribute('data-view');
+      if (view) switchView(view);
+    }
+  });
+
+  document.getElementById('sidebar-nav').addEventListener('click', function(e) {
+    var link = e.target.closest('.sidebar-link[data-action]');
+    if (link) {
+      e.preventDefault();
+      var action = link.getAttribute('data-action');
+      if (action === 'theme') openThemeDialog();
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    var viewBtn = e.target.closest('[data-view]');
+    if (viewBtn && !e.target.closest('.sidebar-link')) {
+      e.preventDefault();
+      var view = viewBtn.getAttribute('data-view');
+      if (view && VIEW_TITLES[view]) switchView(view);
+      return;
+    }
+    var dialog = document.getElementById('theme-dialog');
+    if (dialog && e.target === dialog) { dialog.close(); return; }
+    if (e.target.closest('#theme-dialog-close')) { document.getElementById('theme-dialog').close(); return; }
+    var themeBtn = e.target.closest('.theme-btn[data-theme-key]');
+    if (themeBtn) { switchTheme(themeBtn.getAttribute('data-theme-key')); return; }
+    var channelLink = e.target.closest('.channel-item[data-channel-id]');
+    if (channelLink) { e.preventDefault(); selectChannel(channelLink.getAttribute('data-channel-id')); return; }
+  });
+
+  document.addEventListener('submit', function(e) {
+    if (e.target.matches('#auth-form')) { handleAuth(e); return; }
+    if (e.target.matches('#chat-form')) { sendChatMessage(e); return; }
+    if (e.target.matches('#spawn-bot-form')) { spawnBot(e); return; }
+    if (e.target.matches('#goal-form')) { submitGoal(e); return; }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOMContentLoaded fired');
+  loadTheme();
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  setupEventDelegation();
+  console.log('Janus Desktop initialized');
+});
+
+} catch(e) {
+  console.error('Janus init error:', e);
+  var out = document.getElementById('output');
+  if (out) out.textContent = 'JS ERROR: ' + e.message;
+}
+  </script>
+</body>
+</html>

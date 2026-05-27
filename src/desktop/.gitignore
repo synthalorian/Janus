@@ -1,0 +1,2 @@
+# Track dist/ — it's the source for Tauri desktop (no build step)
+!dist/
