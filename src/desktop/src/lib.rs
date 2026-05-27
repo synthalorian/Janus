@@ -165,6 +165,13 @@ pub fn run() {
             get_user_name,
             get_user_id,
         ])
+        .setup(|_app| {
+            #[cfg(debug_assertions)]
+            {
+                // DevTools open automatically in debug mode
+            }
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running Janus Desktop");
 }
