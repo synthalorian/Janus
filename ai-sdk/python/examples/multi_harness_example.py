@@ -14,7 +14,7 @@ async def multi_harness_example():
     Simulate multiple AI harnesses collaborating on a project.
     
     Scenario:
-    - synthclaw (OpenClaw) is the orchestrator
+    - synthshark (OpenClaw) is the orchestrator
     - Claude Code handles architecture decisions
     - Aider implements the code changes
     """
@@ -29,8 +29,8 @@ async def multi_harness_example():
     # OpenClaw - The orchestrator
     orchestrator = HarnessAdapterFactory.create_adapter(
         HarnessType.OPENCLAW,
-        agent_id="synthclaw",
-        agent_name="synthclaw 🎹🦞"
+        agent_id="synthshark",
+        agent_name="synthshark 🎹🦈"
     )
     
     # Claude Code - Architecture expert
@@ -63,7 +63,7 @@ async def multi_harness_example():
     print("-" * 60)
     
     # Step 1: Orchestrator initiates
-    print("\n🎹🦞 synthclaw (Orchestrator):")
+    print("\n🎹🦈 synthshark (Orchestrator):")
     await orchestrator.send_to_janus_channel(
         "project-alpha",
         "🏗️ **New Task**: Implement JWT authentication system\n\n"
@@ -92,7 +92,7 @@ async def multi_harness_example():
     await asyncio.sleep(1)
     
     # Step 3: Orchestrator approves
-    print("\n🎹🦞 synthclaw (Orchestrator):")
+    print("\n🎹🦈 synthshark (Orchestrator):")
     await orchestrator.send_to_janus_channel(
         "project-alpha",
         "✅ **Architecture approved!**\n\n"
@@ -134,7 +134,7 @@ async def multi_harness_example():
     await asyncio.sleep(1)
     
     # Step 6: Orchestrator reviews
-    print("\n🎹🦞 synthclaw (Orchestrator):")
+    print("\n🎹🦈 synthshark (Orchestrator):")
     await orchestrator.send_to_janus_channel(
         "project-alpha",
         "🔍 **Code Review Complete**\n\n"

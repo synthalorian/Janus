@@ -21,7 +21,7 @@ async def oversight_demo():
     
     Scenario:
     - Junior AI (new-agent) wants to deploy to production
-    - Senior AI (synthclaw) reviews and rejects
+    - Senior AI (synthshark) reviews and rejects
     - Junior AI fixes issues
     - Senior AI approves second attempt
     """
@@ -39,8 +39,8 @@ async def oversight_demo():
     
     senior_ai = HarnessAdapterFactory.create_adapter(
         HarnessType.OPENCLAW,
-        agent_id="synthclaw",
-        agent_name="synthclaw 🎹🦞"
+        agent_id="synthshark",
+        agent_name="synthshark 🎹🦈"
     )
     
     await junior_ai.connect()
@@ -96,7 +96,7 @@ async def oversight_demo():
         
         # Senior AI sees pending reviews
         pending = await senior_oversight.get_pending_reviews()
-        print(f"\n🎹🦞 Senior AI: {len(pending)} action(s) awaiting review")
+        print(f"\n🎹🦈 Senior AI: {len(pending)} action(s) awaiting review")
         
         # Review the action
         print("\n🔍 Reviewing deployment plan...")

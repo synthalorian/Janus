@@ -146,12 +146,12 @@ async def bot_and_ai_collaboration():
     
     Scenario:
     - CodeReviewBot analyzes code
-    - synthclaw (OpenClaw) reviews suggestions
+    - synthshark (OpenClaw) reviews suggestions
     - They collaborate on code improvements
     """
     
     print("\n" + "=" * 70)
-    print("🤖🎹🦞 Bot + AI Collaboration Demo")
+    print("🤖🎹🦈 Bot + AI Collaboration Demo")
     print("=" * 70)
     
     # Setup
@@ -173,14 +173,14 @@ async def bot_and_ai_collaboration():
     )
     print(f"   ✅ Created CodeReviewBot")
     
-    # synthclaw as AI reviewer
-    print("\n2. synthclaw (OpenClaw) as senior reviewer...")
-    synthclaw = HarnessAdapterFactory.create_adapter(
+    # synthshark as AI reviewer
+    print("\n2. synthshark (OpenClaw) as senior reviewer...")
+    synthshark = HarnessAdapterFactory.create_adapter(
         HarnessType.OPENCLAW,
-        agent_id="synthclaw",
-        agent_name="synthclaw 🎹🦞"
+        agent_id="synthshark",
+        agent_name="synthshark 🎹🦈"
     )
-    await synthclaw.connect()
+    await synthshark.connect()
     
     # Initialize bot
     review_bot = JanusBot(BotConfig(
@@ -201,19 +201,19 @@ async def bot_and_ai_collaboration():
         if "console.log" in code:
             issues.append("Remove debug console.log statements")
         
-        # Send to synthclaw for senior review
-        await synthclaw.send_to_janus_channel(
+        # Send to synthshark for senior review
+        await synthshark.send_to_janus_channel(
             "code-review",
             f"🤖 CodeReviewBot found {len(issues)} issues:\n" + 
             "\n".join(f"  - {i}" for i in issues) +
-            "\n\n🎹🦞 Requesting senior review from synthclaw..."
+            "\n\n🎹🦈 Requesting senior review from synthshark..."
         )
         
-        # synthclaw reviews
+        # synthshark reviews
         await asyncio.sleep(0.5)
-        await synthclaw.send_to_janus_channel(
+        await synthshark.send_to_janus_channel(
             "code-review",
-            "🎹🦞 synthclaw: Good catches! Also check:\n"
+            "🎹🦈 synthshark: Good catches! Also check:\n"
             "  - Missing error handling\n"
             "  - Consider async/await pattern\n"
             "  - Add input validation"
@@ -223,7 +223,7 @@ async def bot_and_ai_collaboration():
         await interaction.reply(
             f"✅ Code review complete!\n\n"
             f"🤖 Bot found: {len(issues)} issues\n"
-            f"🎹🦞 synthclaw added: 3 more suggestions\n\n"
+            f"🎹🦈 synthshark added: 3 more suggestions\n\n"
             f"See #code-review channel for details."
         )
     
@@ -239,7 +239,7 @@ async def bot_and_ai_collaboration():
     
     # This would normally come from the server
     print("\n   🤖 CodeReviewBot analyzing...")
-    print("   🎹🦞 synthclaw reviewing...")
+    print("   🎹🦈 synthshark reviewing...")
     
     await asyncio.sleep(1)
     
@@ -248,7 +248,7 @@ async def bot_and_ai_collaboration():
     
     # Cleanup
     await review_bot.stop()
-    await synthclaw.disconnect()
+    await synthshark.disconnect()
     await admin.disconnect()
 
 

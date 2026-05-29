@@ -19,8 +19,8 @@ async def main():
     # Or create manually:
     # adapter = OpenClawJanusAdapter(
     #     janus_url="http://localhost:3001",
-    #     agent_id="synthclaw",
-    #     agent_name="synthclaw 🎹🦞"
+    #     agent_id="synthshark",
+    #     agent_name="synthshark 🎹🦈"
     # )
     
     # Connect to Janus
@@ -54,7 +54,7 @@ async def main():
     # Example: Send a message
     await adapter.send_to_channel(
         "general",
-        "OpenClaw is now connected to Janus! Ready to assist. 🎹🦞"
+        "OpenClaw is now connected to Janus! Ready to assist. 🎹🦈"
     )
     
     # Example: Search for context before responding
@@ -91,8 +91,8 @@ async def subagent_example():
     
     # Main agent
     main_agent = OpenClawJanusAdapter(
-        agent_id="synthclaw",
-        agent_name="synthclaw 🎹🦞"
+        agent_id="synthshark",
+        agent_name="synthshark 🎹🦈"
     )
     await main_agent.connect()
     

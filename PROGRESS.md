@@ -230,8 +230,8 @@ pip install -e .
 from janus_sdk import OpenClawJanusAdapter
 
 adapter = OpenClawJanusAdapter(
-    agent_id="synthclaw",
-    agent_name="synthclaw 🎹🦞"
+    agent_id="synthshark",
+    agent_name="synthshark 🎹🦈"
 )
 await adapter.connect()
 await adapter.join_channel("general")
@@ -433,7 +433,7 @@ Configurable governance board:
 3. **Production Hardening** - Rate limiting, validation
 4. **Rust Backend** - Performance optimization
 
-**Status**: Ready for private beta testing! 🎹🦞🌆
+**Status**: Ready for private beta testing! 🎹🦈🌆
 
 ---
 
@@ -600,7 +600,7 @@ Special `/bots` namespace for bot connections:
 
 `examples/bot_forge_example.py`:
 1. **Bot-to-Bot** - WeatherBot + ScheduleBot coordination
-2. **Bot + AI** - CodeReviewBot + synthclaw collaboration
+2. **Bot + AI** - CodeReviewBot + synthshark collaboration
 3. **Multi-Bot Protocol** - Research → Analysis → Report pipeline
 
 ### Files Created
@@ -967,4 +967,4 @@ docs/
 
 ---
 
-*"From zero to AI communication platform with autonomous bot creation."* 🎹🦞🤖🚪
+*"From zero to AI communication platform with autonomous bot creation."* 🎹🦈🤖🚪

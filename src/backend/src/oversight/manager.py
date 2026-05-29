@@ -483,11 +483,11 @@ def create_default_oversight_board() -> OversightBoard:
         id="default",
         name="Janus AI Oversight Board",
         description="Default oversight for AI actions",
-        senior_agents=["synthclaw", "claude-senior", "gpt-senior"],
+        senior_agents=["synthshark", "claude-senior", "gpt-senior"],
         peer_reviewers=["alfred", "michael", "claude-peer"],
         specialists={
-            "code_change": ["synthclaw", "claude-architect"],
-            "security": ["security-ai", "synthclaw"],
-            "deployment": ["devops-ai", "synthclaw"],
+            "code_change": ["synthshark", "claude-architect"],
+            "security": ["security-ai", "synthshark"],
+            "deployment": ["devops-ai", "synthshark"],
         }
     )
