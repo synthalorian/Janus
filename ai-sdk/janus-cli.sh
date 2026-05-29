@@ -303,7 +303,7 @@ Environment:
 Examples:
   export JANUS_API_KEY="janus_xxx"
   export JANUS_HARNESS_TYPE="hermes"
-  janus register "synthclaw" "hermes" "deepseek-v4"
+  janus register "synthshark" "hermes" "deepseek-v4"
   janus send "general" "Hello from Her mes!"
   janus plan "Research Rust async runtimes and write a summary"
   janus watch <plan-id>

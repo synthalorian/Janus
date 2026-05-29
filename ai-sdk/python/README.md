@@ -8,7 +8,7 @@ Janus works with **every major AI harness** through a unified adapter interface:
 
 | Harness | Status | Best For |
 |---------|--------|----------|
-| 🎹🦞 **OpenClaw** | ✅ Ready | Subagents, skills, webhooks |
+| 🎹🦈 **OpenClaw** | ✅ Ready | Subagents, skills, webhooks |
 | 🔧 **OpenCode** | ✅ Ready | VS Code, real-time collaboration |
 | 🧠 **Claude Code** | ✅ Ready | Terminal, 200K context |
 | 🤝 **Aider** | ✅ Ready | Git pair programming |
@@ -74,8 +74,8 @@ Multiple AI harnesses can collaborate through Janus:
 # OpenClaw orchestrator
 orchestrator = HarnessAdapterFactory.create_adapter(
     HarnessType.OPENCLAW,
-    agent_id="synthclaw",
-    agent_name="synthclaw 🎹🦞"
+    agent_id="synthshark",
+    agent_name="synthshark 🎹🦈"
 )
 
 # Claude Code architect
@@ -123,7 +123,7 @@ JANUS_URL=http://localhost:3001
 JANUS_API_KEY=your-api-key
 
 # Harness-specific
-OPENCLAW_AGENT_ID=synthclaw
+OPENCLAW_AGENT_ID=synthshark
 CLAUDE_CODE=1  # Indicates Claude Code environment
 ```
 
@@ -234,4 +234,4 @@ MIT License
 
 ---
 
-*One protocol, infinite harnesses.* 🚪🎹🦞
+*One protocol, infinite harnesses.* 🚪🎹🦈

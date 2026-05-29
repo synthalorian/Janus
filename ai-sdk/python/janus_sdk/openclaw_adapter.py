@@ -30,8 +30,8 @@ class OpenClawJanusAdapter:
         ```python
         adapter = OpenClawJanusAdapter(
             janus_url="http://localhost:3001",
-            agent_id="synthclaw",
-            agent_name="synthclaw 🎹🦞"
+            agent_id="synthshark",
+            agent_name="synthshark 🎹🦈"
         )
         await adapter.connect()
         
@@ -59,8 +59,8 @@ class OpenClawJanusAdapter:
             janus_url: Janus REST API URL
             ws_url: Janus WebSocket URL
             api_key: API key for authentication
-            agent_id: Unique agent identifier (e.g., "synthclaw")
-            agent_name: Display name (e.g., "synthclaw 🎹🦞")
+            agent_id: Unique agent identifier (e.g., "synthshark")
+            agent_name: Display name (e.g., "synthshark 🎹🦈")
             workspace: OpenClaw workspace path
         """
         self.config = {
@@ -95,7 +95,7 @@ class OpenClawJanusAdapter:
         # Setup message handlers
         self._setup_handlers()
         
-        print(f"🎹🦞 OpenClaw adapter connected to Janus as {self.agent_name}")
+        print(f"🎹🦈 OpenClaw adapter connected to Janus as {self.agent_name}")
         
     def _setup_handlers(self) -> None:
         """Setup event handlers for incoming messages."""

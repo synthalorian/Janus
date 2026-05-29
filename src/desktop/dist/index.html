@@ -460,16 +460,28 @@ body::before {
 .janus-input, .janus-select, .janus-textarea {
   width: 100%;
   padding: 10px 14px;
-  background: #16082e !important;
-  border: 1px solid var(--border-light);
+  background: #f3e70f !important;
+  border: 1px solid #8f00ff;
   border-radius: var(--radius-md);
-  color: #e0d8f0;
+  color: #5a0099 !important;
   font-family: var(--font-body);
   font-size: 13px;
+  font-weight: 600;
   outline: none;
   transition: border-color var(--transition-normal);
   -webkit-appearance: none;
   appearance: none;
+}
+
+/* Force dark styling on select option elements */
+.janus-select option {
+  background: #f3e70f !important;
+  color: #5a0099 !important;
+}
+
+.janus-input::placeholder, .janus-textarea::placeholder {
+  color: #8f00ff !important;
+  opacity: 0.7;
 }
 
 .janus-input:focus, .janus-select:focus, .janus-textarea:focus {
@@ -700,18 +712,26 @@ body::before {
 
 .chat-input {
   flex: 1;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-light);
+  background: #f3e70f !important;
+  border: 1px solid #8f00ff;
   border-radius: var(--radius-lg);
   padding: 10px 14px;
-  color: var(--text-primary);
+  color: #5a0099 !important;
   font-family: var(--font-body);
   font-size: 13px;
+  font-weight: 600;
   resize: none;
   outline: none;
   min-height: 40px;
   max-height: 120px;
   line-height: 1.5;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.chat-input::placeholder {
+  color: #8f00ff !important;
+  opacity: 0.7;
 }
 
 .chat-input:focus {
@@ -994,33 +1014,53 @@ let state = {
 };
 
 async function apiCall(method, path, body = null) {
-  const headers = { 'Content-Type': 'application/json' };
-  if (state.authToken) headers['Authorization'] = 'Bearer ' + state.authToken;
-  const opts = { method, headers };
-  if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(API_BASE + path, opts);
-  return res.json();
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (state.authToken) headers['Authorization'] = 'Bearer ' + state.authToken;
+    const opts = { method, headers };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(API_BASE + path, opts);
+    if (!res.ok) {
+      var errBody = await res.text().catch(function() { return ''; });
+      try { return JSON.parse(errBody); } catch(_) {}
+      return { success: false, error: 'Server error: ' + res.status + ' ' + res.statusText };
+    }
+    return await res.json();
+  } catch (e) {
+    return { success: false, error: 'Cannot connect to Janus server at ' + API_BASE + '. Is the backend running?' };
+  }
 }
 
 async function handleAuth(event) {
   event.preventDefault();
-  const name = document.getElementById('auth-name').value;
-  const type = document.getElementById('auth-type').value;
-  const result = await apiCall('POST', '/api/auth/register', { name, type });
-  if (result.success && result.data) {
-    state.authenticated = true;
-    state.userName = result.data.user.name;
-    state.userId = result.data.user.id;
-    state.authToken = result.data.token;
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    document.getElementById('user-name').textContent = state.userName;
-    document.getElementById('user-avatar').textContent = state.userName.substring(0, 2).toUpperCase();
-    loadView('dashboard');
-  } else {
-    var err = document.getElementById('auth-error');
-    err.textContent = result.error || 'Authentication failed';
-    err.style.display = 'block';
+  var btn = event.target.querySelector('.form-submit');
+  var origText = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.innerHTML = 'Connecting...'; }
+  try {
+    const name = document.getElementById('auth-name').value;
+    const type = document.getElementById('auth-type').value;
+    const result = await apiCall('POST', '/api/auth/register', { name, type });
+    if (result.success && result.data) {
+      state.authenticated = true;
+      state.userName = result.data.user.name;
+      state.userId = result.data.user.id;
+      state.authToken = result.data.token;
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      document.getElementById('user-name').textContent = state.userName;
+      document.getElementById('user-avatar').textContent = state.userName.substring(0, 2).toUpperCase();
+      loadView('dashboard');
+    } else {
+      var err = document.getElementById('auth-error');
+      err.textContent = result.error || 'Authentication failed';
+      err.style.display = 'block';
+    }
+  } catch (e) {
+    var err2 = document.getElementById('auth-error');
+    err2.textContent = 'Unexpected error: ' + (e.message || 'Unknown');
+    err2.style.display = 'block';
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = origText; }
   }
 }
 

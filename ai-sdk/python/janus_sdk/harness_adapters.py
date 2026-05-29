@@ -255,7 +255,7 @@ class OpenClawAdapter(BaseHarnessAdapter):
     async def connect(self) -> None:
         """Connect OpenClaw to Janus."""
         await self.connect_to_janus()
-        print(f"🎹🦞 OpenClaw connected to Janus as {self.agent_name}")
+        print(f"🎹🦈 OpenClaw connected to Janus as {self.agent_name}")
     
     async def disconnect(self) -> None:
         """Disconnect OpenClaw from Janus."""
@@ -267,7 +267,7 @@ class OpenClawAdapter(BaseHarnessAdapter):
         """Send message to user through OpenClaw."""
         # In OpenClaw, this would use the message tool
         # For now, print to stdout (OpenClaw captures this)
-        print(f"🎹🦞 {message}")
+        print(f"🎹🦈 {message}")
     
     async def receive_from_user(self) -> Optional[str]:
         """Receive input from OpenClaw user."""
@@ -868,8 +868,8 @@ class HarnessAdapterFactory:
             ```python
             adapter = HarnessAdapterFactory.create_adapter(
                 HarnessType.OPENCLAW,
-                agent_id="synthclaw",
-                agent_name="synthclaw 🎹🦞"
+                agent_id="synthshark",
+                agent_name="synthshark 🎹🦈"
             )
             ```
         """
