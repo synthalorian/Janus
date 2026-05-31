@@ -2,8 +2,12 @@
 <% content_for :title, "Chat — Janus" %>
 
 <div data-controller="chat"
-     data-chat-user-id="<%= current_user["id"] %>"
-     data-chat-user-name="<%= current_user["name"] %>"
+     data-chat-user-id-value="<%= current_user["id"] %>"
+     data-chat-user-name-value="<%= current_user["name"] %>"
+     data-chat-user-type-value="<%= current_user["type"] || "human" %>"
+     data-chat-channel-id-value="<%= @current_channel_id %>"
+     data-chat-token-value="<%= current_token %>"
+     data-chat-socket-url-value="<%= ENV.fetch("JANUS_SOCKET_URL", "http://localhost:3001") %>"
      style="display:flex;gap:20px;height:calc(100vh - 130px);">
 
   <!-- Channel list -->
@@ -53,8 +57,7 @@
             <textarea name="content" data-chat-target="input"
               class="chat-input" placeholder="Message #<%= @current_channel&.dig("name") || "channel" %>…"
               rows="1"
-              data-action="keydown->chat#handleKeydown input->chat#autoResize"
-              oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+              data-action="keydown->chat#handleKeydown input->chat#autoResize"></textarea>
             <button type="submit" data-chat-target="sendBtn" class="chat-send-btn">SEND</button>
           </div>
           <div class="chat-input-hint">Enter to send · Shift+Enter for newline</div>
@@ -69,16 +72,3 @@
     <% end %>
   </div>
 </div>
-
-<script>
-// Initialize Socket.IO connection when a channel is selected
-document.addEventListener('turbo:load', () => {
-  const controller = document.querySelector('[data-controller="chat"]')
-  if (controller) {
-    const chatController = document.querySelector('[data-controller="chat"]').__stimulus_controller
-    if (chatController && chatController.connectSocket) {
-      chatController.connectSocket()
-    }
-  }
-})
-</script>

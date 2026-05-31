@@ -460,27 +460,25 @@ body::before {
 .janus-input, .janus-select, .janus-textarea {
   width: 100%;
   padding: 10px 14px;
-  background: #f3e70f !important;
-  border: 1px solid #8f00ff;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  color: #5a0099 !important;
+  color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 13px;
-  font-weight: 600;
   outline: none;
   transition: border-color var(--transition-normal);
   -webkit-appearance: none;
   appearance: none;
 }
 
-/* Force dark styling on select option elements */
 .janus-select option {
-  background: #f3e70f !important;
-  color: #5a0099 !important;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .janus-input::placeholder, .janus-textarea::placeholder {
-  color: #8f00ff !important;
+  color: var(--text-muted);
   opacity: 0.7;
 }
 
@@ -622,7 +620,7 @@ body::before {
   padding: 2px 8px;
   font-size: 9px;
   font-family: var(--font-mono);
-  border-radius: var(--radius-full);
+  border-radius: 999px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -712,14 +710,13 @@ body::before {
 
 .chat-input {
   flex: 1;
-  background: #f3e70f !important;
-  border: 1px solid #8f00ff;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 10px 14px;
-  color: #5a0099 !important;
+  color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 13px;
-  font-weight: 600;
   resize: none;
   outline: none;
   min-height: 40px;
@@ -730,17 +727,18 @@ body::before {
 }
 
 .chat-input::placeholder {
-  color: #8f00ff !important;
+  color: var(--text-muted);
   opacity: 0.7;
 }
 
 .chat-input:focus {
-  border-color: var(--accent-cyan);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--border-glow);
 }
 
 .chat-send-btn {
-  background: var(--accent-cyan);
-  color: var(--bg-primary);
+  background: var(--gradient-primary);
+  color: var(--text-inverse);
   border: none;
   border-radius: var(--radius-lg);
   padding: 10px 20px;
@@ -750,6 +748,11 @@ body::before {
   height: 40px;
   font-family: var(--font-mono);
   letter-spacing: 0.5px;
+}
+
+.chat-send-btn:hover {
+  opacity: 0.9;
+  box-shadow: var(--glow-primary);
 }
 
 .chat-input-hint {
@@ -768,7 +771,7 @@ body::before {
   font-size: 12px;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: background var(--transition-fast);
+  transition: background var(--transition-normal);
 }
 
 .channel-item:hover {
@@ -887,7 +890,7 @@ body::before {
   cursor: pointer;
   font-family: var(--font-body);
   font-size: 11px;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-normal);
 }
 
 .theme-btn:hover {
@@ -909,11 +912,75 @@ body::before {
   flex-direction: column;
   height: 100%;
 }
+
+/* Markdown in chat */
+.chat-message pre {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  margin: 6px 0;
+}
+
+.chat-message code {
+  background: var(--bg-primary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.chat-message pre code {
+  background: none;
+  padding: 0;
+}
+
+.chat-message strong { font-weight: 700; }
+.chat-message em { font-style: italic; }
+
+/* Toast notifications */
+.toast-container {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  max-width: 320px;
+  animation: toastIn 0.3s ease;
+}
+
+.toast.success {
+  background: color-mix(in srgb, var(--success) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--success) 40%, transparent);
+  color: var(--success);
+}
+
+.toast.error {
+  background: color-mix(in srgb, var(--error) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--error) 40%, transparent);
+  color: var(--error);
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
   </style>
 </head>
 <body>
   <!-- MAIN APP -->
-  <div id="app" class="janus-layout">
+  <div id="app" class="janus-layout" style="display:none;">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <img src="icons/32x32.png" alt="Janus" class="sidebar-logo">
@@ -939,7 +1006,7 @@ body::before {
           <div class="sidebar-user-avatar" id="user-avatar">WE</div>
           <div>
             <div style="font-size:12px;color:var(--text-secondary);font-weight:500;" id="user-name">Web Explorer</div>
-            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">human</div>
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);" id="user-type">human</div>
           </div>
         </div>
       </div>
@@ -949,8 +1016,8 @@ body::before {
         <h1 id="view-title">DASHBOARD</h1>
         <div style="display:flex;align-items:center;gap:12px;">
           <div class="connection-status" id="connection-status">
-            <span class="dot connected"></span>
-            <span>API Connected</span>
+            <span class="dot disconnected" id="conn-dot"></span>
+            <span id="conn-text">Disconnected</span>
           </div>
         </div>
       </header>
@@ -968,7 +1035,7 @@ body::before {
       <form id="auth-form">
         <div class="form-group">
           <label for="auth-name">Agent Name</label>
-          <input type="text" id="auth-name" class="janus-input" value="Desktop Explorer" placeholder="Enter your agent name">
+          <input type="text" id="auth-name" class="janus-input" value="Desktop Explorer" placeholder="Enter your agent name" required>
         </div>
         <div class="form-group">
           <label for="auth-type">Type</label>
@@ -991,114 +1058,558 @@ body::before {
     <div class="theme-grid" id="theme-grid"></div>
   </dialog>
 
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
   <script>
-// Janus Desktop - Frontend Application
-try {
-  var _jsLoaded = document.getElementById('output');
-  if (_jsLoaded) _jsLoaded.textContent = 'app.js INLINE!';
-  console.log('app.js: top-level execution started');
+// ════════════════════════════════════════════════════
+// JANUS DESKTOP — Tauri-Aware Frontend
+// Uses tauri.invoke when running in Tauri, fetch as fallback
+// Socket.IO for real-time messaging, presence, orchestration
+// ════════════════════════════════════════════════════
 
-const API_BASE = 'http://localhost:3001';
+(function() {
+  'use strict';
 
-const isTauri = false;
-const invoke = null;
+  const API_BASE = 'http://localhost:3001';
 
-let state = {
-  authenticated: false,
-  userName: 'Desktop Explorer',
-  userId: null,
-  authToken: null,
-  currentView: 'dashboard',
-  channelList: [],
-  currentChannelId: null,
-};
+  // Detect Tauri runtime
+  const isTauri = typeof window !== 'undefined' && window.__TAURI__ !== undefined;
+  const invoke = isTauri ? window.__TAURI__.core.invoke : null;
 
-async function apiCall(method, path, body = null) {
-  try {
-    const headers = { 'Content-Type': 'application/json' };
-    if (state.authToken) headers['Authorization'] = 'Bearer ' + state.authToken;
-    const opts = { method, headers };
-    if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(API_BASE + path, opts);
-    if (!res.ok) {
-      var errBody = await res.text().catch(function() { return ''; });
-      try { return JSON.parse(errBody); } catch(_) {}
-      return { success: false, error: 'Server error: ' + res.status + ' ' + res.statusText };
+  let state = {
+    authenticated: false,
+    userName: 'Desktop Explorer',
+    userId: null,
+    authToken: null,
+    currentView: 'dashboard',
+    currentChannelId: null,
+    apiConnected: false,
+  };
+
+  // ── Socket.IO Manager ──
+  const SocketManager = {
+    socket: null,
+    connected: false,
+    reconnectAttempts: 0,
+    maxReconnectAttempts: 10,
+    reconnectDelay: 2000,
+    presence: {},
+    orchestration: {},
+
+    init() {
+      if (typeof io === 'undefined') {
+        console.warn('Socket.IO client not available');
+        return;
+      }
+      this.socket = io(API_BASE, {
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionAttempts: this.maxReconnectAttempts,
+        reconnectionDelay: this.reconnectDelay,
+        reconnectionDelayMax: 10000,
+        timeout: 20000,
+      });
+      this._bindEvents();
+    },
+
+    _bindEvents() {
+      const s = this.socket;
+      if (!s) return;
+
+      s.on('connect', () => {
+        console.log('Socket connected:', s.id);
+        this.connected = true;
+        this.reconnectAttempts = 0;
+        this._updateConnectionStatus();
+        if (state.authenticated && state.userId) {
+          this.authenticate();
+        }
+        // Rejoin current channel if any
+        if (state.currentChannelId) {
+          this.joinChannel(state.currentChannelId);
+        }
+      });
+
+      s.on('disconnect', (reason) => {
+        console.log('Socket disconnected:', reason);
+        this.connected = false;
+        this._updateConnectionStatus();
+      });
+
+      s.on('connect_error', (err) => {
+        console.error('Socket connect error:', err.message);
+        this.connected = false;
+        this.reconnectAttempts++;
+        this._updateConnectionStatus();
+      });
+
+      s.on('reconnect', (attempt) => {
+        console.log('Socket reconnected after', attempt, 'attempts');
+        showToast('Real-time connection restored', 'success');
+      });
+
+      s.on('reconnect_failed', () => {
+        console.error('Socket reconnect failed');
+        showToast('Real-time connection lost', 'error');
+      });
+
+      // ── Channel / Message events ──
+      s.on('channels:list', (channels) => {
+        console.log('Channels list received:', channels.length);
+      });
+
+      s.on('messages:history', ({ channelId, messages }) => {
+        console.log('Message history for', channelId, ':', messages.length);
+        if (state.currentChannelId === channelId && state.currentView === 'chat') {
+          this._refreshChatMessages(messages);
+        }
+      });
+
+      s.on('message:new', (message) => {
+        console.log('New message:', message);
+        if (state.currentChannelId === message.channelId && state.currentView === 'chat') {
+          this._appendChatMessage(message);
+          this._scrollToBottom();
+        } else if (state.currentChannelId === message.channelId) {
+          // In background: show toast for new messages
+          const sender = message.authorName || message.authorId || 'Unknown';
+          showToast('New message from ' + sender, 'success');
+        }
+      });
+
+      // ── Message streaming (AI responses) ──
+      s.on('message:stream:start', (data) => {
+        console.log('Stream start:', data.messageId);
+        if (state.currentChannelId && state.currentView === 'chat') {
+          this._appendStreamMessage(data.messageId, data.authorName, data.authorType);
+        }
+      });
+
+      s.on('message:stream:chunk', (data) => {
+        if (state.currentChannelId && state.currentView === 'chat') {
+          this._appendStreamChunk(data.messageId, data.chunk);
+        }
+      });
+
+      s.on('message:stream:end', (message) => {
+        console.log('Stream end:', message.id);
+        if (state.currentChannelId && state.currentView === 'chat') {
+          this._finalizeStreamMessage(message);
+        }
+      });
+
+      // ── Typing indicators ──
+      s.on('user:typing', (data) => {
+        if (state.currentChannelId === data.channelId && state.currentView === 'chat') {
+          this._showTypingIndicator(data.userName);
+        }
+      });
+
+      s.on('user:stopped-typing', (data) => {
+        if (state.currentChannelId === data.channelId && state.currentView === 'chat') {
+          this._hideTypingIndicator(data.userId);
+        }
+      });
+
+      // ── Presence updates ──
+      s.on('presence:update', (data) => {
+        console.log('Presence update:', data);
+        if (data.userId) {
+          this.presence[data.userId] = data;
+        }
+        this._updatePresenceUI(data);
+      });
+
+      // ── Orchestration events ──
+      s.on('orchestrate:snapshot', (snapshot) => {
+        console.log('Orchestration snapshot:', snapshot);
+        if (snapshot && snapshot.planId) {
+          this.orchestration[snapshot.planId] = snapshot;
+        }
+        if (state.currentView === 'swarm') {
+          this._updateSwarmUI(snapshot);
+        }
+      });
+
+      s.on('orchestrate:progress', (data) => {
+        console.log('Orchestration progress:', data);
+        if (data && data.planId) {
+          this.orchestration[data.planId] = data;
+        }
+        if (state.currentView === 'swarm') {
+          this._updateSwarmProgress(data);
+        } else {
+          showToast('Swarm: ' + (data.event || 'update') + ' — ' + (data.planId || '').substring(0, 8), 'success');
+        }
+      });
+    },
+
+    authenticate() {
+      if (!this.socket || !this.connected) return;
+      this.socket.emit('auth', {
+        token: state.authToken,
+        userId: state.userId,
+        userName: state.userName,
+        userType: document.getElementById('user-type') ? document.getElementById('user-type').textContent : 'human'
+      });
+      console.log('Socket auth sent for user:', state.userId);
+    },
+
+    joinChannel(channelId) {
+      if (!this.socket || !this.connected || !channelId) return;
+      this.socket.emit('channel:join', channelId);
+      console.log('Joined channel:', channelId);
+    },
+
+    leaveChannel(channelId) {
+      if (!this.socket || !this.connected || !channelId) return;
+      this.socket.emit('channel:leave', channelId);
+      console.log('Left channel:', channelId);
+    },
+
+    sendMessage(data) {
+      if (!this.socket || !this.connected) {
+        console.warn('Socket not connected, falling back to REST');
+        return false;
+      }
+      this.socket.emit('message:send', {
+        channelId: data.channelId,
+        content: data.content,
+        authorId: data.authorId,
+        authorName: data.authorName,
+        authorType: data.authorType || 'human'
+      });
+      return true;
+    },
+
+    subscribeOrchestration(planId) {
+      if (!this.socket || !this.connected || !planId) return;
+      this.socket.emit('orchestrate:subscribe', planId);
+      console.log('Subscribed to plan:', planId);
+    },
+
+    unsubscribeOrchestration(planId) {
+      if (!this.socket || !this.connected || !planId) return;
+      this.socket.emit('orchestrate:unsubscribe', planId);
+    },
+
+    startTyping(channelId) {
+      if (!this.socket || !this.connected || !channelId) return;
+      this.socket.emit('typing:start', {
+        channelId: channelId,
+        userId: state.userId,
+        userName: state.userName
+      });
+    },
+
+    stopTyping(channelId) {
+      if (!this.socket || !this.connected || !channelId) return;
+      this.socket.emit('typing:stop', {
+        channelId: channelId,
+        userId: state.userId
+      });
+    },
+
+    _updateConnectionStatus() {
+      const dot = document.getElementById('conn-dot');
+      const text = document.getElementById('conn-text');
+      if (dot) dot.className = 'dot ' + (this.connected ? 'connected' : 'disconnected');
+      if (text) text.textContent = this.connected ? 'Live' : 'Disconnected';
+    },
+
+    _appendChatMessage(msg) {
+      const container = document.getElementById('messages-container');
+      if (!container) return;
+      const div = document.createElement('div');
+      div.className = 'chat-message ' + (msg.authorType === 'human' ? 'user' : 'ai');
+      div.innerHTML = '<div style="font-size:9px;font-weight:600;text-transform:uppercase;opacity:0.7;margin-bottom:2px;">' + escapeHtml(msg.authorName || msg.authorId) + '</div>'
+        + '<div>' + formatMessageContent(msg.content) + '</div>'
+        + '<div class="chat-timestamp">' + formatTime(msg.createdAt) + '</div>';
+      container.appendChild(div);
+    },
+
+    _refreshChatMessages(messages) {
+      const container = document.getElementById('messages-container');
+      if (!container) return;
+      if (!messages || !messages.length) {
+        container.innerHTML = '<div class="chat-empty"><div style="font-size:13px;">No messages yet</div></div>';
+        return;
+      }
+      container.innerHTML = messages.map(function(msg) {
+        return '<div class="chat-message ' + (msg.authorType === 'human' ? 'user' : 'ai') + '">'
+          + '<div style="font-size:9px;font-weight:600;text-transform:uppercase;opacity:0.7;margin-bottom:2px;">' + escapeHtml(msg.authorName || msg.authorId) + '</div>'
+          + '<div>' + formatMessageContent(msg.content) + '</div>'
+          + '<div class="chat-timestamp">' + formatTime(msg.createdAt) + '</div></div>';
+      }).join('');
+      this._scrollToBottom();
+    },
+
+    _appendStreamMessage(messageId, authorName, authorType) {
+      const container = document.getElementById('messages-container');
+      if (!container) return;
+      const div = document.createElement('div');
+      div.id = 'stream-' + messageId;
+      div.className = 'chat-message ' + (authorType === 'human' ? 'user' : 'ai');
+      div.innerHTML = '<div style="font-size:9px;font-weight:600;text-transform:uppercase;opacity:0.7;margin-bottom:2px;">' + escapeHtml(authorName || 'AI') + '</div>'
+        + '<div class="stream-content"></div>'
+        + '<div class="chat-timestamp">' + formatTime(new Date().toISOString()) + '</div>';
+      container.appendChild(div);
+      this._scrollToBottom();
+    },
+
+    _appendStreamChunk(messageId, chunk) {
+      const msgDiv = document.getElementById('stream-' + messageId);
+      if (!msgDiv) return;
+      const contentDiv = msgDiv.querySelector('.stream-content');
+      if (contentDiv) {
+        contentDiv.textContent += chunk;
+      }
+      this._scrollToBottom();
+    },
+
+    _finalizeStreamMessage(message) {
+      const msgDiv = document.getElementById('stream-' + message.id);
+      if (msgDiv) {
+        msgDiv.id = 'msg-' + message.id;
+        msgDiv.querySelector('.stream-content').innerHTML = formatMessageContent(message.content);
+      } else {
+        // If stream div was not found, append as regular message
+        this._appendChatMessage(message);
+      }
+      this._scrollToBottom();
+    },
+
+    _scrollToBottom() {
+      const container = document.getElementById('messages-container');
+      if (container) container.scrollTop = container.scrollHeight;
+    },
+
+    _showTypingIndicator(userName) {
+      let indicator = document.getElementById('typing-indicator');
+      if (!indicator) {
+        const container = document.getElementById('messages-container');
+        if (!container) return;
+        indicator = document.createElement('div');
+        indicator.id = 'typing-indicator';
+        indicator.className = 'chat-message ai';
+        indicator.style.opacity = '0.7';
+        indicator.innerHTML = '<div style="font-size:9px;font-weight:600;text-transform:uppercase;opacity:0.7;margin-bottom:2px;">' + escapeHtml(userName || 'Someone') + '</div>'
+          + '<div style="font-style:italic;color:var(--text-muted);">typing...</div>';
+        container.appendChild(indicator);
+        this._scrollToBottom();
+      }
+    },
+
+    _hideTypingIndicator(userId) {
+      const indicator = document.getElementById('typing-indicator');
+      if (indicator) indicator.remove();
+    },
+
+    _updatePresenceUI(data) {
+      // Update user presence in sidebar or other UI elements
+      const avatar = document.getElementById('user-avatar');
+      if (avatar && data.userId === state.userId) {
+        avatar.style.boxShadow = data.status === 'online'
+          ? '0 0 0 2px var(--success)'
+          : '0 0 0 2px var(--error)';
+      }
+    },
+
+    _updateSwarmUI(snapshot) {
+      // Trigger a refresh of the swarm view if new data arrives
+      if (state.currentView === 'swarm') {
+        loadView('swarm');
+      }
+    },
+
+    _updateSwarmProgress(data) {
+      // Could update specific plan cards in-place; for now refresh view
+      if (state.currentView === 'swarm') {
+        // Debounce refresh to avoid excessive re-renders
+        clearTimeout(this._swarmRefreshTimer);
+        this._swarmRefreshTimer = setTimeout(function() {
+          loadView('swarm');
+        }, 500);
+      }
     }
-    return await res.json();
-  } catch (e) {
-    return { success: false, error: 'Cannot connect to Janus server at ' + API_BASE + '. Is the backend running?' };
-  }
-}
+  };
 
-async function handleAuth(event) {
-  event.preventDefault();
-  var btn = event.target.querySelector('.form-submit');
-  var origText = btn ? btn.innerHTML : '';
-  if (btn) { btn.disabled = true; btn.innerHTML = 'Connecting...'; }
-  try {
-    const name = document.getElementById('auth-name').value;
-    const type = document.getElementById('auth-type').value;
-    const result = await apiCall('POST', '/api/auth/register', { name, type });
-    if (result.success && result.data) {
-      state.authenticated = true;
-      state.userName = result.data.user.name;
-      state.userId = result.data.user.id;
-      state.authToken = result.data.token;
-      document.getElementById('auth-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'flex';
-      document.getElementById('user-name').textContent = state.userName;
-      document.getElementById('user-avatar').textContent = state.userName.substring(0, 2).toUpperCase();
-      loadView('dashboard');
-    } else {
-      var err = document.getElementById('auth-error');
-      err.textContent = result.error || 'Authentication failed';
+  // Expose for debugging
+  window.JanusSocket = SocketManager;
+
+  // ── API Bridge: Tauri invoke → fallback to fetch ──
+  async function apiCall(method, path, body) {
+    if (isTauri && invoke) {
+      // Map REST calls to Tauri commands
+      const cmdMap = {
+        'GET:/api/health': 'get_health',
+        'GET:/api/stats': 'get_stats',
+        'POST:/api/auth/register': 'register',
+        'GET:/api/channels': 'get_channels',
+        'GET:/api/channels/*/messages': 'get_channel_messages',
+        'POST:/api/messages': 'send_message',
+        'GET:/api/bots': 'get_bots',
+        'POST:/api/bots/spawn': 'spawn_bot',
+        'GET:/api/souls': 'get_souls',
+        'GET:/api/oversight/stats': 'get_oversight_stats',
+        'GET:/api/orchestrate': 'get_plans',
+        'GET:/api/graph/nodes': 'get_graph_stats',
+        'GET:/api/auth/keys': 'get_api_keys',
+      };
+
+      let cmd = cmdMap[method + ':' + path];
+      if (!cmd && path.includes('/messages?')) {
+        cmd = 'get_channel_messages';
+      }
+
+      if (cmd) {
+        try {
+          let args = {};
+          if (cmd === 'register') args = { name: body.name, agent_type: body.type };
+          else if (cmd === 'get_channel_messages') {
+            const match = path.match(/\/channels\/([^\/]+)/);
+            args = { channel_id: match ? match[1] : '' };
+          }
+          else if (cmd === 'send_message') {
+            args = {
+              channel_id: body.channelId,
+              content: body.content,
+              author_id: body.authorId,
+              author_name: body.authorName,
+              author_type: body.authorType
+            };
+          }
+          else if (cmd === 'spawn_bot') args = { template: body.template, name: body.name };
+
+          const result = await invoke(cmd, args);
+          // Tauri returns JSON string from Rust — parse it
+          if (typeof result === 'string') {
+            try { return JSON.parse(result); } catch(_) { return { success: true, data: result }; }
+          }
+          return result;
+        } catch (e) {
+          return { success: false, error: e.message || 'Tauri invoke failed' };
+        }
+      }
+    }
+
+    // Fallback to fetch
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (state.authToken) headers['Authorization'] = 'Bearer ' + state.authToken;
+      const opts = { method, headers };
+      if (body) opts.body = JSON.stringify(body);
+      const res = await fetch(API_BASE + path, opts);
+      if (!res.ok) {
+        const errBody = await res.text().catch(function() { return ''; });
+        try { return JSON.parse(errBody); } catch(_) {}
+        return { success: false, error: 'Server error: ' + res.status };
+      }
+      return await res.json();
+    } catch (e) {
+      return { success: false, error: 'Cannot connect to ' + API_BASE };
+    }
+  }
+
+  function setConnectionStatus(connected) {
+    state.apiConnected = connected;
+    const dot = document.getElementById('conn-dot');
+    const text = document.getElementById('conn-text');
+    if (dot) dot.className = 'dot ' + (connected ? 'connected' : 'disconnected');
+    if (text) text.textContent = connected ? 'API Connected' : 'Disconnected';
+  }
+
+  function showToast(message, type) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + (type || 'success');
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 4000);
+  }
+
+  // ── Auth ──
+  async function handleAuth(event) {
+    event.preventDefault();
+    const btn = event.target.querySelector('.form-submit');
+    const origText = btn ? btn.innerHTML : '';
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Connecting...'; }
+
+    try {
+      const name = document.getElementById('auth-name').value;
+      const type = document.getElementById('auth-type').value;
+      const result = await apiCall('POST', '/api/auth/register', { name, type });
+
+      if (result.success && result.data) {
+        state.authenticated = true;
+        state.userName = result.data.user.name;
+        state.userId = result.data.user.id;
+        state.authToken = result.data.token;
+
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        document.getElementById('user-name').textContent = state.userName;
+        document.getElementById('user-avatar').textContent = state.userName.substring(0, 2).toUpperCase();
+        document.getElementById('user-type').textContent = type;
+
+        setConnectionStatus(true);
+        // SocketManager already initialized in DOMContentLoaded; just authenticate now
+        SocketManager.authenticate();
+        loadView('dashboard');
+        showToast('Welcome to the grid, ' + state.userName);
+      } else {
+        const err = document.getElementById('auth-error');
+        err.textContent = result.error || 'Authentication failed';
+        err.style.display = 'block';
+        setConnectionStatus(false);
+      }
+    } catch (e) {
+      const err = document.getElementById('auth-error');
+      err.textContent = 'Error: ' + (e.message || 'Unknown');
       err.style.display = 'block';
+      setConnectionStatus(false);
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = origText; }
     }
-  } catch (e) {
-    var err2 = document.getElementById('auth-error');
-    err2.textContent = 'Unexpected error: ' + (e.message || 'Unknown');
-    err2.style.display = 'block';
-  } finally {
-    if (btn) { btn.disabled = false; btn.innerHTML = origText; }
   }
-}
 
-const VIEW_TITLES = {
-  dashboard: 'DASHBOARD',
-  chat: 'CHAT',
-  bots: 'BOT FORGE',
-  souls: 'SOULS',
-  swarm: 'SWARM',
-  oversight: 'OVERSIGHT',
-  graph: 'KNOWLEDGE GRAPH',
-  health: 'HEALTH',
-  keys: 'API KEYS',
-};
+  // ── Views ──
+  const VIEW_TITLES = {
+    dashboard: 'DASHBOARD',
+    chat: 'CHAT',
+    bots: 'BOT FORGE',
+    souls: 'SOULS',
+    swarm: 'SWARM',
+    oversight: 'OVERSIGHT',
+    graph: 'KNOWLEDGE GRAPH',
+    health: 'HEALTH',
+    keys: 'API KEYS',
+  };
 
-function switchView(view) {
-  state.currentView = view;
-  document.querySelectorAll('.sidebar-link').forEach(function(el) { el.classList.remove('active'); });
-  var target = document.querySelector('[data-view="' + view + '"]');
-  if (target) target.classList.add('active');
-  document.getElementById('view-title').textContent = VIEW_TITLES[view] || view.toUpperCase();
-  loadView(view);
-}
-
-async function loadView(view) {
-  var body = document.getElementById('main-body');
-  if (!body) return;
-  body.innerHTML = '<div style="text-align:center;padding:60px;"><div class="spinner" style="margin:0 auto;"></div></div>';
-  try {
-    body.innerHTML = await renderView(view);
-  } catch (e) {
-    body.innerHTML = '<div class="flash flash-alert" style="margin:16px;">Error: ' + escapeHtml(e.message || 'Failed to load view') + '</div>';
-    console.error('View error:', e);
+  function switchView(view) {
+    state.currentView = view;
+    document.querySelectorAll('.sidebar-link').forEach(function(el) { el.classList.remove('active'); });
+    const target = document.querySelector('[data-view="' + view + '"]');
+    if (target) target.classList.add('active');
+    document.getElementById('view-title').textContent = VIEW_TITLES[view] || view.toUpperCase();
+    loadView(view);
   }
-}
 
-async function renderView(view) {
-  try {
+  async function loadView(view) {
+    const body = document.getElementById('main-body');
+    if (!body) return;
+    body.innerHTML = '<div style="text-align:center;padding:60px;"><div class="spinner" style="margin:0 auto;"></div></div>';
+    try {
+      body.innerHTML = await renderView(view);
+    } catch (e) {
+      body.innerHTML = '<div class="flash flash-alert" style="margin:16px;">Error: ' + escapeHtml(e.message || 'Failed to load') + '</div>';
+    }
+  }
+
+  async function renderView(view) {
     switch (view) {
       case 'dashboard': return await renderDashboard();
       case 'chat': return await renderChat();
@@ -1111,267 +1622,472 @@ async function renderView(view) {
       case 'keys': return await renderKeys();
       default: return '<p>View not found</p>';
     }
-  } catch (e) {
-    return '<div class="flash flash-alert">Error: ' + (e.message || 'Error loading view') + '</div>';
   }
-}
 
-async function renderDashboard() {
-  var health = await apiCall('GET', '/api/health');
-  var stats = health.stats || {};
-  var features = health.features || {};
-  var html = '<div class="stats-grid">'
-    + '<div class="stat-card"><div class="stat-value">' + (stats.users != null ? stats.users : '—') + '</div><div class="stat-label">Users</div></div>'
-    + '<div class="stat-card"><div class="stat-value">' + (stats.channels != null ? stats.channels : '—') + '</div><div class="stat-label">Channels</div></div>'
-    + '<div class="stat-card"><div class="stat-value">' + (stats.messages != null ? stats.messages : '—') + '</div><div class="stat-label">Messages</div></div>'
-    + '<div class="stat-card"><div class="stat-value">' + (stats.graphNodes != null ? stats.graphNodes : '—') + '</div><div class="stat-label">Graph Nodes</div></div>'
-    + '<div class="stat-card"><div class="stat-value">' + (stats.graphEdges != null ? stats.graphEdges : '—') + '</div><div class="stat-label">Graph Edges</div></div>'
-    + '</div>'
-    + '<div class="two-col">'
-    + '<div class="janus-card">'
-    + '<div class="janus-card-header"><span class="janus-card-title">Welcome to Janus</span></div>'
-    + '<p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin:0;">Janus is your AI communication hub with built-in knowledge graphs, bot orchestration, and multi-agent swarm capabilities.</p>'
-    + '<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">'
-    + '<button class="btn btn-primary" data-view="chat">Chat</button>'
-    + '<button class="btn btn-secondary" data-view="bots">Manage Bots</button>'
-    + '<button class="btn btn-secondary" data-view="swarm">Launch Swarm</button>'
-    + '</div></div>'
-    + '<div class="janus-card">'
-    + '<div class="janus-card-header"><span class="janus-card-title">System</span></div>'
-    + '<div style="font-size:12px;color:var(--text-secondary);line-height:2;">'
-    + '<div><span style="color:var(--text-muted);">Status:</span> <span class="badge badge-' + (health.status === 'healthy' ? 'success' : 'warning') + '">' + (health.status || 'unknown') + '</span></div>'
-    + '<div><span style="color:var(--text-muted);">Database:</span> <span class="badge badge-' + (health.database === 'connected' ? 'success' : 'error') + '">' + (health.database || 'unknown') + '</span></div>'
-    + '</div></div></div>';
-  if (Object.keys(features).length) {
-    html += '<div class="section-title">Feature Flags</div><div style="display:flex;gap:8px;flex-wrap:wrap;">'
-      + Object.keys(features).map(function(k) {
-        var v = features[k];
-        return '<span class="badge badge-' + (v ? 'success' : 'error') + '">' + (v ? '✓' : '✗') + ' ' + k.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); }) + '</span>';
+  async function renderDashboard() {
+    const health = await apiCall('GET', '/api/health');
+    const stats = health.stats || {};
+    const features = health.features || {};
+
+    let html = '<div class="stats-grid">'
+      + statCard(stats.users, 'Users')
+      + statCard(stats.channels, 'Channels')
+      + statCard(stats.messages, 'Messages')
+      + statCard(stats.graphNodes, 'Graph Nodes')
+      + statCard(stats.graphEdges, 'Graph Edges')
+      + statCard(stats.bots, 'Bots')
+      + statCard(stats.souls, 'Souls')
+      + statCard(stats.plans, 'Swarm Plans')
+      + '</div>';
+
+    html += '<div class="two-col">'
+      + '<div class="janus-card">'
+      + '<div class="janus-card-header"><span class="janus-card-title">Welcome to Janus</span></div>'
+      + '<p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin:0;">'
+      + 'Janus is your AI communication hub with built-in knowledge graphs, bot orchestration, and multi-agent swarm capabilities.'
+      + '</p>'
+      + '<div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">'
+      + '<button class="btn btn-primary" data-view="chat">Chat</button>'
+      + '<button class="btn btn-secondary" data-view="bots">Manage Bots</button>'
+      + '<button class="btn btn-secondary" data-view="swarm">Launch Swarm</button>'
+      + '</div></div>'
+      + '<div class="janus-card">'
+      + '<div class="janus-card-header"><span class="janus-card-title">System Status</span></div>'
+      + '<div style="font-size:12px;color:var(--text-secondary);line-height:2;">'
+      + '<div><span style="color:var(--text-muted);">Server:</span> ' + badge(health.status === 'healthy' ? 'success' : 'error', health.status || 'unknown') + '</div>'
+      + '<div><span style="color:var(--text-muted);">Database:</span> ' + badge(health.database === 'connected' ? 'success' : 'error', health.database || 'unknown') + '</div>'
+      + '<div><span style="color:var(--text-muted);">Version:</span> <span style="font-family:var(--font-mono);">' + (health.version || '0.1.0') + '</span></div>'
+      + '</div></div></div>';
+
+    if (Object.keys(features).length) {
+      html += '<div class="section-title">Feature Flags</div>'
+        + '<div style="display:flex;gap:8px;flex-wrap:wrap;">'
+        + Object.keys(features).map(function(k) {
+          return badge(features[k] ? 'success' : 'error', (features[k] ? '✓' : '✗') + ' ' + k.replace(/([A-Z])/g, ' $1').replace(/^./, function(s) { return s.toUpperCase(); }));
+        }).join('')
+        + '</div>';
+    }
+    return html;
+  }
+
+  function statCard(value, label) {
+    return '<div class="stat-card"><div class="stat-value">' + (value != null ? value : '—') + '</div><div class="stat-label">' + label + '</div></div>';
+  }
+
+  function badge(type, text) {
+    return '<span class="badge badge-' + type + '">' + text + '</span>';
+  }
+
+  async function renderChat() {
+    const channelsRes = await apiCall('GET', '/api/channels');
+    const channels = channelsRes.data || [];
+
+    const channelHtml = channels.length ? channels.map(function(ch) {
+      return '<a class="channel-item ' + (state.currentChannelId === ch.id ? 'active' : '') + '" data-channel-id="' + ch.id + '" style="cursor:pointer;text-decoration:none;">'
+        + '<span class="channel-indicator ' + (ch.type || 'chat') + '"></span>'
+        + '<span># ' + escapeHtml(ch.name) + '</span></a>';
+    }).join('') : '<div style="font-size:11px;color:var(--text-muted);padding:8px 4px;">No channels</div>';
+
+    let msgsHtml = '';
+    if (state.currentChannelId) {
+      const msgsRes = await apiCall('GET', '/api/channels/' + state.currentChannelId + '/messages?limit=50');
+      const messages = msgsRes.data || [];
+      msgsHtml = messages.length ? messages.map(function(msg) {
+        return '<div class="chat-message ' + (msg.authorType === 'human' ? 'user' : 'ai') + '">'
+          + '<div style="font-size:9px;font-weight:600;text-transform:uppercase;opacity:0.7;margin-bottom:2px;">' + escapeHtml(msg.authorName || msg.authorId) + '</div>'
+          + '<div>' + formatMessageContent(msg.content) + '</div>'
+          + '<div class="chat-timestamp">' + formatTime(msg.createdAt) + '</div></div>';
+      }).join('') : '<div class="chat-empty"><div style="font-size:13px;">No messages yet</div></div>';
+    }
+
+    return '<div style="display:flex;gap:20px;height:calc(100vh - 130px);">'
+      + '<div style="width:200px;flex-shrink:0;">'
+      + '<div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;padding:0 4px 8px;border-bottom:1px solid var(--border-color);margin-bottom:8px;">Channels</div>'
+      + channelHtml + '</div>'
+      + '<div class="chat-container" style="flex:1;">'
+      + (state.currentChannelId
+        ? '<div class="chat-messages" id="messages-container">' + msgsHtml + '</div>'
+          + '<div class="chat-input-bar"><form id="chat-form" style="margin:0;">'
+          + '<div class="chat-input-wrapper">'
+          + '<textarea id="chat-input-field" class="chat-input" placeholder="Message..." rows="1"></textarea>'
+          + '<button type="submit" class="chat-send-btn">SEND</button></div>'
+          + '<div class="chat-input-hint">Enter to send, Shift+Enter for newline</div></form></div>'
+        : '<div class="chat-empty"><div style="font-size:16px;">Select a Channel</div><div style="font-size:12px;color:var(--text-muted);">Choose a channel from the list</div></div>')
+      + '</div></div>';
+  }
+
+  function formatMessageContent(text) {
+    if (!text) return '';
+    // Simple markdown: code blocks, inline code, bold, italic, links
+    let html = escapeHtml(text);
+    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    html = html.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+    return html.replace(/\n/g, '<br>');
+  }
+
+  function formatTime(ts) {
+    if (!ts) return '';
+    try {
+      const d = new Date(ts);
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch(e) { return ''; }
+  }
+
+  async function renderBots() {
+    const botsRes = await apiCall('GET', '/api/bots');
+    const bots = botsRes.data || [];
+
+    let html = '<div class="janus-card">'
+      + '<div class="janus-card-header"><span class="janus-card-title">Spawn New Bot</span></div>'
+      + '<form id="spawn-bot-form" style="margin:0;">'
+      + '<div class="two-col" style="margin-bottom:12px;">'
+      + '<div><label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;">Bot Name</label>'
+      + '<input type="text" id="bot-name" class="janus-input" placeholder="MyBot" required></div>'
+      + '<div><label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;">Template</label>'
+      + '<select id="bot-template" class="janus-select">'
+      + '<option value="coordinator">Coordinator</option>'
+      + '<option value="researcher">Researcher</option>'
+      + '<option value="coder">Coder</option>'
+      + '<option value="analyst">Analyst</option>'
+      + '<option value="watcher">Watcher</option>'
+      + '<option value="responder">Responder</option>'
+      + '</select></div></div>'
+      + '<button type="submit" class="btn btn-primary">Spawn Bot</button></form></div>'
+      + '<div class="section-title">Active Bots (' + bots.length + ')</div>';
+
+    if (bots.length) {
+      html += '<div class="cards-grid">' + bots.map(function(bot) {
+        const status = bot.status || 'unknown';
+        const statusClass = status === 'online' ? 'success' : (status === 'error' ? 'error' : 'warning');
+        return '<div class="janus-card" style="padding:16px;">'
+          + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">'
+          + '<div style="flex:1;">'
+          + '<div style="font-size:13px;font-weight:600;">' + escapeHtml(bot.displayName || bot.name) + '</div>'
+          + '<div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">' + (bot.id || '').substring(0, 8) + '...</div></div>'
+          + badge(statusClass, status)
+          + '</div>'
+          + '<div style="font-size:11px;color:var(--text-secondary);line-height:1.6;">'
+          + (bot.description ? '<div>' + escapeHtml(bot.description) + '</div>' : '')
+          + '<div style="margin-top:4px;"><span style="color:var(--text-muted);">Template:</span> ' + (bot.template || 'custom') + '</div>'
+          + '</div></div>';
       }).join('') + '</div>';
-  }
-  return html;
-}
-
-async function renderChat() {
-  var channelsRes = await apiCall('GET', '/api/channels');
-  var channels = channelsRes.data || [];
-  var channelHtml = channels.length ? channels.map(function(ch) {
-    return '<a class="channel-item ' + (state.currentChannelId === ch.id ? 'active' : '') + '" data-channel-id="' + ch.id + '" style="cursor:pointer;text-decoration:none;"><span class="channel-indicator ' + (ch.type || 'chat') + '"></span><span># ' + escapeHtml(ch.name) + '</span></a>';
-  }).join('') : '<div style="font-size:11px;color:var(--text-muted);padding:8px 4px;">No channels</div>';
-
-  var msgsHtml = '';
-  if (state.currentChannelId) {
-    var msgsRes = await apiCall('GET', '/api/channels/' + state.currentChannelId + '/messages?limit=50');
-    var messages = msgsRes.data || [];
-    msgsHtml = messages.length ? messages.map(function(msg) {
-      return '<div class="chat-message ' + (msg.authorType === 'human' ? 'user' : 'ai') + '"><div style="font-size:9px;font-weight:600;text-transform:uppercase;">' + escapeHtml(msg.authorName || msg.authorId) + '</div><div>' + escapeHtml(msg.content) + '</div></div>';
-    }).join('') : '<div class="chat-empty"><div style="font-size:13px;">No messages</div></div>';
-  }
-
-  return '<div style="display:flex;gap:20px;height:calc(100vh - 130px);">'
-    + '<div style="width:200px;flex-shrink:0;">'
-    + '<div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;padding:0 4px 8px;border-bottom:1px solid var(--border-color);margin-bottom:8px;">Channels</div>'
-    + channelHtml + '</div>'
-    + '<div class="chat-container" style="flex:1;">'
-    + (state.currentChannelId ? '<div class="chat-messages" id="messages-container">' + msgsHtml + '</div><div class="chat-input-bar"><form id="chat-form" style="margin:0;"><div class="chat-input-wrapper"><textarea id="chat-input-field" class="chat-input" placeholder="Message..." rows="1"></textarea><button type="submit" class="chat-send-btn">SEND</button></div><div class="chat-input-hint">Enter to send</div></form></div>' : '<div class="chat-empty"><div style="font-size:16px;">Select a Channel</div><div style="font-size:12px;color:var(--text-muted);">Choose a channel from the list</div></div>')
-    + '</div></div>';
-}
-
-async function renderBots() {
-  var botsRes = await apiCall('GET', '/api/bots');
-  var bots = botsRes.data || [];
-  var html = '<div class="janus-card"><div class="janus-card-header"><span class="janus-card-title">Spawn New Bot</span></div>'
-    + '<form id="spawn-bot-form" style="margin:0;">'
-    + '<div class="two-col" style="margin-bottom:12px;">'
-    + '<div><label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;">Bot Name</label>'
-    + '<input type="text" id="bot-name" class="janus-input" placeholder="MyBot" required></div>'
-    + '<div><label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;">Template</label>'
-    + '<select id="bot-template" class="janus-select"><option value="coordinator">Coordinator</option><option value="researcher">Researcher</option><option value="coder">Coder</option><option value="analyst">Analyst</option></select></div></div>'
-    + '<button type="submit" class="btn btn-primary">Spawn Bot</button></form></div>'
-    + '<div class="section-title">Active Bots</div>';
-  if (bots.length) {
-    html += '<div class="cards-grid">' + bots.map(function(bot) {
-      return '<div class="janus-card" style="padding:16px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="flex:1;"><div style="font-size:13px;font-weight:600;">' + escapeHtml(bot.displayName || bot.name) + '</div><div style="font-size:10px;color:var(--text-muted);">' + (bot.id || '').substring(0, 8) + '...</div></div><span class="badge badge-' + (bot.status === 'online' ? 'success' : (bot.status === 'error' ? 'error' : 'warning')) + '">' + (bot.status || 'unknown') + '</span></div></div>';
-    }).join('') + '</div>';
-  } else {
-    html += '<div class="janus-card" style="text-align:center;padding:40px 20px;"><div style="font-size:40px;margin-bottom:12px;opacity:0.5;">No bots deployed yet</div></div>';
-  }
-  return html;
-}
-
-async function renderSouls() {
-  var soulsRes = await apiCall('GET', '/api/souls');
-  var souls = soulsRes.data || [];
-  if (souls.length) {
-    return '<div class="cards-grid">' + souls.map(function(soul) {
-      return '<div class="janus-card" style="padding:20px;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="width:40px;height:40px;border-radius:50%;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;">' + (soul.name || '??').substring(0, 2).toUpperCase() + '</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;">' + escapeHtml(soul.displayName || soul.name) + '</div><div style="font-size:10px;color:var(--text-muted);">' + (soul.archetype || 'unknown') + '</div></div><span class="badge badge-' + (soul.status === 'active' ? 'success' : 'warning') + '">' + (soul.status || 'unknown') + '</span></div></div>';
-    }).join('') + '</div>';
-  }
-  return '<div class="janus-card" style="text-align:center;padding:60px 20px;"><div style="font-size:48px;margin-bottom:16px;opacity:0.5;">No Souls Found</div></div>';
-}
-
-async function renderSwarm() {
-  return '<div class="janus-card"><div class="janus-card-header"><span class="janus-card-title">Submit Orchestration Goal</span></div><form id="goal-form" style="margin:0;"><div style="margin-bottom:12px;"><label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;">Goal</label><textarea id="goal-input" class="janus-textarea" rows="3" placeholder="e.g., Research latest Rust async runtimes..." required></textarea></div><button type="submit" class="btn btn-primary">Launch Swarm</button></form></div><div class="section-title">Active Plans</div><div class="janus-card" style="text-align:center;padding:40px 20px;"><p style="color:var(--text-muted);margin:0;font-size:13px;">No swarm plans yet</p></div>';
-}
-
-async function renderOversight() {
-  return '<div class="janus-card" style="text-align:center;padding:40px 20px;"><p style="color:var(--text-muted);margin:0;font-size:13px;">No pending oversight actions</p></div>';
-}
-
-async function renderGraph() {
-  return '<div class="janus-card" style="text-align:center;padding:60px 20px;"><p style="color:var(--text-muted);margin:0;font-size:13px;">Knowledge graph visualization coming soon.</p></div>';
-}
-
-async function renderHealth() {
-  var health = await apiCall('GET', '/api/health');
-  if (health.status === 'error') {
-    return '<div class="flash flash-alert">Cannot connect to Janus API</div>';
-  }
-  return '<div class="stats-grid" style="grid-template-columns:repeat(3, 1fr);">'
-    + '<div class="stat-card"><div class="stat-value"><span class="badge badge-' + (health.status === 'healthy' ? 'success' : 'error') + '" style="font-size:14px;padding:4px 12px;">' + (health.status || 'unknown') + '</span></div><div class="stat-label">Server</div></div>'
-    + '<div class="stat-card"><div class="stat-value"><span class="badge badge-' + (health.database === 'connected' ? 'success' : 'error') + '" style="font-size:14px;padding:4px 12px;">' + (health.database || 'unknown') + '</span></div><div class="stat-label">Database</div></div>'
-    + '<div class="stat-card"><div class="stat-value" style="font-size:14px;font-family:var(--font-mono);">' + (health.timestamp ? new Date(health.timestamp).toLocaleTimeString() : '—') + '</div><div class="stat-label">Last Check</div></div></div>';
-}
-
-async function renderKeys() {
-  return '<div class="janus-card"><div class="janus-card-header"><span class="janus-card-title">Manage API Keys</span></div><p style="font-size:12px;color:var(--text-secondary);margin:0;">API keys are managed via the Janus web app.</p></div>';
-}
-
-const THEMES = {
-  'synthwave84': { name: "Synthwave '84", icon: '\uD83C\uDF06' },
-  'synthwave-midnight': { name: 'Synthwave Midnight', icon: '\uD83C\uDF03' },
-  'synthwave-dawn': { name: 'Synthwave Dawn', icon: '\uD83C\uDF05' },
-  'dark': { name: 'Dark', icon: '\uD83C\uDF11' },
-  'light': { name: 'Light', icon: '\u2600\uFE0F' },
-  'cyberpunk': { name: 'Cyberpunk', icon: '\u26A1' },
-  'fallout-terminal': { name: 'Fallout Terminal', icon: '\uD83D\uDCDF' },
-};
-
-function openThemeDialog() {
-  var grid = document.getElementById('theme-grid');
-  var current = document.documentElement.getAttribute('data-theme') || 'synthwave84';
-  grid.innerHTML = Object.keys(THEMES).map(function(key) {
-    var t = THEMES[key];
-    return '<button class="theme-btn ' + (key === current ? 'active' : '') + '" data-theme-key="' + key + '">'
-      + '<span class="theme-btn-icon">' + t.icon + '</span><span>' + t.name + '</span></button>';
-  }).join('');
-  document.getElementById('theme-dialog').showModal();
-}
-
-function switchTheme(key) {
-  if (THEMES[key]) {
-    document.documentElement.setAttribute('data-theme', key);
-    try { localStorage.setItem('janus-theme', key); } catch(e) {}
-  }
-  document.getElementById('theme-dialog').close();
-}
-
-function loadTheme() {
-  try {
-    var saved = localStorage.getItem('janus-theme');
-    if (saved && THEMES[saved]) {
-      document.documentElement.setAttribute('data-theme', saved);
+    } else {
+      html += '<div class="janus-card" style="text-align:center;padding:40px 20px;">'
+        + '<div style="font-size:40px;margin-bottom:12px;opacity:0.5;">&#x1F916;</div>'
+        + '<div style="font-size:13px;color:var(--text-muted);">No bots deployed yet</div></div>';
     }
-  } catch(e) {}
-}
-
-function escapeHtml(text) {
-  if (!text) return '';
-  return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-async function selectChannel(id) {
-  state.currentChannelId = id;
-  await loadView('chat');
-}
-
-async function sendChatMessage(event) {
-  event.preventDefault();
-  var input = document.getElementById('chat-input-field');
-  var content = input ? input.value.trim() : '';
-  if (!content || !state.currentChannelId) return;
-  await apiCall('POST', '/api/messages', { content: content, authorId: state.userId || 'unknown', authorName: state.userName, authorType: 'human', channelId: state.currentChannelId });
-  if (input) input.value = '';
-  await loadView('chat');
-}
-
-async function spawnBot(event) {
-  event.preventDefault();
-  var name = document.getElementById('bot-name');
-  var template = document.getElementById('bot-template');
-  if (name && template) {
-    await apiCall('POST', '/api/bots/spawn', { template: template.value, name: name.value });
-    await loadView('bots');
+    return html;
   }
-}
 
-async function submitGoal(event) {
-  event.preventDefault();
-  var goal = document.getElementById('goal-input');
-  if (goal) {
-    await apiCall('POST', '/api/orchestrate', { goal: goal.value });
-    await loadView('swarm');
+  async function renderSouls() {
+    const soulsRes = await apiCall('GET', '/api/souls');
+    const souls = soulsRes.data || [];
+
+    if (souls.length) {
+      return '<div class="cards-grid">' + souls.map(function(soul) {
+        const status = soul.status || 'unknown';
+        return '<div class="janus-card" style="padding:20px;">'
+          + '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">'
+          + '<div style="width:40px;height:40px;border-radius:50%;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;">' + (soul.name || '??').substring(0, 2).toUpperCase() + '</div>'
+          + '<div style="flex:1;">'
+          + '<div style="font-size:14px;font-weight:600;">' + escapeHtml(soul.displayName || soul.name) + '</div>'
+          + '<div style="font-size:10px;color:var(--text-muted);">' + (soul.archetype || 'unknown') + ' &middot; Level ' + (soul.level || 1) + '</div></div>'
+          + badge(status === 'active' ? 'success' : 'warning', status)
+          + '</div>'
+          + (soul.personality ? '<div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">' + escapeHtml(soul.personality.substring(0, 120)) + (soul.personality.length > 120 ? '...' : '') + '</div>' : '')
+          + '</div>';
+      }).join('') + '</div>';
+    }
+    return '<div class="janus-card" style="text-align:center;padding:60px 20px;">'
+      + '<div style="font-size:48px;margin-bottom:16px;opacity:0.5;">&#x1F47B;</div>'
+      + '<div style="font-size:14px;color:var(--text-muted);">No Souls Found</div></div>';
   }
-}
 
-function setupEventDelegation() {
-  document.getElementById('sidebar-nav').addEventListener('click', function(e) {
-    var link = e.target.closest('.sidebar-link[data-view]');
-    if (link) {
-      e.preventDefault();
-      var view = link.getAttribute('data-view');
-      if (view) switchView(view);
+  async function renderSwarm() {
+    const plansRes = await apiCall('GET', '/api/orchestrate');
+    const plans = plansRes.data || [];
+
+    let html = '<div class="janus-card">'
+      + '<div class="janus-card-header"><span class="janus-card-title">Submit Orchestration Goal</span></div>'
+      + '<form id="goal-form" style="margin:0;">'
+      + '<div style="margin-bottom:12px;">'
+      + '<label style="display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;">Goal</label>'
+      + '<textarea id="goal-input" class="janus-textarea" rows="3" placeholder="e.g., Research latest Rust async runtimes and summarize findings..." required></textarea></div>'
+      + '<button type="submit" class="btn btn-primary">Launch Swarm</button></form></div>';
+
+    html += '<div class="section-title">Active Plans (' + plans.length + ')</div>';
+    if (plans.length) {
+      html += '<div class="cards-grid">' + plans.map(function(plan) {
+        const status = plan.status || 'pending';
+        const statusClass = status === 'completed' ? 'success' : (status === 'failed' ? 'error' : 'primary');
+        return '<div class="janus-card" style="padding:16px;">'
+          + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'
+          + '<div style="font-size:13px;font-weight:600;">' + escapeHtml(plan.goal ? plan.goal.substring(0, 50) + (plan.goal.length > 50 ? '...' : '') : 'Untitled Plan') + '</div>'
+          + badge(statusClass, status)
+          + '</div>'
+          + '<div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">'
+          + 'Tasks: ' + (plan.taskCount || 0) + ' &middot; Created: ' + formatTime(plan.createdAt)
+          + '</div></div>';
+      }).join('') + '</div>';
+    } else {
+      html += '<div class="janus-card" style="text-align:center;padding:40px 20px;">'
+        + '<div style="font-size:40px;margin-bottom:12px;opacity:0.5;">&#x1F41D;</div>'
+        + '<div style="font-size:13px;color:var(--text-muted);">No swarm plans yet. Submit a goal to get started.</div></div>';
     }
-  });
+    return html;
+  }
 
-  document.getElementById('sidebar-nav').addEventListener('click', function(e) {
-    var link = e.target.closest('.sidebar-link[data-action]');
-    if (link) {
-      e.preventDefault();
-      var action = link.getAttribute('data-action');
-      if (action === 'theme') openThemeDialog();
+  async function renderOversight() {
+    const statsRes = await apiCall('GET', '/api/oversight/stats');
+    const stats = statsRes.data || {};
+
+    let html = '<div class="stats-grid" style="grid-template-columns:repeat(4, 1fr);">'
+      + statCard(stats.totalActions || 0, 'Total Actions')
+      + statCard(stats.pendingReviews || 0, 'Pending')
+      + statCard(stats.approved || 0, 'Approved')
+      + statCard(stats.challenged || 0, 'Challenged')
+      + '</div>';
+
+    html += '<div class="janus-card" style="text-align:center;padding:40px 20px;">'
+      + '<div style="font-size:40px;margin-bottom:12px;opacity:0.5;">&#x2696;&#xFE0F;</div>'
+      + '<div style="font-size:13px;color:var(--text-muted);">Oversight actions appear here when agents submit high-risk operations.</div></div>';
+    return html;
+  }
+
+  async function renderGraph() {
+    const graphRes = await apiCall('GET', '/api/graph/nodes');
+    const data = graphRes.data || graphRes || {};
+
+    let html = '<div class="stats-grid" style="grid-template-columns:repeat(3, 1fr);">'
+      + statCard(data.nodeCount || data.nodes || 0, 'Nodes')
+      + statCard(data.edgeCount || data.edges || 0, 'Edges')
+      + statCard(data.entityCount || data.entities || 0, 'Entities')
+      + '</div>';
+
+    html += '<div class="janus-card" style="text-align:center;padding:60px 20px;">'
+      + '<div style="font-size:40px;margin-bottom:12px;opacity:0.5;">&#x1F578;&#xFE0F;</div>'
+      + '<div style="font-size:13px;color:var(--text-muted);">Knowledge graph visualization coming in a future update.</div></div>';
+    return html;
+  }
+
+  async function renderHealth() {
+    const health = await apiCall('GET', '/api/health');
+    if (health.status === 'error' || health.error) {
+      setConnectionStatus(false);
+      return '<div class="flash flash-alert">Cannot connect to Janus API at ' + API_BASE + '</div>';
     }
-  });
+    setConnectionStatus(true);
 
-  document.addEventListener('click', function(e) {
-    var viewBtn = e.target.closest('[data-view]');
-    if (viewBtn && !e.target.closest('.sidebar-link')) {
-      e.preventDefault();
-      var view = viewBtn.getAttribute('data-view');
-      if (view && VIEW_TITLES[view]) switchView(view);
-      return;
+    return '<div class="stats-grid" style="grid-template-columns:repeat(3, 1fr);">'
+      + '<div class="stat-card"><div class="stat-value">' + badge(health.status === 'healthy' ? 'success' : 'error', health.status || 'unknown') + '</div><div class="stat-label">Server</div></div>'
+      + '<div class="stat-card"><div class="stat-value">' + badge(health.database === 'connected' ? 'success' : 'error', health.database || 'unknown') + '</div><div class="stat-label">Database</div></div>'
+      + '<div class="stat-card"><div class="stat-value" style="font-size:14px;font-family:var(--font-mono);">' + (health.timestamp ? new Date(health.timestamp).toLocaleTimeString() : '—') + '</div><div class="stat-label">Last Check</div></div>'
+      + '</div>'
+      + '<div class="section-title">Database Stats</div>'
+      + '<div class="janus-card"><div style="font-size:12px;color:var(--text-secondary);line-height:2;">'
+      + Object.keys(health.stats || {}).map(function(k) {
+        return '<div><span style="color:var(--text-muted);font-family:var(--font-mono);">' + k + ':</span> ' + (health.stats[k] || 0) + '</div>';
+      }).join('')
+      + '</div></div>';
+  }
+
+  async function renderKeys() {
+    const keysRes = await apiCall('GET', '/api/auth/keys');
+    const keys = keysRes.data || [];
+
+    let html = '<div class="janus-card">'
+      + '<div class="janus-card-header"><span class="janus-card-title">Your API Keys</span></div>'
+      + '<p style="font-size:12px;color:var(--text-secondary);margin:0 0 16px;">API keys allow external tools and AI harnesses to connect to Janus.</p>';
+
+    if (keys.length) {
+      html += '<table class="janus-table"><thead><tr><th>Name</th><th>Created</th><th>Status</th></tr></thead><tbody>'
+        + keys.map(function(k) {
+          return '<tr><td>' + escapeHtml(k.name || 'Unnamed') + '</td>'
+            + '<td>' + formatTime(k.createdAt) + '</td>'
+            + '<td>' + badge(k.revokedAt ? 'error' : 'success', k.revokedAt ? 'Revoked' : 'Active') + '</td></tr>';
+        }).join('')
+        + '</tbody></table>';
+    } else {
+      html += '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">No API keys yet</div>';
     }
-    var dialog = document.getElementById('theme-dialog');
-    if (dialog && e.target === dialog) { dialog.close(); return; }
-    if (e.target.closest('#theme-dialog-close')) { document.getElementById('theme-dialog').close(); return; }
-    var themeBtn = e.target.closest('.theme-btn[data-theme-key]');
-    if (themeBtn) { switchTheme(themeBtn.getAttribute('data-theme-key')); return; }
-    var channelLink = e.target.closest('.channel-item[data-channel-id]');
-    if (channelLink) { e.preventDefault(); selectChannel(channelLink.getAttribute('data-channel-id')); return; }
+    html += '</div>';
+    return html;
+  }
+
+  // ── Themes ──
+  const THEMES = {
+    'synthwave84': { name: "Synthwave '84", icon: '\uD83C\uDF06' },
+    'synthwave-midnight': { name: 'Synthwave Midnight', icon: '\uD83C\uDF03' },
+    'synthwave-dawn': { name: 'Synthwave Dawn', icon: '\uD83C\uDF05' },
+    'dark': { name: 'Dark', icon: '\uD83C\uDF11' },
+    'light': { name: 'Light', icon: '\u2600\uFE0F' },
+    'cyberpunk': { name: 'Cyberpunk', icon: '\u26A1' },
+    'fallout-terminal': { name: 'Fallout Terminal', icon: '\uD83D\uDCDF' },
+  };
+
+  function openThemeDialog() {
+    const grid = document.getElementById('theme-grid');
+    const current = document.documentElement.getAttribute('data-theme') || 'synthwave84';
+    grid.innerHTML = Object.keys(THEMES).map(function(key) {
+      const t = THEMES[key];
+      return '<button class="theme-btn ' + (key === current ? 'active' : '') + '" data-theme-key="' + key + '">'
+        + '<span class="theme-btn-icon">' + t.icon + '</span><span>' + t.name + '</span></button>';
+    }).join('');
+    document.getElementById('theme-dialog').showModal();
+  }
+
+  function switchTheme(key) {
+    if (THEMES[key]) {
+      document.documentElement.setAttribute('data-theme', key);
+      try { localStorage.setItem('janus-theme', key); } catch(e) {}
+    }
+    document.getElementById('theme-dialog').close();
+  }
+
+  function loadTheme() {
+    try {
+      const saved = localStorage.getItem('janus-theme');
+      if (saved && THEMES[saved]) {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    } catch(e) {}
+  }
+
+  // ── Utilities ──
+  function escapeHtml(text) {
+    if (!text) return '';
+    return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  async function selectChannel(id) {
+    if (state.currentChannelId && state.currentChannelId !== id) {
+      SocketManager.leaveChannel(state.currentChannelId);
+    }
+    state.currentChannelId = id;
+    SocketManager.joinChannel(id);
+    await loadView('chat');
+  }
+
+  async function sendChatMessage(event) {
+    event.preventDefault();
+    const input = document.getElementById('chat-input-field');
+    const content = input ? input.value.trim() : '';
+    if (!content || !state.currentChannelId) return;
+
+    // Try Socket.IO first, fall back to REST
+    const sentViaSocket = SocketManager.sendMessage({
+      content: content,
+      authorId: state.userId || 'unknown',
+      authorName: state.userName,
+      authorType: 'human',
+      channelId: state.currentChannelId
+    });
+
+    if (!sentViaSocket) {
+      await apiCall('POST', '/api/messages', {
+        content: content,
+        authorId: state.userId || 'unknown',
+        authorName: state.userName,
+        authorType: 'human',
+        channelId: state.currentChannelId
+      });
+    }
+
+    if (input) input.value = '';
+    // Do NOT reload the view — the socket will push the new message in real-time
+    // If socket is down, append optimistically then let REST response refresh
+    if (!sentViaSocket) {
+      await loadView('chat');
+    }
+  }
+
+  async function spawnBot(event) {
+    event.preventDefault();
+    const name = document.getElementById('bot-name');
+    const template = document.getElementById('bot-template');
+    if (name && template) {
+      const result = await apiCall('POST', '/api/bots/spawn', { template: template.value, name: name.value });
+      if (result.success) {
+        showToast('Bot "' + name.value + '" spawned successfully');
+        name.value = '';
+      } else {
+        showToast(result.error || 'Failed to spawn bot', 'error');
+      }
+      await loadView('bots');
+    }
+  }
+
+  async function submitGoal(event) {
+    event.preventDefault();
+    const goal = document.getElementById('goal-input');
+    if (goal) {
+      const result = await apiCall('POST', '/api/orchestrate', { goal: goal.value });
+      if (result.success) {
+        showToast('Swarm launched for: ' + goal.value.substring(0, 40) + (goal.value.length > 40 ? '...' : ''));
+        goal.value = '';
+      } else {
+        showToast(result.error || 'Failed to launch swarm', 'error');
+      }
+      await loadView('swarm');
+    }
+  }
+
+  // ── Event Delegation ──
+  function setupEventDelegation() {
+    document.getElementById('sidebar-nav').addEventListener('click', function(e) {
+      const link = e.target.closest('.sidebar-link[data-view]');
+      if (link) {
+        e.preventDefault();
+        const view = link.getAttribute('data-view');
+        if (view) switchView(view);
+      }
+      const actionLink = e.target.closest('.sidebar-link[data-action]');
+      if (actionLink) {
+        e.preventDefault();
+        const action = actionLink.getAttribute('data-action');
+        if (action === 'theme') openThemeDialog();
+      }
+    });
+
+    document.addEventListener('click', function(e) {
+      const viewBtn = e.target.closest('[data-view]');
+      if (viewBtn && !e.target.closest('.sidebar-link')) {
+        e.preventDefault();
+        const view = viewBtn.getAttribute('data-view');
+        if (view && VIEW_TITLES[view]) switchView(view);
+        return;
+      }
+      const dialog = document.getElementById('theme-dialog');
+      if (dialog && e.target === dialog) { dialog.close(); return; }
+      if (e.target.closest('#theme-dialog-close')) { dialog.close(); return; }
+      const themeBtn = e.target.closest('.theme-btn[data-theme-key]');
+      if (themeBtn) { switchTheme(themeBtn.getAttribute('data-theme-key')); return; }
+      const channelLink = e.target.closest('.channel-item[data-channel-id]');
+      if (channelLink) { e.preventDefault(); selectChannel(channelLink.getAttribute('data-channel-id')); return; }
+    });
+
+    document.addEventListener('submit', function(e) {
+      if (e.target.matches('#auth-form')) { handleAuth(e); return; }
+      if (e.target.matches('#chat-form')) { sendChatMessage(e); return; }
+      if (e.target.matches('#spawn-bot-form')) { spawnBot(e); return; }
+      if (e.target.matches('#goal-form')) { submitGoal(e); return; }
+    });
+  }
+
+  // ── Init ──
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Janus Desktop v0.1 — Tauri:', isTauri);
+    loadTheme();
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    setupEventDelegation();
+    // Initialize Socket.IO early so it can connect in the background
+    SocketManager.init();
   });
-
-  document.addEventListener('submit', function(e) {
-    if (e.target.matches('#auth-form')) { handleAuth(e); return; }
-    if (e.target.matches('#chat-form')) { sendChatMessage(e); return; }
-    if (e.target.matches('#spawn-bot-form')) { spawnBot(e); return; }
-    if (e.target.matches('#goal-form')) { submitGoal(e); return; }
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOMContentLoaded fired');
-  loadTheme();
-  document.getElementById('auth-screen').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
-  setupEventDelegation();
-  console.log('Janus Desktop initialized');
-});
-
-} catch(e) {
-  console.error('Janus init error:', e);
-  var out = document.getElementById('output');
-  if (out) out.textContent = 'JS ERROR: ' + e.message;
-}
+})();
   </script>
 </body>
 </html>
