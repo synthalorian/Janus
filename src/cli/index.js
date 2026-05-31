@@ -447,7 +447,7 @@ function startREPL() {
         case 'exit':
         case 'quit':
         case 'q':
-          log(c('gray', '\n Until next time. 🎹🦞'));
+          log(c('gray', '\n Until next time. 🎹🦈'));
           process.exit(0);
           break;
 
