@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'services/janus_api.dart';
+import 'services/socket_service.dart';
 import 'theme/janus_theme.dart';
 import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
@@ -11,6 +12,7 @@ void main() {
       providers: [
         Provider(create: (_) => JanusApiService()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => SocketService()),
       ],
       child: const JanusMobileApp(),
     ),

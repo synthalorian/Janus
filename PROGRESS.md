@@ -967,4 +967,129 @@ docs/
 
 ---
 
-*"From zero to AI communication platform with autonomous bot creation."* 🎹🦈🤖🚪
+## 2026-05-30: Tri-Stack Scaffold — DESKTOP + MOBILE + WEB
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    JANUS TRI-STACK                           │
+│                                                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   Desktop    │  │    Mobile    │  │     Web      │       │
+│  │  Tauri 2     │  │  Flutter 3   │  │  Rails 8     │       │
+│  │  Rust + Web  │  │  Dart        │  │  Ruby + TW   │       │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘       │
+│         │                 │                 │                │
+│         └─────────────────┼─────────────────┘                │
+│                           │                                  │
+│              ┌────────────▼────────────┐                     │
+│              │    Janus API Server     │                     │
+│              │    Node.js + Express    │                     │
+│              │    localhost:3001       │                     │
+│              └────────────┬────────────┘                     │
+│                           │                                  │
+│              ┌────────────▼────────────┐                     │
+│              │      PostgreSQL         │                     │
+│              └─────────────────────────┘                     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Desktop (Tauri 2)
+
+**Location**: `src/desktop/`
+
+**Stack**: Rust (Tauri 2) + Vanilla JS frontend (no build step)
+
+**Features**:
+- ✅ Tauri runtime detection — uses `invoke()` when in Tauri, falls back to `fetch()` for browser dev
+- ✅ All 15 API commands mapped: health, stats, register, channels, messages, send, bots, spawn, souls, oversight, plans, graph, api_keys
+- ✅ 7 themes with CSS variables, CRT scanlines, grid overlay
+- ✅ Auth screen with registration
+- ✅ Dashboard with live stats
+- ✅ Chat with channels, messages, markdown rendering
+- ✅ Bot Forge with spawn form
+- ✅ Souls, Swarm, Oversight, Graph, Health, API Keys views
+- ✅ Toast notifications
+- ✅ Connection status indicator
+- ✅ Theme picker dialog
+- ✅ Responsive sidebar navigation
+
+**Build Status**: ✅ `cargo check` passes
+
+**Run**: `cd src/desktop && cargo tauri dev`
+
+### Mobile (Flutter)
+
+**Location**: `src/mobile/`
+
+**Stack**: Flutter 3.41 + Dart + `http` package
+
+**Features**:
+- ✅ Provider-based state management
+- ✅ Theme provider with synthwave palette
+- ✅ Auth screen (registration)
+- ✅ Home screen with bottom nav
+- ✅ Chat screen with channel list
+- ✅ Bots screen with spawn dialog
+- ✅ Dashboard, Souls, Swarm, Oversight, Health screens
+- ✅ `JanusApiService` — full REST client hitting `10.0.2.2:3001`
+- ✅ All endpoints: auth, channels, messages, bots, souls, oversight, swarm, graph, keys
+
+**Build Status**: ✅ `flutter build apk --debug` succeeds
+
+**Run**: `cd src/mobile && flutter run`
+
+### Web (Rails 8)
+
+**Location**: `src/web/`
+
+**Stack**: Rails 8.1 + Tailwind CSS + Stimulus JS + Importmap
+
+**Features**:
+- ✅ `JanusApi` service — comprehensive Ruby client for all Janus endpoints
+- ✅ Auth controller with login/logout
+- ✅ `JanusController` — dashboard, chat, bots, souls, graph, oversight, swarm, health, api_keys
+- ✅ All views with Tailwind-styled ERB templates
+- ✅ Sidebar navigation shared layout
+- ✅ Turbo Stream support for chat messages
+- ✅ Error handling with graceful fallbacks
+- ✅ API key creation with flash-based reveal
+
+**Build Status**: ✅ `bundle check` passes, syntax verified
+
+**Run**: `cd src/web && bin/dev`
+
+### Shared API Contract
+
+All three clients talk to the same Janus Node.js backend at `localhost:3001`:
+
+| Feature | Desktop | Mobile | Web |
+|---------|---------|--------|-----|
+| Auth (register) | ✅ | ✅ | ✅ |
+| Health check | ✅ | ✅ | ✅ |
+| Channel list | ✅ | ✅ | ✅ |
+| Send message | ✅ | ✅ | ✅ |
+| Bot list | ✅ | ✅ | ✅ |
+| Spawn bot | ✅ | ✅ | ✅ |
+| Souls list | ✅ | ✅ | ✅ |
+| Swarm plans | ✅ | ✅ | ✅ |
+| Submit goal | ✅ | ✅ | ✅ |
+| Oversight stats | ✅ | ✅ | ✅ |
+| Graph stats | ✅ | ✅ | ✅ |
+| API keys | ✅ | ✅ | ✅ |
+| Themes (7) | ✅ | ✅ | ✅ |
+| Markdown chat | ✅ | ❌ | ❌ |
+| Real-time (WS) | ❌ | ❌ | ❌ |
+
+### Next Steps for Tri-Stack
+
+1. **WebSocket Integration** — Add Socket.IO to all three clients for real-time messaging
+2. **Desktop Polish** — Add system tray, native menus, auto-updater
+3. **Mobile Polish** — Add push notifications, offline cache, biometric auth
+4. **Web Polish** — Add ActionCable for WebSocket, deploy to Kamal
+5. **Shared Components** — Extract design system tokens across all three
+
+---
+
+*"From zero to AI communication platform with autonomous bot creation — now on every screen."* 🎹🦈🤖🚪
