@@ -1,6 +1,6 @@
 [package]
 name = "janus-desktop"
-version = "0.1.0"
+version = "1.0.0"
 description = "Janus Desktop — AI Communication Hub"
 authors = ["synth"]
 edition = "2024"

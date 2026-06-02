@@ -7,13 +7,19 @@ import { APIResponse } from '../types/index.js';
 
 export const botRouter = Router();
 
+// Helper to safely get string param
+const param = (req: Request, key: string): string => {
+  const val = req.params[key];
+  return Array.isArray(val) ? val[0] : val;
+};
+
 // ==================== Bot Templates ====================
 
 // List available templates
 botRouter.get('/templates', (req: Request, res: Response) => {
   const templates = listTemplates();
   
-  res.json<APIResponse>({
+  res.json({
     success: true,
     data: templates.map(t => ({
       id: t.id,
@@ -23,25 +29,25 @@ botRouter.get('/templates', (req: Request, res: Response) => {
       capabilities: t.capabilities,
       autoStart: t.autoStart,
     }))
-  });
+  } as APIResponse);
 });
 
 // Get template details
 botRouter.get('/templates/:id', (req: Request, res: Response) => {
-  const template = getTemplate(req.params.id);
+  const template = getTemplate(param(req, 'id'));
   
   if (!template) {
-    res.status(404).json<APIResponse>({
+    res.status(404).json({
       success: false,
       error: 'Template not found'
-    });
+    } as APIResponse);
     return;
   }
   
-  res.json<APIResponse>({
+  res.json({
     success: true,
     data: template
-  });
+  } as APIResponse);
 });
 
 // ==================== Autonomous Spawning ====================
@@ -51,20 +57,20 @@ botRouter.post('/spawn', requireAuth, async (req: Request, res: Response) => {
   const { template, name, displayName, description, config, autoStart } = req.body;
   
   if (!template) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: 'Template is required'
-    });
+    } as APIResponse);
     return;
   }
   
   // Check if template exists
   const templateDef = getTemplate(template);
   if (!templateDef) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: `Unknown template: ${template}`
-    });
+    } as APIResponse);
     return;
   }
   
@@ -82,15 +88,15 @@ botRouter.post('/spawn', requireAuth, async (req: Request, res: Response) => {
     const statusCode = result.status === 'spawned' ? 201 : 
                        result.status === 'queued' ? 202 : 400;
     
-    res.status(statusCode).json<APIResponse>({
+    res.status(statusCode).json({
       success: result.status !== 'error',
       data: result
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to spawn bot'
-    });
+    } as APIResponse);
   }
 });
 
@@ -99,10 +105,10 @@ botRouter.post('/teams/spawn', requireAuth, async (req: Request, res: Response) 
   const { name, description, bots, config, persistent } = req.body;
   
   if (!name || !bots || !Array.isArray(bots) || bots.length === 0) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: 'Name and bots array are required'
-    });
+    } as APIResponse);
     return;
   }
   
@@ -116,15 +122,15 @@ botRouter.post('/teams/spawn', requireAuth, async (req: Request, res: Response) 
       persistent,
     });
     
-    res.status(201).json<APIResponse>({
+    res.status(201).json({
       success: true,
       data: result
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to spawn team'
-    });
+    } as APIResponse);
   }
 });
 
@@ -144,41 +150,41 @@ botRouter.get('/', async (req: Request, res: Response) => {
       offset: offset ? parseInt(offset as string) : undefined,
     });
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: result.bots,
       meta: { total: result.total }
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: 'Failed to list bots'
-    });
+    } as APIResponse);
   }
 });
 
 // Get bot by ID
 botRouter.get('/:id', async (req: Request, res: Response) => {
   try {
-    const bot = await botForge.getBot(req.params.id);
+    const bot = await botForge.getBot(param(req, 'id'));
     
     if (!bot) {
-      res.status(404).json<APIResponse>({
+      res.status(404).json({
         success: false,
         error: 'Bot not found'
-      });
+      } as APIResponse);
       return;
     }
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: bot
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: 'Failed to get bot'
-    });
+    } as APIResponse);
   }
 });
 
@@ -187,7 +193,7 @@ botRouter.patch('/:id', requireAuth, async (req: Request, res: Response) => {
   const { displayName, description, config, status, isPublic } = req.body;
   
   try {
-    const bot = await botForge.updateBot(req.params.id, {
+    const bot = await botForge.updateBot(param(req, 'id'), {
       displayName,
       description,
       config,
@@ -195,32 +201,32 @@ botRouter.patch('/:id', requireAuth, async (req: Request, res: Response) => {
       isPublic,
     });
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: bot
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: 'Failed to update bot'
-    });
+    } as APIResponse);
   }
 });
 
 // Terminate/delete bot
 botRouter.delete('/:id', requireAuth, async (req: Request, res: Response) => {
   try {
-    await botSpawner.terminateBot(req.params.id, req.user!.id);
+    await botSpawner.terminateBot(param(req, 'id'), req.user!.id);
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: { message: 'Bot terminated' }
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to terminate bot'
-    });
+    } as APIResponse);
   }
 });
 
@@ -231,42 +237,43 @@ botRouter.post('/:id/message', requireAuth, async (req: Request, res: Response) 
   const { content, metadata } = req.body;
   
   if (!content) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: 'Content is required'
-    });
+    } as APIResponse);
     return;
   }
   
   try {
     const response = await botSpawner.sendToBot(
-      req.params.id,
+      param(req, 'id'),
       { content, metadata },
       req.user!.id
     );
     
-    res.json<APIResponse>({
+    res.json({
       success: response.status === 'success',
       data: response
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to send message'
-    });
+    } as APIResponse);
   }
 });
 
 // Bot-to-bot message
 botRouter.post('/:id/message/:targetId', requireAuth, async (req: Request, res: Response) => {
   const { content, metadata } = req.body;
-  const { id, targetId } = req.params;
+  const id = param(req, 'id');
+  const targetId = param(req, 'targetId');
   
   if (!content) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: 'Content is required'
-    });
+    } as APIResponse);
     return;
   }
   
@@ -274,10 +281,10 @@ botRouter.post('/:id/message/:targetId', requireAuth, async (req: Request, res: 
     // Verify requester owns the source bot
     const bot = await botForge.getBot(id);
     if (!bot || bot.ownerId !== req.user!.id) {
-      res.status(403).json<APIResponse>({
+      res.status(403).json({
         success: false,
         error: 'Not authorized to send messages from this bot'
-      });
+      } as APIResponse);
       return;
     }
     
@@ -287,28 +294,28 @@ botRouter.post('/:id/message/:targetId', requireAuth, async (req: Request, res: 
       id // From bot
     );
     
-    res.json<APIResponse>({
+    res.json({
       success: response.status === 'success',
       data: response
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to send bot-to-bot message'
-    });
+    } as APIResponse);
   }
 });
 
 // Broadcast to team
 botRouter.post('/teams/:teamId/broadcast', requireAuth, async (req: Request, res: Response) => {
   const { content, metadata } = req.body;
-  const { teamId } = req.params;
+  const teamId = param(req, 'teamId');
   
   if (!content) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: 'Content is required'
-    });
+    } as APIResponse);
     return;
   }
   
@@ -320,15 +327,15 @@ botRouter.post('/teams/:teamId/broadcast', requireAuth, async (req: Request, res
       ...response
     }));
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: results
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to broadcast to team'
-    });
+    } as APIResponse);
   }
 });
 
@@ -339,46 +346,46 @@ botRouter.post('/:id/tasks', requireAuth, async (req: Request, res: Response) =>
   const { description, timeout, payload } = req.body;
   
   if (!description) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: 'Task description is required'
-    });
+    } as APIResponse);
     return;
   }
   
   try {
-    const assignment = await botSpawner.assignTask(req.params.id, {
+    const assignment = await botSpawner.assignTask(param(req, 'id'), {
       description,
       timeout,
       payload,
     });
     
-    res.status(201).json<APIResponse>({
+    res.status(201).json({
       success: true,
       data: assignment
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to assign task'
-    });
+    } as APIResponse);
   }
 });
 
 // Get task status
 botRouter.get('/:id/tasks/:taskId', requireAuth, async (req: Request, res: Response) => {
   try {
-    const task = await botSpawner.getTaskStatus(req.params.id, req.params.taskId);
+    const task = await botSpawner.getTaskStatus(param(req, 'id'), param(req, 'taskId'));
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: task
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get task status'
-    });
+    } as APIResponse);
   }
 });
 
@@ -389,66 +396,66 @@ botRouter.get('/active', requireAuth, async (req: Request, res: Response) => {
   try {
     const bots = await botSpawner.getActiveBots(req.user!.id);
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: bots
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: 'Failed to get active bots'
-    });
+    } as APIResponse);
   }
 });
 
 // Get bot metrics
 botRouter.get('/:id/metrics', requireAuth, async (req: Request, res: Response) => {
   try {
-    const metrics = await botSpawner.getBotMetrics(req.params.id);
+    const metrics = await botSpawner.getBotMetrics(param(req, 'id'));
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: metrics
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get metrics'
-    });
+    } as APIResponse);
   }
 });
 
 // Pause bot
 botRouter.post('/:id/pause', requireAuth, async (req: Request, res: Response) => {
   try {
-    await botForge.updateBotStatus(req.params.id, 'idle');
+    await botForge.updateBotStatus(param(req, 'id'), 'idle');
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: { message: 'Bot paused' }
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: 'Failed to pause bot'
-    });
+    } as APIResponse);
   }
 });
 
 // Resume bot
 botRouter.post('/:id/resume', requireAuth, async (req: Request, res: Response) => {
   try {
-    await botForge.updateBotStatus(req.params.id, 'online');
+    await botForge.updateBotStatus(param(req, 'id'), 'online');
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: { message: 'Bot resumed' }
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: 'Failed to resume bot'
-    });
+    } as APIResponse);
   }
 });
 
@@ -457,17 +464,17 @@ botRouter.post('/:id/resume', requireAuth, async (req: Request, res: Response) =
 // List bot commands
 botRouter.get('/:id/commands', async (req: Request, res: Response) => {
   try {
-    const commands = await botForge.getBotCommands(req.params.id);
+    const commands = await botForge.getCommands(param(req, 'id'));
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: commands
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: 'Failed to get commands'
-    });
+    } as APIResponse);
   }
 });
 
@@ -476,32 +483,32 @@ botRouter.post('/:id/commands', requireAuth, async (req: Request, res: Response)
   const { name, description, type, triggers, handler, permissions } = req.body;
   
   if (!name || !type) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: 'Name and type are required'
-    });
+    } as APIResponse);
     return;
   }
   
   try {
-    const command = await botForge.createCommand(req.params.id, {
+    const command = await botForge.createCommand({
+      botId: param(req, 'id'),
       name,
       description,
       type,
       triggers,
-      handler,
-      permissions,
+      requiredScopes: permissions,
     });
     
-    res.status(201).json<APIResponse>({
+    res.status(201).json({
       success: true,
       data: command
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: 'Failed to create command'
-    });
+    } as APIResponse);
   }
 });
 
@@ -510,31 +517,32 @@ botRouter.post('/:id/interact', async (req: Request, res: Response) => {
   const { command, params, channelId, userId } = req.body;
   
   if (!command) {
-    res.status(400).json<APIResponse>({
+    res.status(400).json({
       success: false,
       error: 'Command is required'
-    });
+    } as APIResponse);
     return;
   }
   
   try {
-    const result = await botForge.invokeCommand(
-      req.params.id,
-      command,
-      params || {},
+    const result = await botForge.createInteraction({
+      botId: param(req, 'id'),
+      commandName: command as string,
+      parameters: params || {},
       channelId,
-      userId
-    );
+      userId,
+      type: 'command',
+    });
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: result
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to invoke command'
-    });
+    } as APIResponse);
   }
 });
 
@@ -545,21 +553,20 @@ botRouter.get('/:id/messages', requireAuth, async (req: Request, res: Response) 
   const { limit, offset, unreadOnly } = req.query;
   
   try {
-    const messages = await botForge.getBotMessages(req.params.id, {
+    const messages = await botForge.getBotMessages(param(req, 'id'), {
       limit: limit ? parseInt(limit as string) : 50,
-      offset: offset ? parseInt(offset as string) : 0,
       unreadOnly: unreadOnly === 'true',
     });
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: messages
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: 'Failed to get messages'
-    });
+    } as APIResponse);
   }
 });
 
@@ -568,16 +575,16 @@ botRouter.post('/:id/messages/read', requireAuth, async (req: Request, res: Resp
   const { messageIds } = req.body;
   
   try {
-    await botForge.markMessagesAsRead(req.params.id, messageIds);
+    await botForge.markMessagesAsRead(param(req, 'id'), messageIds);
     
-    res.json<APIResponse>({
+    res.json({
       success: true,
       data: { message: 'Messages marked as read' }
-    });
+    } as APIResponse);
   } catch (error) {
-    res.status(500).json<APIResponse>({
+    res.status(500).json({
       success: false,
       error: 'Failed to mark messages as read'
-    });
+    } as APIResponse);
   }
 });
