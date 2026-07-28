@@ -75,10 +75,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setState(s => ({ ...s, isLoading: false }));
         }
       });
-    } else {
-      setState(s => ({ ...s, isLoading: false }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // No stored auth: initial state already has isLoading: false.
   }, []);
 
   const register = useCallback(async (name: string, type: 'human' | 'ai'): Promise<string | null> => {
@@ -180,6 +178,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// Context files legitimately export a hook alongside the provider component.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');

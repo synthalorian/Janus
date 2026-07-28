@@ -197,9 +197,9 @@ cd ../ai-sdk/python && pip install -e .
 # Create database
 createdb janus
 
-# Apply migrations
+# Apply the full migration chain (core + auth + souls) via drizzle-kit
 cd src/backend
-npm run db:migrate:sql
+npm run db:migrate
 ```
 
 ### 3. Start the Application
@@ -257,8 +257,20 @@ npm run build      # TypeScript compile
 npm run db:generate  # Generate Drizzle migrations
 npm run db:migrate   # Apply migrations
 npm run db:studio    # Drizzle Studio GUI
-npm test             # Run tests
+npm test             # Run tests (requires DATABASE_URL; runs db:migrate first)
 ```
+
+### Testing
+
+```bash
+# From the repo root — runs the backend integration suite
+DATABASE_URL=postgresql://janus:janus@localhost:5432/janus npm test
+```
+
+- Backend: Node's built-in test runner (`node:test` via `tsx --test`) — no extra frameworks.
+  - `src/backend/src/tests/api.integration.test.ts` — 15 tests: health, config, channel list/create/404s, message post→fetch round-trip, users round-trip, stats. Spins the Express app in-process on an ephemeral port and exercises it over real HTTP via `fetch`.
+  - `src/backend/src/tests/auth.integration.test.ts` — 4 tests: register → me → API key lifecycle, payload validation, bad token, refresh flow.
+- Frontend gate: `npm run lint` (ESLint) + `npm run build` (`tsc -b && vite build`). Component tests are intentionally out of scope.
 
 ### Frontend
 ```bash
@@ -315,6 +327,28 @@ cd src/cli
 - [ ] Production monitoring
 - [ ] Advanced graph queries
 - [ ] Multi-server federation
+
+---
+
+## 🧭 Platform Status (Reality Check — 2026-07-28)
+
+The repo contains **six** components under `src/`. This table is an honest
+statement of what exists and what has been *verified*, updated during the
+v1.0.0 hardening pass:
+
+| Component | Path | Stack | Exists | Verified (this pass) |
+|-----------|------|-------|--------|----------------------|
+| **Backend API** | `src/backend` | Node.js, Express 5, Socket.IO, Drizzle + PostgreSQL | ✅ | ✅ build clean, 19/19 integration tests green, TEST_API.md curl flow verified against compiled `dist` |
+| **Web frontend** | `src/frontend` | React 19, Vite 7, TypeScript | ✅ | ✅ `tsc -b && vite build` clean, ESLint clean |
+| **CLI** | `src/cli` | Node.js REPL | ✅ | ⚠️ code present, not exercised in this pass |
+| **Desktop** | `src/desktop` | Tauri 2 + Rust | ✅ | ✅ `cargo check` clean (debug profile) |
+| **Mobile** | `src/mobile` | Flutter 3 + Dart | ✅ | ❌ not verified (no Flutter toolchain in the verification environment) |
+| **Web (Rails)** | `src/web` | Rails 8 + Tailwind + Stimulus | ✅ | ❌ not verified (no `bundle install` run; separate from the React frontend wired into the root build) |
+
+**Notes on the "tri-stack" claim (Desktop / Mobile / Web):**
+- The Tauri desktop, Flutter mobile, and Rails web codebases *do exist* under `src/` — the claim is real code, not vaporware.
+- However, only the **Node backend + React frontend** are wired into the root `npm run build` / `npm test` gates and were machine-verified for the v1.0.0 tag. Desktop, Mobile, and the Rails web app ship as-is from their respective commits.
+- The root `package.json` "Web" stack is the **React 19** app in `src/frontend`. The Rails app in `src/web` is a second, parallel web client.
 
 ---
 

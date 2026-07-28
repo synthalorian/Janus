@@ -1,5 +1,20 @@
 # Janus Development Progress
 
+## 2026-07-28: v1.0.0 Ship-Ready Hardening Pass
+
+Independent verification of the v1.0.0 release claim. Results:
+
+### Gates (before → after)
+- **Build**: backend `tsc` clean; frontend failed on a stale `node_modules` (missing `@esbuild/linux-x64` optional binary) → fixed via `npm install`; `tsc -b && vite build` now clean.
+- **Lint**: 4 errors + 1 warning → **clean** (targeted `react-refresh` disables on context hook exports; removed redundant sync `setState` in `AuthContext` mount effect).
+- **Tests**: effectively un-runnable (auth test existed but fresh DBs were missing auth/soul tables — migrations `0001`/`0002` were absent from the drizzle journal) → **19/19 green** via `npm test` (root + backend): 15 new API integration tests (health, channels CRUD/validation, message round-trip, users round-trip, stats) + 4 existing auth tests.
+- **Smoke**: TEST_API.md curl flow verified against compiled `dist` + PostgreSQL 16 (health ok, seeded channels, message post + fetch round-trip).
+- **Desktop (Tauri)**: `cargo check` clean.
+
+### Honest deltas vs. previous claims
+- The tri-stack code (Tauri desktop, Flutter mobile, Rails web in `src/web`) exists, but only backend + React frontend were wired into root build/test gates and machine-verified. Flutter and Rails builds remain unverified; see README "Platform Status (Reality Check)".
+- `db:migrate:sql` documented in README only applied auth tables via `psql`; the supported path is now `npm run db:migrate` (full chain, 17 tables from scratch).
+
 ## 2026-03-03: PostgreSQL Integration
 
 ### Completed
