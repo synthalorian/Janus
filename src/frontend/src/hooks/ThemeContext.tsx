@@ -18,6 +18,7 @@ export interface ThemeInfo {
 
 // ── Theme Registry ──────────────────────────────────────────
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const THEMES: ThemeInfo[] = [
   { id: 'synthwave84',         name: "Synthwave '84",       icon: '🌆', description: 'Deep purple neon. The grid classic.' },
   { id: 'synthwave-midnight',  name: 'Synthwave Midnight',  icon: '🌃', description: 'Cool navy blues. 3AM city drive.' },
@@ -82,6 +83,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useTheme() {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error('useTheme must be used within ThemeProvider');

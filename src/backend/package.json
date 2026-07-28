@@ -11,7 +11,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "test": "npm run test:auth",
+    "test": "npm run db:migrate && JANUS_DISABLE_AUTOSTART=true tsx --test src/tests/auth.integration.test.ts src/tests/api.integration.test.ts",
+    "test:api": "JANUS_DISABLE_AUTOSTART=true tsx --test src/tests/api.integration.test.ts",
     "db:migrate:sql": "./scripts/apply-migrations.sh",
     "test:auth": "npm run db:migrate:sql && JANUS_DISABLE_AUTOSTART=true tsx --test src/tests/auth.integration.test.ts"
   },

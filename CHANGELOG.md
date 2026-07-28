@@ -1,5 +1,31 @@
 # Changelog
 
+## v1.0.0-hardening — Ship-Ready Verification Pass (2026-07-28)
+
+Post-release verification/hardening of the v1.0.0 tag. No new features; build, lint, tests, and documentation made to tell the truth.
+
+### Fixed
+- **Migrations**: `drizzle/meta/_journal.json` only registered migration `0000` — `0001_auth_tables` and `0002_soul_tables` existed as SQL but were never applied by `drizzle-kit migrate`, so a fresh database was missing `api_keys`, `sessions`, `refresh_tokens`, `login_attempts`, and all `agent_*` soul tables (auth was 500ing on a fresh DB). Journal now registers all three migrations; a from-scratch `npm run db:migrate` creates all 17 tables.
+- **Frontend lint**: 3 `react-refresh/only-export-components` errors (context files exporting hooks alongside providers — targeted disables) and 1 `react-hooks/set-state-in-effect` error in `AuthContext` (removed a redundant synchronous `setState` in the mount effect; initial state already covered the no-stored-auth case).
+- **README**: `db:migrate:sql` (psql, socket-path default, auth-tables-only) replaced with `npm run db:migrate` as the documented setup path.
+
+### Added
+- **Real backend test suite** (`node:test` via `tsx --test`, no new frameworks):
+  - `src/backend/src/tests/api.integration.test.ts` — 15 tests covering `/api/health`, `/api/config`, channel list/create/400/404, message post→fetch round-trip, message 400/404, user create/fetch round-trip, `/api/stats`. Runs the Express app in-process on an ephemeral port via `fetch`.
+  - Existing `auth.integration.test.ts` (4 tests) now actually runs and passes against a properly migrated DB.
+  - Wired as `npm test` at both repo root and `src/backend` (runs `db:migrate` first; requires `DATABASE_URL`). **19/19 green.**
+- **README "Platform Status (Reality Check)"** section: honest inventory of all six `src/` components (backend, React frontend, CLI, Tauri desktop, Flutter mobile, Rails web) and what was machine-verified for v1.0.0.
+
+### Verified
+- `npm run build` (backend `tsc` + frontend `tsc -b && vite build`) — clean. (Note: frontend required an `npm install` to restore the missing `@esbuild/linux-x64` optional binary in a stale `node_modules`; not a source defect.)
+- `npm run lint` — clean (was 4 errors + 1 warning).
+- `npm test` — 19/19 passing.
+- TEST_API.md curl flow against compiled `dist` on PostgreSQL 16: `/api/health` → ok/connected, seeded `general` + `ai-lab` channels listed, message posted and fetched back from channel history.
+- `cargo check` in `src/desktop` (Tauri) — clean.
+- Not verified: Flutter mobile build (no toolchain available), Rails web app (`bundle install` not run), CLI runtime behavior.
+
+---
+
 ## v1.0.0 — Janus: The AI Mega-Hub 🚪🎹🦈
 
 **Release Date:** 2026-06-01
