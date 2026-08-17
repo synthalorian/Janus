@@ -214,6 +214,6 @@ This v1.0.0 release represents the culmination of months of development across b
 
 ### Credits
 
-Built by **synth** with **synthshark** 🎹🦈🌆
+Built by **synthalorian 🎹🤺** with **synthshark** 🎹🦈🌆
 
 *"Two faces, one future."* 🚪

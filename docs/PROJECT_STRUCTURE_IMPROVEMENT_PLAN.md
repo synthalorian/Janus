@@ -11,7 +11,7 @@
 > These commands remove tracked generated/dependency/secrets files from git history moving forward.
 
 ```bash
-cd /home/synth/projects/janus
+cd /home/synthalorian 🎹🤺/projects/janus
 
 git rm -r --cached src/backend/node_modules src/frontend/node_modules || true
 git rm --cached src/backend/.env || true
