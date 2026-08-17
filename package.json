@@ -19,7 +19,7 @@
     "test": "npm --prefix src/backend run test"
   },
   "keywords": ["janus", "ai", "chat", "communication", "life-os"],
-  "author": "synthalorian 🎹🤺",
+  "author": "synth",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^9.2.1"
