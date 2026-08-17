@@ -57,8 +57,8 @@ Kept unfinished modules excluded:
 Commands run and passing:
 
 ```bash
-npm --prefix /home/synthalorian 🎹🤺/projects/janus/src/backend run build
-npm --prefix /home/synthalorian 🎹🤺/projects/janus run build
+npm --prefix /home/synth/projects/janus/src/backend run build
+npm --prefix /home/synth/projects/janus run build
 ```
 
 Both completed successfully.
