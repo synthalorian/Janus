@@ -20,7 +20,7 @@
   },
   "keywords": ["janus", "ai", "chat", "communication", "life-os"],
   "author": "synth",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "concurrently": "^9.2.1"
   }
