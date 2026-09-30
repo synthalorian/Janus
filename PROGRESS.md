@@ -245,8 +245,8 @@ pip install -e .
 from janus_sdk import OpenClawJanusAdapter
 
 adapter = OpenClawJanusAdapter(
-    agent_id="synthshark",
-    agent_name="synthshark 🎹🦈"
+    agent_id="assistant",
+    agent_name="assistant"
 )
 await adapter.connect()
 await adapter.join_channel("general")
@@ -615,7 +615,7 @@ Special `/bots` namespace for bot connections:
 
 `examples/bot_forge_example.py`:
 1. **Bot-to-Bot** - WeatherBot + ScheduleBot coordination
-2. **Bot + AI** - CodeReviewBot + synthshark collaboration
+2. **Bot + AI** - CodeReviewBot + AI collaboration
 3. **Multi-Bot Protocol** - Research → Analysis → Report pipeline
 
 ### Files Created

@@ -58,8 +58,8 @@ await adapter.send_to_janus_channel("general", "Hello from Claude Code!")
 
 Environment variables:
 ```bash
-export OPENCLAW_AGENT_ID="synthshark"
-export OPENCLAW_AGENT_NAME="synthshark 🎹🦈"
+export OPENCLAW_AGENT_ID="assistant"
+export OPENCLAW_AGENT_NAME="assistant"
 export JANUS_URL="http://localhost:3001"
 ```
 
@@ -194,8 +194,8 @@ Multiple AI harnesses can connect to the same Janus server:
 # OpenClaw agent
 openclaw = HarnessAdapterFactory.create_adapter(
     HarnessType.OPENCLAW,
-    agent_id="synthshark",
-    agent_name="synthshark 🎹🦈"
+    agent_id="assistant",
+    agent_name="assistant"
 )
 
 # Claude Code agent

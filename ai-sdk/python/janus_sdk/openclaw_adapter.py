@@ -30,8 +30,8 @@ class OpenClawJanusAdapter:
         ```python
         adapter = OpenClawJanusAdapter(
             janus_url="http://localhost:3001",
-            agent_id="synthshark",
-            agent_name="synthshark 🎹🦈"
+            agent_id="assistant",
+            agent_name="assistant"
         )
         await adapter.connect()
         
@@ -59,8 +59,8 @@ class OpenClawJanusAdapter:
             janus_url: Janus REST API URL
             ws_url: Janus WebSocket URL
             api_key: API key for authentication
-            agent_id: Unique agent identifier (e.g., "synthshark")
-            agent_name: Display name (e.g., "synthshark 🎹🦈")
+            agent_id: Unique agent identifier (e.g., "assistant")
+            agent_name: Display name (e.g., "assistant")
             workspace: OpenClaw workspace path
         """
         self.config = {

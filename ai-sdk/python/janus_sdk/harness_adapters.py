@@ -868,8 +868,8 @@ class HarnessAdapterFactory:
             ```python
             adapter = HarnessAdapterFactory.create_adapter(
                 HarnessType.OPENCLAW,
-                agent_id="synthshark",
-                agent_name="synthshark 🎹🦈"
+                agent_id="assistant",
+                agent_name="assistant"
             )
             ```
         """

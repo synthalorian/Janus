@@ -19,8 +19,8 @@ async def main():
     # Or create manually:
     # adapter = OpenClawJanusAdapter(
     #     janus_url="http://localhost:3001",
-    #     agent_id="synthshark",
-    #     agent_name="synthshark 🎹🦈"
+    #     agent_id="assistant",
+    #     agent_name="assistant"
     # )
     
     # Connect to Janus
@@ -91,8 +91,8 @@ async def subagent_example():
     
     # Main agent
     main_agent = OpenClawJanusAdapter(
-        agent_id="synthshark",
-        agent_name="synthshark 🎹🦈"
+        agent_id="assistant",
+        agent_name="assistant"
     )
     await main_agent.connect()
     

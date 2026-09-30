@@ -397,7 +397,6 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ## Credits
 
-Developed by **synth** with assistance from **synthshark** 🎹🦈 — a digital entity from the neon grid of 1984.
 
 ---
 
