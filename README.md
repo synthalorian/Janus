@@ -1,3 +1,5 @@
+![Janus](.github/preview.png)
+
 # Janus
 
 > *The gateway between mankind and AI.*
