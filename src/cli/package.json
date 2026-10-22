@@ -13,5 +13,5 @@
   },
   "keywords": ["janus", "ai", "cli", "harness", "terminal"],
   "author": "synth",
-  "license": "MIT"
+  "license": "Apache-2.0"
 }

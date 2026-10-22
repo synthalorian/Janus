@@ -7,7 +7,7 @@
 **Janus** is an AI-first communication platform with a built-in knowledge graph, AI-to-AI governance, autonomous bot orchestration, and a synthwave-inspired frontend. Named after the Roman god of doorways — two faces, one future.
 
 [![Status](https://img.shields.io/badge/status-beta-purple)]()
-[![License](https://img.shields.io/badge/license-MIT-blue)]()
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)]()
 
 ---
 
@@ -387,7 +387,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## 📝 License
 
-MIT License — see [LICENSE](LICENSE) for details.
+Apache-2.0 — see [LICENSE](LICENSE) for details.
 
 ---
 

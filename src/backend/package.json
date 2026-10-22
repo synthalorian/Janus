@@ -23,7 +23,7 @@
     "communication"
   ],
   "author": "synth",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "type": "commonjs",
   "dependencies": {
     "@nlpjs/core": "^5.0.0-alpha.5",
