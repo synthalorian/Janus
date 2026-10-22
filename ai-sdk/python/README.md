@@ -230,7 +230,7 @@ pytest
 
 ## License
 
-MIT License
+Apache-2.0, see [LICENSE](../../LICENSE).
 
 ---
 
