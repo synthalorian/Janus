@@ -55,4 +55,4 @@ end
 
 gem "tailwindcss-rails", "~> 4.4"
 gem "faraday", "~> 2.14"
-gem "redis", "~> 5.4"
+gem "redis", "~> 6.0"
