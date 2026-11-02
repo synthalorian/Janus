@@ -1,22 +1,22 @@
 version: 2
 updates:
-- package-ecosystem: bundler
-  directory: /src/web
+- package-ecosystem: github-actions
+  directory: /
   schedule:
     day: monday
     interval: weekly
   open-pull-requests-limit: 5
   groups:
-    bundler-minor-patch:
+    github-actions-minor-patch:
       patterns:
-      - '*'
+      - "*"
       update-types:
       - minor
       - patch
   ignore:
-  - dependency-name: '*'
+  - dependency-name: "*"
     update-types:
-    - version-update:semver-major
+    - "version-update:semver-major"
   commit-message:
     prefix: chore(deps)
 - package-ecosystem: cargo
@@ -28,94 +28,14 @@ updates:
   groups:
     cargo-minor-patch:
       patterns:
-      - '*'
+      - "*"
       update-types:
       - minor
       - patch
   ignore:
-  - dependency-name: '*'
+  - dependency-name: "*"
     update-types:
-    - version-update:semver-major
-  commit-message:
-    prefix: chore(deps)
-- package-ecosystem: docker
-  directories:
-  - /
-  - /src/web
-  schedule:
-    day: monday
-    interval: weekly
-  open-pull-requests-limit: 5
-  groups:
-    docker-minor-patch:
-      patterns:
-      - '*'
-      update-types:
-      - minor
-      - patch
-  ignore:
-  - dependency-name: '*'
-    update-types:
-    - version-update:semver-major
-  commit-message:
-    prefix: chore(deps)
-- package-ecosystem: docker-compose
-  directory: /
-  schedule:
-    day: monday
-    interval: weekly
-  open-pull-requests-limit: 5
-  groups:
-    docker-compose-minor-patch:
-      patterns:
-      - '*'
-      update-types:
-      - minor
-      - patch
-  ignore:
-  - dependency-name: '*'
-    update-types:
-    - version-update:semver-major
-  commit-message:
-    prefix: chore(deps)
-- package-ecosystem: github-actions
-  directory: /
-  schedule:
-    day: monday
-    interval: weekly
-  open-pull-requests-limit: 5
-  groups:
-    github-actions-minor-patch:
-      patterns:
-      - '*'
-      update-types:
-      - minor
-      - patch
-  ignore:
-  - dependency-name: '*'
-    update-types:
-    - version-update:semver-major
-  commit-message:
-    prefix: chore(deps)
-- package-ecosystem: gradle
-  directories:
-  - /src/mobile/android
-  - /src/mobile/android/app
-  schedule:
-    day: monday
-    interval: weekly
-  open-pull-requests-limit: 5
-  groups:
-    gradle-minor-patch:
-      patterns:
-      - '*'
-      update-types:
-      - minor
-      - patch
-  ignore:
-  - dependency-name: '*'
-    update-types:
-    - version-update:semver-major
+    - "version-update:semver-major"
   commit-message:
     prefix: chore(deps)
 - package-ecosystem: npm
@@ -131,14 +51,14 @@ updates:
   groups:
     npm-minor-patch:
       patterns:
-      - '*'
+      - "*"
       update-types:
       - minor
       - patch
   ignore:
-  - dependency-name: '*'
+  - dependency-name: "*"
     update-types:
-    - version-update:semver-major
+    - "version-update:semver-major"
   commit-message:
     prefix: chore(deps)
 - package-ecosystem: pip
@@ -150,14 +70,92 @@ updates:
   groups:
     pip-minor-patch:
       patterns:
-      - '*'
+      - "*"
       update-types:
       - minor
       - patch
   ignore:
-  - dependency-name: '*'
+  - dependency-name: "*"
     update-types:
-    - version-update:semver-major
+    - "version-update:semver-major"
+  commit-message:
+    prefix: chore(deps)
+- package-ecosystem: bundler
+  directory: /src/web
+  schedule:
+    day: monday
+    interval: weekly
+  open-pull-requests-limit: 5
+  groups:
+    bundler-minor-patch:
+      patterns:
+      - "*"
+      update-types:
+      - minor
+      - patch
+  ignore:
+  - dependency-name: "*"
+    update-types:
+    - "version-update:semver-major"
+  commit-message:
+    prefix: chore(deps)
+- package-ecosystem: gradle
+  directory: /src/mobile/android
+  schedule:
+    day: monday
+    interval: weekly
+  open-pull-requests-limit: 5
+  groups:
+    gradle-minor-patch-src-mobile-android:
+      patterns:
+      - "*"
+      update-types:
+      - minor
+      - patch
+  ignore:
+  - dependency-name: "*"
+    update-types:
+    - "version-update:semver-major"
+  commit-message:
+    prefix: chore(deps)
+- package-ecosystem: docker
+  directories:
+  - /
+  - /src/web
+  schedule:
+    day: monday
+    interval: weekly
+  open-pull-requests-limit: 5
+  groups:
+    docker-minor-patch:
+      patterns:
+      - "*"
+      update-types:
+      - minor
+      - patch
+  ignore:
+  - dependency-name: "*"
+    update-types:
+    - "version-update:semver-major"
+  commit-message:
+    prefix: chore(deps)
+- package-ecosystem: docker-compose
+  directory: /
+  schedule:
+    day: monday
+    interval: weekly
+  open-pull-requests-limit: 5
+  groups:
+    docker-compose-minor-patch:
+      patterns:
+      - "*"
+      update-types:
+      - minor
+      - patch
+  ignore:
+  - dependency-name: "*"
+    update-types:
+    - "version-update:semver-major"
   commit-message:
     prefix: chore(deps)
 - package-ecosystem: pub
@@ -169,13 +167,29 @@ updates:
   groups:
     pub-minor-patch:
       patterns:
-      - '*'
+      - "*"
       update-types:
       - minor
       - patch
   ignore:
-  - dependency-name: '*'
+  - dependency-name: "*"
     update-types:
-    - version-update:semver-major
+    - "version-update:semver-major"
   commit-message:
     prefix: chore(deps)
+- package-ecosystem: gradle
+  directory: /src/mobile/android/app
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 5
+  groups:
+    gradle-minor-patch-src-mobile-android-app:
+      patterns:
+      - "*"
+      update-types:
+      - minor
+      - patch
+  ignore:
+  - dependency-name: "*"
+    update-types:
+    - "version-update:semver-major"
