@@ -23,5 +23,9 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "overrides": {
+    "shell-quote": "^1.9.0",
+    "ws": "^8.21.0"
   }
 }
