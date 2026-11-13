@@ -22,7 +22,7 @@
   "author": "synth",
   "license": "Apache-2.0",
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.5"
   },
   "overrides": {
     "shell-quote": "^1.9.0",
