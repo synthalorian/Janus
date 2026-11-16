@@ -297,7 +297,7 @@ orchestrationRouter.patch('/capabilities/:id', requireAuth, async (req: Request,
     harnessType: z.string().optional(),
     costPer1kTokens: z.number().optional(),
     status: z.enum(['online', 'offline', 'busy']).optional(),
-    metadata: z.record(z.unknown()).optional(),
+    metadata: z.record(z.string(), z.unknown()).optional(),
   });
 
   const parsed = updateSchema.safeParse(req.body);
